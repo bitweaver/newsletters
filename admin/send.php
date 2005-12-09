@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.1 2005/12/09 13:30:48 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.2 2005/12/09 20:24:55 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -14,36 +14,25 @@ include_once( UTIL_PKG_PATH.'htmlMimeMail.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
 
 
-require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
+require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_edition_inc.php' );
 
 $listHash = array();
-$newsletters = $nllib->getList( $listHash );
-$gBitSmarty->assign('newsletters', $newsletters["data"]);
+$newsletters = $gContent->mNewsletter->getList( $listHash );
+$gBitSmarty->assign( 'newsletters', $newsletters );
 
-$nl_info = $nllib->get_newsletter($_REQUEST["nl_id"]);
-// $nl_info["name"] = '';
-// $nl_info["description"] = '';
-// $nl_info["allow_user_sub"] = 'y';
-// $nl_info["allow_any_sub"] = 'n';
-// $nl_info["unsub_msg"] = 'y';
-// $nl_info["validate_addr"] = 'y';
-
-if (!isset($_REQUEST["edition_id"]))
-	$_REQUEST["edition_id"] = 0;
-
-if ($_REQUEST["edition_id"]) {
-	$info = $nllib->get_edition($_REQUEST["edition_id"]);
-} else {
-	$info = array();
-
-	$info["data"] = '';
-	$info["subject"] = '';
-}
-
-$gBitSmarty->assign('info', $info);
-
-if (isset($_REQUEST["remove"])) {
-	$nllib->remove_edition($_REQUEST["remove"]);
+if (isset($_REQUEST["remove"] ) && $gContent->isValid() ) {
+	if( !empty( $_REQUEST['cancel'] ) ) {
+		// user cancelled - just continue on, doing nothing
+	} elseif( empty( $_REQUEST['confirm'] ) ) {
+		$formHash['remove'] = TRUE;
+		$formHash['edition_id'] = $gContent->mEditionId;
+		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the newsletter edition '.$gContent->getTitle().'?' ) );
+	} else {
+		if( $gContent->expunge() ) {
+			header( "Location: ".NEWSLETTERS_PKG_URL.'admin/' );
+			die;
+		}
+	}
 }
 
 if (isset($_REQUEST["template_id"]) && $_REQUEST["template_id"] > 0) {
@@ -114,55 +103,16 @@ if (isset($_REQUEST["send"])) {
 	$nllib->replace_edition($_REQUEST["nl_id"], $_REQUEST["subject"], $_REQUEST["data"], $sent);
 }
 
-if ( empty( $_REQUEST["sort_mode"] ) ) {
-	$sort_mode = 'sent_desc';
-} else {
-	$sort_mode = $_REQUEST["sort_mode"];
-}
-
-if (!isset($_REQUEST["offset"])) {
-	$offset = 0;
-} else {
-	$offset = $_REQUEST["offset"];
-}
-
-$gBitSmarty->assign_by_ref('offset', $offset);
-
-if (isset($_REQUEST["find"])) {
-	$find = $_REQUEST["find"];
-} else {
-	$find = '';
-}
-
-$gBitSmarty->assign('find', $find);
-
-$gBitSmarty->assign_by_ref('sort_mode', $sort_mode);
-$channels = $nllib->list_editions($offset, $maxRecords, $sort_mode, $find);
-
-$cant_pages = ceil($channels["cant"] / $maxRecords);
-$gBitSmarty->assign_by_ref('cant_pages', $cant_pages);
-$gBitSmarty->assign('actual_page', 1 + ($offset / $maxRecords));
-
-if ($channels["cant"] > ($offset + $maxRecords)) {
-	$gBitSmarty->assign('next_offset', $offset + $maxRecords);
-} else {
-	$gBitSmarty->assign('next_offset', -1);
-}
-
-// If offset is > 0 then prev_offset
-if ($offset > 0) {
-	$gBitSmarty->assign('prev_offset', $offset - $maxRecords);
-} else {
-	$gBitSmarty->assign('prev_offset', -1);
-}
-
-$gBitSmarty->assign_by_ref('channels', $channels["data"]);
+$gEdition = new BitNewsletterEdition();
+$listHash = array();
+$editions = $gEdition->getList( $listHash );
+$gBitSmarty->assign_by_ref( 'editions', $editions );
+$gBitSmarty->assign( 'listInfo', $listHash );
 
 if( $gBitSystem->isFeatureActive( 'tiki_p_use_content_templates' ) ) {
 	$templates = $tikilib->list_templates('newsletters', 0, -1, 'name_asc', '');
+	$gBitSmarty->assign_by_ref('templates', $templates["data"]);
 }
-
-$gBitSmarty->assign_by_ref('templates', $templates["data"]);
 
 // Display the template
 $gBitSystem->display( 'bitpackage:newsletters/send_newsletters.tpl');

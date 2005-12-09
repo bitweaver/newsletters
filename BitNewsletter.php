@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.2 2005/12/09 19:15:49 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.3 2005/12/09 20:24:55 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.2 2005/12/09 19:15:49 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.3 2005/12/09 20:24:55 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.2 $ $Date: 2005/12/09 19:15:49 $ $Author: spiderr $
+ * @version $Revision: 1.3 $ $Date: 2005/12/09 20:24:55 $ $Author: spiderr $
  */
 
 /**
@@ -25,7 +25,6 @@
 require_once( LIBERTY_PKG_PATH.'LibertyContent.php' );
 
 define( 'BITNEWSLETTER_CONTENT_TYPE_GUID', 'bitnewsletter' );
-define( 'BITNEWSLETTEREDITION_CONTENT_TYPE_GUID', 'bitnewsletteredition' );
 
 class BitNewsletter extends LibertyContent {
 	function BitNewsletter( $pNlId=NULL, $pContentId=NULL ) {
@@ -246,10 +245,6 @@ class BitNewsletter extends LibertyContent {
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
 		$query_cant = "select count(*) from `".BIT_DB_PREFIX."tiki_newsletters` $mid";
-        $pListHash['total_records'] = $this->mDb->getOne( $query_cant, $bindVars );
-		$pListHash['block_pages'] = 5;
-		$pListHash['total_pages'] = ceil( $pListHash['total_records'] / $pListHash['max_records'] );
-		$pListHash['current_page'] = (!empty( $pListHash['offset'] ) ? floor( $pListHash['offset'] / $pListHash['max_records'] ) + 1 : 1 );
 
 		$ret = array();
 
@@ -321,84 +316,5 @@ class BitNewsletter extends LibertyContent {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-class BitNewsletterEdition extends LibertyContent {
-	function BitNewsletterEdition( $pEditionId, $pContentId=NULL ) {
-		parent::LibertyContent();
-		$this->registerContentType( BITNEWSLETTEREDITION_CONTENT_TYPE_GUID, array(
-			'content_type_guid' => BITNEWSLETTEREDITION_CONTENT_TYPE_GUID,
-			'content_description' => 'Newsletter',
-			'handler_class' => 'BitNewsletter',
-			'handler_package' => 'newsletters',
-			'handler_file' => 'BitNewsletter.php',
-			'maintainer_url' => 'http://www.bitweaver.org'
-		) );
-		$this->mEditionId = $pEditionId;
-		$this->mContentId = $pContentId;
-		$this->mContentTypeGuid = BITNEWSLETTEREDITION_CONTENT_TYPE_GUID;
-	}
-
-	function replace_edition($nl_id, $subject, $data, $users) {
-		$now = date("U");
-		$query = "insert into `".BIT_DB_PREFIX."tiki_sent_newsletters`(`nl_id`,`subject`,`data`,`sent`,`users`) values(?,?,?,?,?)";
-		$result = $this->mDb->query($query,array((int)$nl_id,$subject,$data,(int)$now,$users));
-	}
-
-	function get_edition($edition_id) {
-		$query = "select * from `".BIT_DB_PREFIX."tiki_sent_newsletters` where `edition_id`=?";
-		$result = $this->mDb->query($query,array((int)$edition_id));
-		if (!$result->numRows()) return false;
-		$res = $result->fetchRow();
-		return $res;
-	}
-
-	function list_editions($offset, $maxRecords, $sort_mode, $find) {
-		$bindVars = array();
-		if ($find) {
-			$findesc = '%' . $find . '%';
-			$mid = " and (`subject` like ? or `data` like ?)";
-			$bindVars[] = $findesc;
-			$bindVars[] = $findesc;
-		} else {
-			$mid = " ";
-		}
-
-		$query = "select tsn.`edition_id`,tn.`nl_id`,`subject`,`data`,tsn.`users`,`sent`,`name` from `".BIT_DB_PREFIX."tiki_newsletters` tn, `".BIT_DB_PREFIX."tiki_sent_newsletters` tsn ";
-		$query.= " where tn.`nl_id`=tsn.`nl_id` $mid order by ".$this->mDb->convert_sortmode("$sort_mode");
-		$query_cant = "select count(*) from `".BIT_DB_PREFIX."tiki_newsletters` tn, `".BIT_DB_PREFIX."tiki_sent_newsletters` tsn where tn.`nl_id`=tsn.`nl_id` $mid";
-		$result = $this->mDb->query($query,$bindVars,$maxRecords,$offset);
-		$cant = $this->mDb->getOne($query_cant,$bindVars);
-		$ret = array();
-
-		while ($res = $result->fetchRow()) {
-			$ret[] = $res;
-		}
-
-		$retval = array();
-		$retval["data"] = $ret;
-		$retval["cant"] = $cant;
-		return $retval;
-	}
-
-	function remove_edition($edition_id) {
-		$query = "delete from `".BIT_DB_PREFIX."tiki_sent_newsletters` where `edition_id`=$edition_id";
-		$result = $this->mDb->query($query,array((int)$edition_id));
-	}
-
-}
-
-$BitNewsletter = new BitNewsletter();
 
 ?>

@@ -27,12 +27,12 @@
 <h2>{tr}Prepare a newsletter to be sent{/tr}</h2>
 <form action="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php" method="post" id='editpageform'>
 <table class="panel">
-<tr><td>{tr}Subject{/tr}:</td><td><input type="text" maxlength="250" size="40" name="subject" value="{$info.subject|escape}" /></td></tr>
+<tr><td>{tr}Subject{/tr}:</td><td><input type="text" maxlength="250" size="40" name="title" value="{$info.subject|escape}" /></td></tr>
 <tr><td>{tr}Newsletter{/tr}:</td><td>
 <select name="nl_id">
-{section loop=$newsletters name=ix}
-<option value="{$newsletters[ix].nl_id|escape}" {if $newsletters[ix].nl_id eq $nl_id}selected="selected"{/if}>{$newsletters[ix].name}</option>
-{/section}
+{foreach from=$newsletters item=nl key=nlId}
+<option value="{$nlId|escape}" {if $nlId eq $nl_id}selected="selected"{/if}>{$nl.title}</option>
+{/foreach}
 </select>
 </td></tr>
 {if $tiki_p_use_content_templates eq 'y'}
@@ -45,7 +45,7 @@
 </select>
 </td></tr>
 {/if}
-<tr><td>{tr}Data{/tr}:</td><td><textarea name="data" rows="25" cols="60">{$info.data|escape}</textarea></td></tr>
+<tr><td>{tr}Data{/tr}:</td><td><textarea name="edit" rows="25" cols="60">{$info.data|escape}</textarea></td></tr>
 <tr class="panelsubmitrow"><td colspan="2">
 <input type="submit" name="preview" value="{tr}Preview{/tr}" />&nbsp;<input type="submit" name="save" value="{tr}Send Newsletters{/tr}" />
 </td></tr>
@@ -75,18 +75,18 @@
 <th>{tr}action{/tr}</th>
 </tr>
 {cycle values="even,odd" print=false}
-{section name=user loop=$channels}
+{foreach from=$editions key=edId item=ed}
 <tr class="{cycle}">
-<td>{$channels[user].name}</td>
-<td>{$channels[user].subject}</td>
-<td>{$channels[user].users}</td>
-<td>{$channels[user].sent|bit_short_datetime}</td>
+<td>{$ed.title}</td>
+<td>{$ed.subject}</td>
+<td>{$ed.users}</td>
+<td>{$ed.sent|bit_short_datetime}</td>
 <td>
-   <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].edition_id}">{tr}remove{/tr}</a>
-   <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;edition_id={$channels[user].edition_id}">{tr}use{/tr}</a>
+   <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$ed.edition_id}">{tr}remove{/tr}</a>
+   <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;edition_id={$ed.edition_id}">{tr}use{/tr}</a>
 </td>
 </tr>
-{/section}
+{/foreach}
 </table>
 
 <div class="pagination">
