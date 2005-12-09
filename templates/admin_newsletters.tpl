@@ -3,7 +3,7 @@
 
 <div class="edit ___">
 	<div class="header">
-		<h1>{tr}Netsletter Settings{/tr}</h1>
+		<h1>{tr}Newsletter Settings{/tr}</h1>
 	</div>
 
 	<div class="body">
