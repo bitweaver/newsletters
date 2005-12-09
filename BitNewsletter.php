@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.1 2005/12/09 18:51:22 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.2 2005/12/09 19:15:49 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.1 2005/12/09 18:51:22 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.2 2005/12/09 19:15:49 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.1 $ $Date: 2005/12/09 18:51:22 $ $Author: spiderr $
+ * @version $Revision: 1.2 $ $Date: 2005/12/09 19:15:49 $ $Author: spiderr $
  */
 
 /**
@@ -298,13 +298,26 @@ class BitNewsletter extends LibertyContent {
 		return $msg;
 	}
 
-	function remove_newsletter($nl_id) {
-		$query = "delete from `".BIT_DB_PREFIX."tiki_newsletters` where `nl_id`=?";
-		$result = $this->mDb->query($query,array((int)$nl_id));
-		$query = "delete from `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` where `nl_id`=?";
-		$result = $this->mDb->query($query,array((int)$nl_id));
-		$this->remove_object('newsletter', $nl_id);
-		return true;
+	function expunge() {
+		$ret = FALSE;
+		if( $this->isValid() ) {
+			$this->mDb->StartTrans();
+			$query = "delete from `".BIT_DB_PREFIX."tiki_newsletters` where `nl_id`=?";
+			$result = $this->mDb->query( $query, array( $this->mNlId ) );
+			$query = "delete from `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` where `nl_id`=?";
+			$result = $this->mDb->query( $query, array( $this->mNlId ) );
+			if( parent::expunge() ) {
+				$ret = TRUE;
+				$this->mDb->CompleteTrans();
+			} else {
+				$this->mDb->RollbackTrans();
+			}
+		}
+		return $ret;
+	}
+
+	function isValid() {
+		return( !empty( $this->mNlId ) );
 	}
 
 }

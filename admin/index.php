@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/Attic/index.php,v 1.4 2005/12/09 18:51:22 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/Attic/index.php,v 1.5 2005/12/09 19:15:50 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -14,29 +14,30 @@ $gBitSystem->verifyPermission( 'tiki_p_admin_newsletters' );
 
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
 
-if (isset($_REQUEST["remove"])) {
-	$nllib->remove_newsletter($_REQUEST["remove"]);
+if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
+	if( !empty( $_REQUEST['cancel'] ) ) {
+		// user cancelled - just continue on, doing nothing
+	} elseif( empty( $_REQUEST['confirm'] ) ) {
+		$formHash['remove'] = TRUE;
+		$formHash['nl_id'] = $gContent->mNlId;
+		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the newsletter '.$gContent->getTitle().'?' ) );
+	} else {
+		if( $gContent->expunge() ) {
+			header( "Location: ".NEWSLETTERS_PKG_URL.'admin/' );
+			die;
+		}
+	}
+} elseif (isset($_REQUEST["save"])) {
+	$sid = $gContent->store( $_REQUEST );
+	header( "Location: ".$_SERVER['PHP_SELF'] );
+	die;
 }
 
-if (isset($_REQUEST["save"])) {
-	$sid = $gContent->store( $_REQUEST );
-	/*
-	$cat_type='newsletter';
-	$cat_objid = $sid;
-	$cat_desc = substr($_REQUEST["description"],0,200);
-	$cat_name = $_REQUEST["name"];
-	$cat_href= NEWSLETTERS_PKG_URL."newsletters.php?nl_id=".$cat_objid;
-	include_once( CATEGORIES_PKG_PATH.'categorize_inc.php' );
-	*/
-	$info["name"] = '';
-	$info["description"] = '';
-	$info["allow_user_sub"] = 'y';
-	$info["allow_any_sub"] = 'n';
-	$info["unsub_msg"] = 'y';
-	$info["validate_addr"] = 'y';
-	//$info["frequency"] = 7 * 24 * 60 * 60;
-	$gBitSmarty->assign('nl_id', 0);
-	$gBitSmarty->assign('info', $info);
+$gContent->invokeServices( 'content_edit_function' );
+
+// Configure quicktags list
+if ($gBitSystem->isPackageActive( 'quicktags' ) ) {
+	include_once( QUICKTAGS_PKG_PATH.'quicktags_inc.php' );
 }
 
 $newsletters = $gContent->getList( $listHash );

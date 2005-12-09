@@ -69,7 +69,7 @@
 <td>{$nl.editions}</td>
 <td>{$nl.last_sent|bit_short_datetime}</td>
 <td>
-   <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$nlId}">{tr}remove{/tr}</a>
+   <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove=1&amp;nl_id={$nlId}">{tr}remove{/tr}</a>
    <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;nl_id={$nlId}">{tr}edit{/tr}</a>
    <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nlId}">{tr}subscriptions{/tr}</a>
    {if $channels[user].individual eq 'y'}({/if}<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$nl.title}&amp;object_type={$smarty.const.BITNEWSLETTER_CONTENT_TYPE_GUID}&amp;permType=newsletters&amp;object_id={$nlId}">{tr}perms{/tr}</a>{if $nl.individual eq 'y'}){/if}
