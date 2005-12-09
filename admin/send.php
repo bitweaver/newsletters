@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.2 2005/12/09 20:24:55 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.3 2005/12/09 20:36:57 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -38,7 +38,7 @@ if (isset($_REQUEST["remove"] ) && $gContent->isValid() ) {
 if (isset($_REQUEST["template_id"]) && $_REQUEST["template_id"] > 0) {
 	$template_data = $tikilib->get_template($_REQUEST["template_id"]);
 
-	$_REQUEST["data"] = $template_data["content"];
+	$_REQUEST['edit'] = $template_data["content"];
 	$_REQUEST["preview"] = 1;
 }
 
@@ -48,10 +48,10 @@ if (isset($_REQUEST["preview"])) {
 	$gBitSmarty->assign('preview', 'y');
 
 	//$parsed = $tikilib->parse_data($_REQUEST["content"]);
-	$parsed = $_REQUEST["data"];
+	$parsed = $_REQUEST["edit"];
 	$gBitSmarty->assign('parsed', $parsed);
-	$info["data"] = $_REQUEST["data"];
-	$info["subject"] = $_REQUEST["subject"];
+	$info["data"] = $_REQUEST['edit'];
+	$info["subject"] = $_REQUEST['title'];
 	$gBitSmarty->assign('info', $info);
 }
 
@@ -63,8 +63,8 @@ if (isset($_REQUEST["save"])) {
 
 	$subscribers = $nllib->get_subscribers($_REQUEST["nl_id"]);
 	$gBitSmarty->assign('nl_id', $_REQUEST["nl_id"]);
-	$gBitSmarty->assign('data', $_REQUEST["data"]);
-	$gBitSmarty->assign('subject', $_REQUEST["subject"]);
+	$gBitSmarty->assign('edit', $_REQUEST['edit']);
+	$gBitSmarty->assign('subject', $_REQUEST['title']);
 	$cant = count($subscribers);
 	$gBitSmarty->assign('subscribers', $cant);
 }
@@ -76,7 +76,7 @@ if (isset($_REQUEST["send"])) {
 
 	$mail = new htmlMimeMail();
 	$mail->setFrom('noreply@noreply.com');
-	$mail->setSubject($_REQUEST["subject"]);
+	$mail->setSubject($_REQUEST['title']);
 	$sent = 0;
 
 	foreach ($subscribers as $email) {
@@ -92,7 +92,7 @@ if (isset($_REQUEST["send"])) {
 		$mail->setTextCharset("utf-8");
 		$mail->setHtmlCharset("utf-8");
 		$mail->setFrom($sender_email);
-		$mail->setHTML($_REQUEST["data"] . $unsubmsg, strip_tags($_REQUEST["data"]));
+		$mail->setHTML($_REQUEST['edit'] . $unsubmsg, strip_tags($_REQUEST['edit']));
 
 		if ($mail->send($to_array, 'mail'))
 			$sent++;
@@ -100,7 +100,7 @@ if (isset($_REQUEST["send"])) {
 
 	$gBitSmarty->assign('sent', $sent);
 	$gBitSmarty->assign('emited', 'y');
-	$nllib->replace_edition($_REQUEST["nl_id"], $_REQUEST["subject"], $_REQUEST["data"], $sent);
+	$nllib->replace_edition($_REQUEST["nl_id"], $_REQUEST['title'], $_REQUEST['edit'], $sent);
 }
 
 $gEdition = new BitNewsletterEdition();
