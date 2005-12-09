@@ -1,27 +1,27 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.1 2005/12/09 06:59:54 bitweaver Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.2 2005/12/09 07:04:17 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 
 // Initialization
-require_once( '../../tiki_setup_inc.php' );
+require_once( '../../bit_setup_inc.php' );
 
 include_once( NEWSLETTERS_PKG_PATH.'nl_lib.php' );
 
 if ($feature_newsletters != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled").": feature_newsletters");
 
-	$gTikiSystem->display( 'error.tpl' );
+	$gBitSystem->display( 'error.tpl' );
 	die;
 }
 
 if (!isset($_REQUEST["nl_id"])) {
 	$smarty->assign('msg', tra("No newsletter indicated"));
 
-	$gTikiSystem->display( 'error.tpl' );
+	$gBitSystem->display( 'error.tpl' );
 	die;
 }
 
@@ -32,7 +32,7 @@ $smarty->assign('individual', 'n');
 if ($userlib->object_has_one_permission($_REQUEST["nl_id"], 'newsletter')) {
 	$smarty->assign('individual', 'y');
 
-	if ($tiki_p_admin != 'y') {
+	if ($bitweaver.orgi_p_admin != 'y') {
 		$perms = $userlib->get_permissions(0, -1, 'perm_name_desc', '', 'newsletters');
 
 		foreach ($perms["data"] as $perm) {
@@ -51,10 +51,10 @@ if ($userlib->object_has_one_permission($_REQUEST["nl_id"], 'newsletter')) {
 	}
 }
 
-if ($tiki_p_admin_newsletters != 'y') {
+if ($bitweaver.orgi_p_admin_newsletters != 'y') {
 	$smarty->assign('msg', tra("You dont have permission to use this feature"));
 
-	$gTikiSystem->display( 'error.tpl' );
+	$gBitSystem->display( 'error.tpl' );
 	die;
 }
 
@@ -149,6 +149,6 @@ include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
 */
 ask_ticket('admin-nl-subsriptions');
 // Display the template
-$gTikiSystem->display( 'tikipackage:newsletters/admin_newsletter_subscriptions.tpl');
+$gBitSystem->display( 'bitweaver.orgipackage:newsletters/admin_newsletter_subscriptions.tpl');
 
 ?>

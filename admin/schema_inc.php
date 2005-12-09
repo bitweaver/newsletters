@@ -2,14 +2,6 @@
 
 $tables = array(
 
-'tiki_newsletter_subscriptions' => "
-  nl_id I4 PRIMARY,
-  email C(160) PRIMARY,
-  code C(32),
-  valid C(1),
-  subscribed I8
-",
-
 'tiki_newsletters' => "
   nl_id I4 AUTO PRIMARY,
   name C(200),
@@ -25,37 +17,66 @@ $tables = array(
   frequency I8
 ",
 
+'tiki_newsletter_subscriptions' => "
+  nl_id I4 PRIMARY,
+  email C(160) PRIMARY,
+  code C(32),
+  valid C(1),
+  subscribed I8,
+  is_user C(1) NOTNULL default 'n'
+  CONSTRAINTS ', CONSTRAINT `tiki_nl_sub_nl_id_ref` FOREIGN KEY (`nl_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `nl_id` )'
+",
+
 'tiki_sent_newsletters' => "
   edition_id I4 AUTO PRIMARY,
   nl_id I4 NOTNULL,
   users I8,
   sent I8,
   subject C(200),
-  data B
+  data X
+  CONSTRAINTS ', CONSTRAINT `tiki_nl_sent_nl_id_ref` FOREIGN KEY (`nl_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `nl_id` )'
+",
+
+'tiki_newsletter_groups_map' => "
+  nl_id I4 NOTNULL PRIMARY,
+  group_id I4 NOTNULL PRIMARY,
+  code C(32)
+  CONSTRAINTS ', CONSTRAINT `tiki_nl_groups_nl_id_ref` FOREIGN KEY (`nl_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `nl_id` ),
+			   , CONSTRAINT `tiki_nl_groups_id_ref` FOREIGN KEY (`group_id`) REFERENCES `".BIT_DB_PREFIX."users_groups`( `group_id` )'
 "
 
 );
 
-global $gTikiInstaller;
+global $gBitInstaller;
 
 foreach( array_keys( $tables ) AS $tableName ) {
-	$gTikiInstaller->registerSchemaTable( NEWSLETTERS_PKG_DIR, $tableName, $tables[$tableName] );
+	$gBitInstaller->registerSchemaTable( NEWSLETTERS_PKG_DIR, $tableName, $tables[$tableName] );
 }
 
+$gBitInstaller->registerPackageInfo( NEWSLETTERS_PKG_NAME, array(
+	'description' => "Newsletters is for emailing users updates about your site.",
+	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
+	'version' => '1.0',
+	'state' => 'R1',
+	'dependencies' => '',
+) );
 
-$gTikiInstaller->registerSchemaDefault( NEWSLETTERS_PKG_DIR, array(
+// ### Indexes
+$indices = array (
+	'tiki_nl_sub_nl_idx' => array( 'table' => 'tiki_newsletter_subscriptions', 'cols' => 'nl_id', 'opts' => NULL ),
+	'tiki_nl_sub_email_idx' => array( 'table' => 'tiki_newsletter_subscriptions', 'cols' => 'email', 'opts' => NULL ),
+	'tiki_nl_sent_nl_idx' => array( 'table' => 'tiki_sent_newsletters', 'cols' => 'nl_id', 'opts' => NULL ),
+	'tiki_nl_group_idx' => array( 'table' => 'tiki_newsletter_groups', 'cols' => 'group_id', 'opts' => NULL ),
+	'tiki_nl_group_nl_idx' => array( 'table' => 'tiki_newsletter_groups', 'cols' => 'nl_id', 'opts' => NULL ),
+);
+$gBitInstaller->registerSchemaIndexes( LIBERTY_PKG_NAME, $indices );
 
-	"INSERT INTO `".TIKI_DB_PREFIX."tiki_menu_options` (`menu_id` , `type` , `name` , `url` , `position` , `section` , `perm` , `groupname`) VALUES (42,'s','Newsletters','tiki-newsletters.php',900,'feature_newsletters','','')",
-	"INSERT INTO `".TIKI_DB_PREFIX."tiki_menu_options` (`menu_id` , `type` , `name` , `url` , `position` , `section` , `perm` , `groupname`) VALUES (42,'o','Send newsletters','tiki-send_newsletters.php',905,'feature_newsletters','tiki_p_admin_newsletters','')",
-	"INSERT INTO `".TIKI_DB_PREFIX."tiki_menu_options` (`menu_id` , `type` , `name` , `url` , `position` , `section` , `perm` , `groupname`) VALUES (42,'o','Admin newsletters','tiki-admin_newsletters.php',910,'feature_newsletters','tiki_p_admin_newsletters','')",
-
-	"INSERT INTO `".TIKI_DB_PREFIX."users_permissions` (`perm_name`, `perm_desc`, `level`, `package`) VALUES ('tiki_p_admin_newsletters', 'Can admin newsletters', 'editors', 'newsletters')",
-	"INSERT INTO `".TIKI_DB_PREFIX."users_permissions` (`perm_name`, `perm_desc`, `level`, `package`) VALUES ('tiki_p_subscribe_newsletters', 'Can subscribe to newsletters', 'basic', 'newsletters')",
-	"INSERT INTO `".TIKI_DB_PREFIX."users_permissions` (`perm_name`, `perm_desc`, `level`, `package`) VALUES ('tiki_p_subscribe_email', 'Can subscribe any email to newsletters', 'editors', 'newsletters')",
-
-
-	"INSERT INTO `".TIKI_DB_PREFIX."tiki_preferences`(`package`,`name`,`value`) VALUES ('', 'feature_newsletters','n')"
-
+// ### Default UserPermissions
+$gBitInstaller->registerUserPermissions( NEWSLETTERS_PKG_NAME, array(
+	array('bit_p_admin_newsletters', 'Can admin newsletters', 'editors', 'newsletters'),
+	array('bit_p_send_newsletters', 'Can send newsletters', 'editors', 'newsletters'),
+	array('bit_p_subscribe_newsletters', 'Can subscribe to newsletters', 'basic', 'newsletters'),
+	array('bit_p_subscribe_email', 'Can subscribe any email to newsletters', 'editors', 'newsletters'),
 ) );
 
 ?>

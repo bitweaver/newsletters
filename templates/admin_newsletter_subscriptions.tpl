@@ -1,9 +1,9 @@
-<a class="pagetitle" href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}">{tr}Admin newsletter subscriptions{/tr}</a>
+<a class="pagetitle" href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}">{tr}Admin newsletter subscriptions{/tr}</a>
 <br /><br />
 
-<a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}index.php">{tr}list newsletters{/tr}</a>
-<a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/index.php">{tr}admin newsletters{/tr}</a>
-<a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}send.php?nl_id={$nl_id}">{tr}send newsletters{/tr}</a>
+<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php">{tr}list newsletters{/tr}</a>
+<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php">{tr}admin newsletters{/tr}</a>
+<a href="{$smarty.const.NEWSLETTERS_PKG_URL}send.php?nl_id={$nl_id}">{tr}send newsletters{/tr}</a>
 <br /><br />
 
 <table class="panel">
@@ -19,7 +19,7 @@
 </table>
 
 <h2>{tr}Add a subscription newsletters{/tr}</h2>
-<form action="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php" method="post">
+<form action="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php" method="post">
 <input type="hidden" name="nl_id" value="{$nl_id|escape}" />
 <table class="panel">
 <tr><td>{tr}Email{/tr}:</td><td><input type="text" name="email" /></td></tr>
@@ -28,13 +28,13 @@
 </form>
 
 <h2>{tr}Add all your site users to this newsletter (broadcast){/tr}</h2>
-<a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;add_all=1">{tr}Add users{/tr}</a>
+<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;add_all=1">{tr}Add users{/tr}</a>
 
 <h2>{tr}Subscriptions{/tr}</h2>
 <table class="find">
 <tr><td>{tr}Find{/tr}</td>
    <td>
-   <form method="get" action="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php">
+   <form method="get" action="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php">
      <input type="text" name="find" value="{$find|escape}" />
      <input type="submit" value="{tr}find{/tr}" name="search" />
      <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
@@ -45,9 +45,9 @@
 
 <table>
 <tr>
-<th><a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'email_desc'}email_asc{else}email_desc{/if}">{tr}email{/tr}</a></th>
-<th><a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'valid_desc'}valid_asc{else}valid_desc{/if}">{tr}valid{/tr}</a></th>
-<th><a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'subscribed_desc'}subscribed_asc{else}subscribed_desc{/if}">{tr}subscribed{/tr}</a></th>
+<th><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'email_desc'}email_asc{else}email_desc{/if}">{tr}email{/tr}</a></th>
+<th><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'valid_desc'}valid_asc{else}valid_desc{/if}">{tr}valid{/tr}</a></th>
+<th><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'subscribed_desc'}subscribed_asc{else}subscribed_desc{/if}">{tr}subscribed{/tr}</a></th>
 <th>{tr}action{/tr}</th>
 </tr>
 {cycle values="even,odd" print=false}
@@ -57,7 +57,7 @@
 <td>{$channels[user].valid}</td>
 <td>{$channels[user].subscribed|tiki_short_datetime}</td>
 <td>
-   <a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].nl_id}&amp;email={$channels[user].email}">{tr}remove{/tr}</a>
+   <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].nl_id}&amp;email={$channels[user].email}">{tr}remove{/tr}</a>
 </td>
 </tr>
 {/section}
@@ -65,19 +65,19 @@
 
 <div class="pagination">
 {if $prev_offset >= 0}
-[<a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}prev{/tr}</a>]&nbsp;
+[<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}prev{/tr}</a>]&nbsp;
 {/if}
 
 {tr}Page{/tr}: {$actual_page}/{$cant_pages}
 
 {if $next_offset >= 0}
-&nbsp;[<a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}next{/tr}</a>]
+&nbsp;[<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}next{/tr}</a>]
 {/if}
 {if $direct_pagination eq 'y'}
 <br />
 {section loop=$cant_pages name=foo}
 {assign var=selector_offset value=$smarty.section.foo.index|times:$maxRecords}
-<a href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
 {$smarty.section.foo.index_next}</a>&nbsp;
 {/section}
 {/if}

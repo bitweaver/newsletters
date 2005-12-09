@@ -1,4 +1,6 @@
-{if $tiki_p_admin_newsletters eq 'y'}
-	<a class="menuoption" href="{$gTikiLoc.NEWSLETTERS_PKG_URL}admin/index.php">{tr}Newsletters Settings{/tr}</a>
-	<a class="menuoption" href="{$gTikiLoc.NEWSLETTERS_PKG_URL}send.php">{tr}Send Newsletters{/tr}</a>
+{if $gBitUser->hasPermission( 'bit_p_admin_newsletters' )}
+<ul>
+	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php">{tr}Newsletters Settings{/tr}</a></li>
+	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php">{tr}Send Newsletters{/tr}</a></li>
+</ul>
 {/if}
