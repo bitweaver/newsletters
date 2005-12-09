@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/Attic/index.php,v 1.2 2005/12/09 07:04:17 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/Attic/index.php,v 1.3 2005/12/09 07:07:05 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -78,44 +78,21 @@ if (isset($_REQUEST["save"])) {
 	$gBitSmarty->assign('info', $info);
 }
 
-if ( empty( $_REQUEST["sort_mode"] ) ) {
-	$sort_mode = 'created_desc';
-} else {
-	$sort_mode = $_REQUEST["sort_mode"];
-}
+$channels = $nllib->getList( $listHash );
 
-if (!isset($_REQUEST["offset"])) {
-	$offset = 0;
-} else {
-	$offset = $_REQUEST["offset"];
-}
-
-$gBitSmarty->assign_by_ref('offset', $offset);
-
-if (isset($_REQUEST["find"])) {
-	$find = $_REQUEST["find"];
-} else {
-	$find = '';
-}
-
-$gBitSmarty->assign('find', $find);
-
-$gBitSmarty->assign_by_ref('sort_mode', $sort_mode);
-$channels = $nllib->list_newsletters($offset, $maxRecords, $sort_mode, $find);
-
-$cant_pages = ceil($channels["cant"] / $maxRecords);
+$cant_pages = ceil( $channels["cant"] / $listHash['max_records'] );
 $gBitSmarty->assign_by_ref('cant_pages', $cant_pages);
-$gBitSmarty->assign('actual_page', 1 + ($offset / $maxRecords));
+$gBitSmarty->assign( 'actual_page', 1 + ( $listHash['offset'] / $listHash['max_records'] ) );
 
-if ($channels["cant"] > ($offset + $maxRecords)) {
-	$gBitSmarty->assign('next_offset', $offset + $maxRecords);
+if( $channels["cant"] > ( $listHash['offset'] + $listHash['max_records'] ) ) {
+	$gBitSmarty->assign( 'next_offset', $offset + $listHash['max_records'] );
 } else {
 	$gBitSmarty->assign('next_offset', -1);
 }
 
 // If offset is > 0 then prev_offset
-if ($offset > 0) {
-	$gBitSmarty->assign('prev_offset', $offset - $maxRecords);
+if( $listHash['offset'] > 0) {
+	$gBitSmarty->assign('prev_offset', $listHash['offset'] - $listHash['max_records']);
 } else {
 	$gBitSmarty->assign('prev_offset', -1);
 }
