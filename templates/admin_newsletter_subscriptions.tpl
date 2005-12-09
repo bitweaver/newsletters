@@ -1,23 +1,43 @@
-<a class="pagetitle" href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}">{tr}Admin newsletter subscriptions{/tr}</a>
-<br /><br />
+<div class="floaticon">{bithelp}</div>
 
-<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php">{tr}list newsletters{/tr}</a>
-<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php">{tr}admin newsletters{/tr}</a>
-<a href="{$smarty.const.NEWSLETTERS_PKG_URL}send.php?nl_id={$nl_id}">{tr}send newsletters{/tr}</a>
-<br /><br />
+<div class="admin newsletters">
+	<div class="header">
+		<h1>{tr}Admin newsletter subscriptions{/tr}</h1>
+	</div>
+
+	<div class="body">
+		{form}
+			<input type="hidden" name="nl_id" value="{$nl_id|escape}" />
+
+			<div class="row">
+				{formlabel label="" for=""}
+				{forminput}
+					{formhelp note=""}
+				{/forminput}
+			</div>
+
+			<div class="row submit">
+			</div>
+		{/form}
+
+		{minifind}
+	</div><!-- end .body -->
+</div><!-- end .newsletters -->
+
 
 <table class="panel">
-<caption>Newsletters</caption>
-<tr>
-  <td>{tr}Name{/tr}:</td>
-  <td>{$nl_info.name}</td>
-</tr>
-<tr>
-  <td>{tr}Description{/tr}:</td>
-  <td>{$nl_info.description}</td>
-</tr>
+	<caption>Newsletters</caption>
+	<tr>
+		<td>{tr}Name{/tr}:</td>
+		<td>{$nl_info.name}</td>
+	</tr>
+	<tr>
+		<td>{tr}Description{/tr}:</td>
+		<td>{$nl_info.description}</td>
+	</tr>
 </table>
 
+{* original code
 <h2>{tr}Add a subscription newsletters{/tr}</h2>
 <form action="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php" method="post">
 <input type="hidden" name="nl_id" value="{$nl_id|escape}" />
@@ -82,3 +102,4 @@
 {/section}
 {/if}
 </div>
+*}
