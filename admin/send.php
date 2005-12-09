@@ -1,38 +1,24 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/send.php,v 1.1 2005/12/09 06:59:54 bitweaver Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.1 2005/12/09 13:30:48 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 
 // Initialization
-require_once( '../tiki_setup_inc.php' );
-
+require_once( '../../bit_setup_inc.php' );
 include_once( NEWSLETTERS_PKG_PATH.'nl_lib.php' );
-include_once( WEBMAIL_PKG_PATH.'htmlMimeMail.php' );
+include_once( UTIL_PKG_PATH.'htmlMimeMail.php' );
 
-if ($feature_newsletters != 'y') {
-	$smarty->assign('msg', tra("This feature is disabled").": feature_newsletters");
+$gBitSystem->verifyPackage( 'newsletters' );
 
-	$gTikiSystem->display( 'error.tpl' );
-	die;
-}
 
-if ($tiki_p_admin_newsletters != 'y') {
-	$smarty->assign('msg', tra("You dont have permission to use this feature"));
+require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
 
-	$gTikiSystem->display( 'error.tpl' );
-	die;
-}
-
-if (!isset($_REQUEST["nl_id"]))
-	$_REQUEST["nl_id"] = 0;
-
-$smarty->assign('nl_id', $_REQUEST["nl_id"]);
-
-$newsletters = $nllib->list_newsletters(0, -1, 'created_desc', '');
-$smarty->assign('newsletters', $newsletters["data"]);
+$listHash = array();
+$newsletters = $nllib->getList( $listHash );
+$gBitSmarty->assign('newsletters', $newsletters["data"]);
 
 $nl_info = $nllib->get_newsletter($_REQUEST["nl_id"]);
 // $nl_info["name"] = '';
@@ -54,10 +40,9 @@ if ($_REQUEST["edition_id"]) {
 	$info["subject"] = '';
 }
 
-$smarty->assign('info', $info);
+$gBitSmarty->assign('info', $info);
 
 if (isset($_REQUEST["remove"])) {
-	check_ticket('send-newsletter');
 	$nllib->remove_edition($_REQUEST["remove"]);
 }
 
@@ -68,38 +53,36 @@ if (isset($_REQUEST["template_id"]) && $_REQUEST["template_id"] > 0) {
 	$_REQUEST["preview"] = 1;
 }
 
-$smarty->assign('preview', 'n');
+$gBitSmarty->assign('preview', 'n');
 
 if (isset($_REQUEST["preview"])) {
-	$smarty->assign('preview', 'y');
+	$gBitSmarty->assign('preview', 'y');
 
 	//$parsed = $tikilib->parse_data($_REQUEST["content"]);
 	$parsed = $_REQUEST["data"];
-	$smarty->assign('parsed', $parsed);
+	$gBitSmarty->assign('parsed', $parsed);
 	$info["data"] = $_REQUEST["data"];
 	$info["subject"] = $_REQUEST["subject"];
-	$smarty->assign('info', $info);
+	$gBitSmarty->assign('info', $info);
 }
 
-$smarty->assign('presend', 'n');
+$gBitSmarty->assign('presend', 'n');
 
 if (isset($_REQUEST["save"])) {
-	check_ticket('send-newsletter');
 	// Now send the newsletter to all the email addresses and save it in sent_newsletters
-	$smarty->assign('presend', 'y');
+	$gBitSmarty->assign('presend', 'y');
 
 	$subscribers = $nllib->get_subscribers($_REQUEST["nl_id"]);
-	$smarty->assign('nl_id', $_REQUEST["nl_id"]);
-	$smarty->assign('data', $_REQUEST["data"]);
-	$smarty->assign('subject', $_REQUEST["subject"]);
+	$gBitSmarty->assign('nl_id', $_REQUEST["nl_id"]);
+	$gBitSmarty->assign('data', $_REQUEST["data"]);
+	$gBitSmarty->assign('subject', $_REQUEST["subject"]);
 	$cant = count($subscribers);
-	$smarty->assign('subscribers', $cant);
+	$gBitSmarty->assign('subscribers', $cant);
 }
 
-$smarty->assign('emited', 'n');
+$gBitSmarty->assign('emited', 'n');
 
 if (isset($_REQUEST["send"])) {
-	check_ticket('send-newsletter');
 	$subscribers = $nllib->get_subscribers($_REQUEST["nl_id"]);
 
 	$mail = new htmlMimeMail();
@@ -126,8 +109,8 @@ if (isset($_REQUEST["send"])) {
 			$sent++;
 	}
 
-	$smarty->assign('sent', $sent);
-	$smarty->assign('emited', 'y');
+	$gBitSmarty->assign('sent', $sent);
+	$gBitSmarty->assign('emited', 'y');
 	$nllib->replace_edition($_REQUEST["nl_id"], $_REQUEST["subject"], $_REQUEST["data"], $sent);
 }
 
@@ -143,7 +126,7 @@ if (!isset($_REQUEST["offset"])) {
 	$offset = $_REQUEST["offset"];
 }
 
-$smarty->assign_by_ref('offset', $offset);
+$gBitSmarty->assign_by_ref('offset', $offset);
 
 if (isset($_REQUEST["find"])) {
 	$find = $_REQUEST["find"];
@@ -151,40 +134,38 @@ if (isset($_REQUEST["find"])) {
 	$find = '';
 }
 
-$smarty->assign('find', $find);
+$gBitSmarty->assign('find', $find);
 
-$smarty->assign_by_ref('sort_mode', $sort_mode);
+$gBitSmarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $nllib->list_editions($offset, $maxRecords, $sort_mode, $find);
 
 $cant_pages = ceil($channels["cant"] / $maxRecords);
-$smarty->assign_by_ref('cant_pages', $cant_pages);
-$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+$gBitSmarty->assign_by_ref('cant_pages', $cant_pages);
+$gBitSmarty->assign('actual_page', 1 + ($offset / $maxRecords));
 
 if ($channels["cant"] > ($offset + $maxRecords)) {
-	$smarty->assign('next_offset', $offset + $maxRecords);
+	$gBitSmarty->assign('next_offset', $offset + $maxRecords);
 } else {
-	$smarty->assign('next_offset', -1);
+	$gBitSmarty->assign('next_offset', -1);
 }
 
 // If offset is > 0 then prev_offset
 if ($offset > 0) {
-	$smarty->assign('prev_offset', $offset - $maxRecords);
+	$gBitSmarty->assign('prev_offset', $offset - $maxRecords);
 } else {
-	$smarty->assign('prev_offset', -1);
+	$gBitSmarty->assign('prev_offset', -1);
 }
 
-$smarty->assign_by_ref('channels', $channels["data"]);
+$gBitSmarty->assign_by_ref('channels', $channels["data"]);
 
-if ($tiki_p_use_content_templates == 'y') {
+if( $gBitSystem->isFeatureActive( 'tiki_p_use_content_templates' ) ) {
 	$templates = $tikilib->list_templates('newsletters', 0, -1, 'name_asc', '');
 }
 
-$smarty->assign_by_ref('templates', $templates["data"]);
-
-ask_ticket ('send-newsletter');
+$gBitSmarty->assign_by_ref('templates', $templates["data"]);
 
 // Display the template
-$gTikiSystem->display( 'tikipackage:newsletters/send_newsletters.tpl');
+$gBitSystem->display( 'bitpackage:newsletters/send_newsletters.tpl');
 
 ?>
 
