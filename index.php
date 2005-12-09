@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.3 2005/12/09 15:55:45 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.4 2005/12/09 18:51:22 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -47,7 +47,7 @@ $gBitSmarty->assign('email', $user_email);
 if( isset( $_REQUEST["subscribe"] ) ) {
 	$gBitSystem->verifyPermission( 'bit_p_subscribe_newsletters' );
 	$feedback['success'] = tra( "Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed." );
-	
+
 	if( !$gBitUser->hasPermission( 'tiki_p_subscribe_email' ) ) {
 		$_REQUEST["email"] = $gBitUser->mInfo['email'];
 	}
@@ -56,15 +56,9 @@ if( isset( $_REQUEST["subscribe"] ) ) {
 	$nllib->newsletter_subscribe( $_REQUEST["nl_id"], $_REQUEST["email"] );
 }
 
-if( isset( $_REQUEST["info"] ) ) {
-	$nl_info = $nllib->get_newsletter($_REQUEST["nl_id"]);
-
-	$gBitSmarty->assign( 'nl_info', $nl_info );
-	$gBitSmarty->assign( 'subscribe', 'y' );
-}
 /* List newsletters */
 $listHash = array();
-$channels = $nllib->getList( $listHash );
+$channels = $gContent->getList( $listHash );
 
 for ($i = 0; $i < count($channels["data"]); $i++) {
 /*

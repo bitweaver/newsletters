@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/Attic/index.php,v 1.3 2005/12/09 07:07:05 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/Attic/index.php,v 1.4 2005/12/09 18:51:22 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -14,51 +14,12 @@ $gBitSystem->verifyPermission( 'tiki_p_admin_newsletters' );
 
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
 
-if ($_REQUEST["nl_id"]) {
-	$info = $nllib->get_newsletter($_REQUEST["nl_id"]);
-} else {
-	$info = array();
-
-	$info["name"] = '';
-	$info["description"] = '';
-	$info["allow_user_sub"] = 'y';
-	$info["allow_any_sub"] = 'n';
-	$info["unsub_msg"] = 'y';
-	$info["validate_addr"] = 'y';
-}
-
-$gBitSmarty->assign('info', $info);
-
 if (isset($_REQUEST["remove"])) {
 	$nllib->remove_newsletter($_REQUEST["remove"]);
 }
 
 if (isset($_REQUEST["save"])) {
-	if (isset($_REQUEST["allow_user_sub"]) && $_REQUEST["allow_user_sub"] == 'on') {
-		$_REQUEST["allow_user_sub"] = 'y';
-	} else {
-		$_REQUEST["allow_user_sub"] = 'n';
-	}
-
-	if (isset($_REQUEST["allow_any_sub"]) && $_REQUEST["allow_any_sub"] == 'on') {
-		$_REQUEST["allow_any_sub"] = 'y';
-	} else {
-		$_REQUEST["allow_any_sub"] = 'n';
-	}
-
-	if (isset($_REQUEST["unsub_msg"]) && $_REQUEST["unsub_msg"] == 'on') {
-		$_REQUEST["unsub_msg"] = 'y';
-	} else {
-		$_REQUEST["unsub_msg"] = 'n';
-	}
-
-	if (isset($_REQUEST["validate_addr"]) && $_REQUEST["validate_addr"] == 'on') {
-		$_REQUEST["validate_addr"] = 'y';
-	} else {
-		$_REQUEST["validate_addr"] = 'n';
-	}
-
-	$sid = $nllib->replace_newsletter($_REQUEST["nl_id"], $_REQUEST["name"], $_REQUEST["description"], $_REQUEST["allow_user_sub"], $_REQUEST["allow_any_sub"], $_REQUEST["unsub_msg"], $_REQUEST["validate_addr"]);
+	$sid = $gContent->store( $_REQUEST );
 	/*
 	$cat_type='newsletter';
 	$cat_objid = $sid;
@@ -78,26 +39,9 @@ if (isset($_REQUEST["save"])) {
 	$gBitSmarty->assign('info', $info);
 }
 
-$channels = $nllib->getList( $listHash );
-
-$cant_pages = ceil( $channels["cant"] / $listHash['max_records'] );
-$gBitSmarty->assign_by_ref('cant_pages', $cant_pages);
-$gBitSmarty->assign( 'actual_page', 1 + ( $listHash['offset'] / $listHash['max_records'] ) );
-
-if( $channels["cant"] > ( $listHash['offset'] + $listHash['max_records'] ) ) {
-	$gBitSmarty->assign( 'next_offset', $offset + $listHash['max_records'] );
-} else {
-	$gBitSmarty->assign('next_offset', -1);
-}
-
-// If offset is > 0 then prev_offset
-if( $listHash['offset'] > 0) {
-	$gBitSmarty->assign('prev_offset', $listHash['offset'] - $listHash['max_records']);
-} else {
-	$gBitSmarty->assign('prev_offset', -1);
-}
-
-$gBitSmarty->assign_by_ref('channels', $channels["data"]);
+$newsletters = $gContent->getList( $listHash );
+$gBitSmarty->assign_by_ref( 'newsletters', $newsletters );
+$gBitSmarty->assign_by_ref( 'listInfo', $listHash );
 
 // Fill array with possible number of questions per page
 /*
