@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.5 2005/12/10 02:21:42 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.6 2005/12/10 22:24:23 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -9,7 +9,6 @@
 // Initialization
 require_once( '../bit_setup_inc.php' );
 
-include_once( NEWSLETTERS_PKG_PATH.'nl_lib.php' );
 if( $gBitSystem->isPackageActive( 'webmail' ) ) {
 	include_once( WEBMAIL_PKG_PATH.'htmlMimeMail.php' );
 }
@@ -17,14 +16,14 @@ $gBitSystem->verifyPackage( 'newsletters' );
 
 $gBitSmarty->assign('confirm', 'n');
 if( isset( $_REQUEST["confirm_subscription"] ) ) {
-	if( $conf = $nllib->confirm_subscription( $_REQUEST["confirm_subscription"] ) ) {
+	if( $conf = $gContent->confirmSubscription( $_REQUEST["confirm_subscription"] ) ) {
 		$gBitSmarty->assign( 'confirm', 'y' );
 		$gBitSmarty->assign( 'nl_info', $conf );
 	}
 }
 
 if( isset( $_REQUEST["unsubscribe"] ) ) {
-	if( $conf = $nllib->unsubscribe( $_REQUEST["unsubscribe"] ) ) {
+	if( $conf = $gContent->unsubscribe( $_REQUEST["unsubscribe"] ) ) {
 		$feedback['success'] = tra( "Your email address was removed from the list of subscriptors." );
 		$gBitSmarty->assign('nl_info', $conf);
 	}
@@ -53,7 +52,7 @@ if( isset( $_REQUEST["subscribe"] ) ) {
 	}
 
 	// Now subscribe the email address to the newsletter
-	$nllib->newsletter_subscribe( $_REQUEST["nl_id"], $_REQUEST["email"] );
+	$gContent->subscribe( $_REQUEST["email"] );
 }
 
 /* List newsletters */

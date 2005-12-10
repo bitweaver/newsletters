@@ -11,6 +11,7 @@
 			<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$gContent->mInfo.name}&amp;object_type=newsletter&amp;permType=newsletters&amp;object_id={$gContent->mInfo.nl_id}">{tr}There are individual permissions set for this newsletter{/tr}</a><br /><br />
 		{/if}
 		{form legend="Create / Edit Newsletters"}
+			<input type="hidden" name="nl_id" value="{$gContent->mNlId}" />
 			maybe we could have an option to autosubscribe users to a list when they register with the site.
 			<div class="row">
 				{formlabel label="Title" for="title"}
@@ -88,7 +89,7 @@
 					<td style="text-align:right;"><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nlId}">{$nl.users|default:0} [ {$channels[user].confirmed|default:0} ]</a></td>
 					<td style="text-align:right;">{$nl.editions|default:0}</td>
 					<td style="text-align:right;">
-						<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$nlId}">{biticon ipackage=liberty iname=delete iexplain=Remove}</a>
+						<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove=1&amp;nl_id={$nlId}">{biticon ipackage=liberty iname=delete iexplain=Remove}</a>
 						<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;nl_id={$nlId}">{biticon ipackage=liberty iname=edit iexplain=Edit}</a>
 						{if $channels[user].individual eq 'y'}({/if}<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$nl.title}&amp;object_type={$smarty.const.BITNEWSLETTER_CONTENT_TYPE_GUID}&amp;permType=newsletters&amp;object_id={$nlId}">{biticon ipackage=liberty iname=permissions iexplain=Permissions}</a>{if $nl.individual eq 'y'}){/if}
 					</td>

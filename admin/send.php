@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.3 2005/12/09 20:36:57 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.4 2005/12/10 22:24:23 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -13,27 +13,7 @@ include_once( UTIL_PKG_PATH.'htmlMimeMail.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
 
-
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_edition_inc.php' );
-
-$listHash = array();
-$newsletters = $gContent->mNewsletter->getList( $listHash );
-$gBitSmarty->assign( 'newsletters', $newsletters );
-
-if (isset($_REQUEST["remove"] ) && $gContent->isValid() ) {
-	if( !empty( $_REQUEST['cancel'] ) ) {
-		// user cancelled - just continue on, doing nothing
-	} elseif( empty( $_REQUEST['confirm'] ) ) {
-		$formHash['remove'] = TRUE;
-		$formHash['edition_id'] = $gContent->mEditionId;
-		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the newsletter edition '.$gContent->getTitle().'?' ) );
-	} else {
-		if( $gContent->expunge() ) {
-			header( "Location: ".NEWSLETTERS_PKG_URL.'admin/' );
-			die;
-		}
-	}
-}
 
 if (isset($_REQUEST["template_id"]) && $_REQUEST["template_id"] > 0) {
 	$template_data = $tikilib->get_template($_REQUEST["template_id"]);
@@ -43,32 +23,7 @@ if (isset($_REQUEST["template_id"]) && $_REQUEST["template_id"] > 0) {
 }
 
 $gBitSmarty->assign('preview', 'n');
-
-if (isset($_REQUEST["preview"])) {
-	$gBitSmarty->assign('preview', 'y');
-
-	//$parsed = $tikilib->parse_data($_REQUEST["content"]);
-	$parsed = $_REQUEST["edit"];
-	$gBitSmarty->assign('parsed', $parsed);
-	$info["data"] = $_REQUEST['edit'];
-	$info["subject"] = $_REQUEST['title'];
-	$gBitSmarty->assign('info', $info);
-}
-
 $gBitSmarty->assign('presend', 'n');
-
-if (isset($_REQUEST["save"])) {
-	// Now send the newsletter to all the email addresses and save it in sent_newsletters
-	$gBitSmarty->assign('presend', 'y');
-
-	$subscribers = $nllib->get_subscribers($_REQUEST["nl_id"]);
-	$gBitSmarty->assign('nl_id', $_REQUEST["nl_id"]);
-	$gBitSmarty->assign('edit', $_REQUEST['edit']);
-	$gBitSmarty->assign('subject', $_REQUEST['title']);
-	$cant = count($subscribers);
-	$gBitSmarty->assign('subscribers', $cant);
-}
-
 $gBitSmarty->assign('emited', 'n');
 
 if (isset($_REQUEST["send"])) {
@@ -103,9 +58,8 @@ if (isset($_REQUEST["send"])) {
 	$nllib->replace_edition($_REQUEST["nl_id"], $_REQUEST['title'], $_REQUEST['edit'], $sent);
 }
 
-$gEdition = new BitNewsletterEdition();
 $listHash = array();
-$editions = $gEdition->getList( $listHash );
+$editions = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'editions', $editions );
 $gBitSmarty->assign( 'listInfo', $listHash );
 

@@ -1,5 +1,6 @@
 {tr}Somebody or you tried to subscribe this email address at our site:{/tr} {$server_name}
-{tr}To the newsletter:{/tr} {$info.name}
+
+{tr}To the newsletter:{/tr} {$info.title}
 
 {tr}Description:{/tr}
 {$info.description}

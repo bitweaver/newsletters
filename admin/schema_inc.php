@@ -19,11 +19,11 @@ $tables = array(
 'tiki_newsletter_subscriptions' => "
   nl_id I4 PRIMARY,
   email C(160) PRIMARY,
+  user_id I4,
   code C(32),
   valid C(1),
-  subscribed I8,
-  user_id I4,
-  group_id I4 NOTNULL PRIMARY
+  subscribed_date I8,
+  unsubscribed_date I8
   CONSTRAINTS ', CONSTRAINT `tiki_nl_sub_nl_ref` FOREIGN KEY (`nl_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `nl_id` ),
 			   , CONSTRAINT `tiki_nl_group_ref` FOREIGN KEY (`group_id`) REFERENCES `".BIT_DB_PREFIX."users_groups`( `group_id` )'
 ",
