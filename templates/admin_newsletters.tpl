@@ -7,10 +7,11 @@
 	</div>
 
 	<div class="body">
-		{if $individual eq 'y'}
-			<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$gContent->mInfo.name}&amp;object_type=newsletter&amp;permType=newsletters&amp;object_id={$gContent->mInfo.nl_id}">{tr}There are individual permissions set for this newsletter{/tr}</a><br /><br />
-		{/if}
+		{if !$newsletters || $gContent->isValid() || $smarty.request.new}
 		{form legend="Create / Edit Newsletters"}
+			{if $individual eq 'y'}
+				<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$gContent->mInfo.name}&amp;object_type=newsletter&amp;permType=newsletters&amp;object_id={$gContent->mInfo.nl_id}">{tr}There are individual permissions set for this newsletter{/tr}</a><br /><br />
+			{/if}
 			<input type="hidden" name="nl_id" value="{$gContent->mNlId}" />
 			maybe we could have an option to autosubscribe users to a list when they register with the site.
 			<div class="row">
@@ -62,9 +63,12 @@
 			</div>
 
 			<div class="row submit">
+				<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
 				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</div>
 		{/form}
+
+		{else}
 
 		{minifind}
 
@@ -101,7 +105,10 @@
 			{/foreach}
 		</table>
 
+		<a href="{$smarty.server.php_self}?new=1">Create new newsletter</a>
+
 		{pagination}
+		{/if}
 	</div><!-- end .body -->
 </div><!-- end .___ -->
 {/strip}
