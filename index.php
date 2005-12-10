@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.4 2005/12/09 18:51:22 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.5 2005/12/10 02:21:42 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -58,48 +58,32 @@ if( isset( $_REQUEST["subscribe"] ) ) {
 
 /* List newsletters */
 $listHash = array();
-$channels = $gContent->getList( $listHash );
+$newsletters = $gContent->getList( $listHash );
 
-for ($i = 0; $i < count($channels["data"]); $i++) {
+for( $i = 0; $i < count( $newsletters ); $i++ ) {
 /*
-	if ($userlib->object_has_one_permission($channels["data"][$i]["nl_id"], 'newsletters')) {
-		$channels["data"][$i]["individual"] = 'y';
+	if ($userlib->object_has_one_permission($newsletters["data"][$i]["nl_id"], 'newsletters')) {
+		$newsletters["data"][$i]["individual"] = 'y';
 
-		if ($userlib->object_has_permission($user, $channels["data"][$i]["nl_id"], 'newsletter', 'tiki_p_subscribe_newsletters')) {
-			$channels["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
+		if ($userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_subscribe_newsletters')) {
+			$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
 		} else {
-			$channels["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'n';
+			$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'n';
 		}
 
 		if ($tiki_p_admin == 'y'
-			|| $userlib->object_has_permission($user, $channels["data"][$i]["nl_id"], 'newsletter', 'tiki_p_admin_newsletters')) {
-			$channels["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
+			|| $userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_admin_newsletters')) {
+			$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
 		}
 	} else {
-		$channels["data"][$i]["individual"] = 'n';
+		$newsletters["data"][$i]["individual"] = 'n';
 	}
 */
 }
 
-$cant_pages = ceil( $channels["cant"] / $listHash['max_records'] );
-$gBitSmarty->assign_by_ref('cant_pages', $cant_pages);
-$gBitSmarty->assign( 'actual_page', 1 + ( $listHash['offset'] / $listHash['max_records'] ) );
 
-if( $channels["cant"] > ( $listHash['offset'] + $listHash['max_records'] ) ) {
-	$gBitSmarty->assign( 'next_offset', $offset + $listHash['max_records'] );
-} else {
-	$gBitSmarty->assign('next_offset', -1);
-}
-
-// If offset is > 0 then prev_offset
-if( $listHash['offset'] > 0) {
-	$gBitSmarty->assign('prev_offset', $listHash['offset'] - $listHash['max_records']);
-} else {
-	$gBitSmarty->assign('prev_offset', -1);
-}
-
-$gBitSmarty->assign_by_ref('channels', $channels["data"]);
-$gBitSmarty->assign( 'feedback', $feedback);
+$gBitSmarty->assign_by_ref('newsletters', $newsletters );
+$gBitSmarty->assign( 'feedback', $feedback );
 
 // Display the template
 $gBitSystem->display( 'bitpackage:newsletters/newsletters.tpl');

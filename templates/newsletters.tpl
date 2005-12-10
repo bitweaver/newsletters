@@ -7,76 +7,69 @@
 	<div class="body">
 		{formfeedback hash=$feedback}
 
-		{if $confirm eq 'y'}
-			{legend legend="Subscription Confirmed!"}
-				<div class="row">
-					{formlabel label="Name" for=""}
-					{forminput}
-						{$nl_info.name}
-					{/forminput}
-				</div>
+		{if $gContent->isValid()}
+			{if $confirm eq 'y'}
+				{formfeedback success="Subscription Confirmed!"}
+			{/if}
+					<div class="row">
+						{formlabel label="Name" for=""}
+						{forminput}
+							{$gContent->getTitle()}
+						{/forminput}
+					</div>
 
-				<div class="row">
-					{formlabel label="Description" for=""}
-					{forminput}
-						{$nl_info.description}
-					{/forminput}
-				</div>
-			{/legend}
-		{/if}
+					<div class="row">
+						{formlabel label="Description" for=""}
+						{forminput}
+							{$gContent->parseData()}
+						{/forminput}
+					</div>
 
-		{if $subscribe eq 'y'}
-			{form}
-				<div class="row">
-					{formlabel label="Name" for=""}
-					{forminput}
-						{$nl_info.name}
-					{/forminput}
-				</div>
-
-				<div class="row">
-					{formlabel label="Description" for=""}
-					{forminput}
-						{$nl_info.description}
-					{/forminput}
-				</div>
-
-				{if ($nl_info.allow_user_sub eq 'y') or ($bitweaver.orgi_p_admin_newsletters eq 'y')}
-					{if $bitweaver.orgi_p_subscribe_email eq 'y'}
+				{if ($gContent->mInfo.allow_user_sub eq 'y') or $gBitUser->hasPermission( 'bit_p_subscribe_newsletters' )}
+					{form}
 						<div class="row">
 							{formlabel label="Email" for=""}
 							{forminput}
+							{if $gBitUser->hasPermission( 'bit_p_subscribe_email' )}
+								<input type="text" name="email" value="{$email|escape}" />
+							{else}
+								<input type="hidden" name="email" value="{$email|escape}" />
 								{$email|escape}
+							{/if}
 							{/forminput}
 						</div>
-					{else}
-						<input type="hidden" name="email" value="{$email|escape}" />
-					{/if}
+						<div class="row submit">
+							{forminput}
+								<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
+								<input type="submit" name="subscribe" value="{tr}Subscribe{/tr}" />
+							{/forminput}
+						</div>
+					{/form}
 				{/if}
-			{/form}
-		{/if}
+		{else}
 
-		{minifind}
+			{minifind}
 
-		<table class="data">
-			<caption>{tr}Newsletters{/tr}</caption>
-			<tr>
-				<th>{smartlink ititle="Name" isort=name offset=$offset idefault=1}</th>
-				<th>{smartlink ititle="Descritpion" isort=descritpion offset=$offset}</th>
-			</tr>
-			{section name=user loop=$channels}
-				{if $channels.individual ne 'y' or $channels.individual_bitweaver.orgi_p_subscribe_newsletters eq 'y'}
-					<tr class="{cycle values='odd,even'}">
-						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$channels[user].nl_id}&amp;info=1">{$channels[user].name}</a></td>
-						<td>{$channels[user].description}</td>
-					</tr>
-				{/if}
-			{sectionelse}
-				<tr class="norecords">
-					<td colspan="2">{tr}No Records Found{/tr}</td>
+			<table class="data">
+				<caption>{tr}Newsletters{/tr}</caption>
+				<tr>
+					<th>{smartlink ititle="Name" isort=name offset=$offset idefault=1}</th>
+					<th>{smartlink ititle="Description" isort=descritpion offset=$offset}</th>
 				</tr>
-			{/section}
-		</table>
+				{foreach from=$newsletters item=nl key=nlId}
+					{if $newsletters.individual ne 'y' or $newsletters.individual_bit_p_subscribe_newsletters eq 'y'}
+						<tr class="{cycle values='odd,even'}">
+							<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{$nl.title}</a></td>
+							<td>{$nl.data}</td>
+						</tr>
+					{/if}
+				{foreachelse}
+					<tr class="norecords">
+						<td colspan="2">{tr}No Records Found{/tr}</td>
+					</tr>
+				{/foreach}
+			</table>
+		{/if}
 
 		{* haven't dealt with pagination yet *}
 		{pagination}
@@ -99,8 +92,8 @@
   <td>{tr}Description{/tr}:</td>
   <td>{$nl_info.description}</td>
 </tr>
-{if ($nl_info.allow_user_sub eq 'y') or ($bitweaver.orgi_p_admin_newsletters eq 'y')}
-{if $bitweaver.orgi_p_subscribe_email eq 'y'}
+{if ($nl_info.allow_user_sub eq 'y') or ($bit_p_admin_newsletters eq 'y')}
+{if $bit_p_subscribe_email eq 'y'}
 <tr>
   <td>{tr}Email:{/tr}</td>
   <td><input type="text" name="email" value="{$email|escape}" /></td>
@@ -135,11 +128,11 @@
 <th><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}description{/tr}</a></th>
 </tr>
 {cycle values="even,odd" print=false}
-{section name=user loop=$channels}
-{if $channels.individual ne 'y' or $channels.individual_bitweaver.orgi_p_subscribe_newsletters eq 'y'}
+{section name=user loop=$newsletters}
+{if $newsletters.individual ne 'y' or $newsletters.individual_bit_p_subscribe_newsletters eq 'y'}
 <tr class="{cycle}">
-<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$channels[user].nl_id}&amp;info=1">{$channels[user].name}</a></td>
-<td>{$channels[user].description}</td>
+<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{$nl.name}</a></td>
+<td>{$nl.description}</td>
 </tr>
 {/if}
 {/section}
