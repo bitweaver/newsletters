@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.1 2005/12/09 20:24:55 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.2 2005/12/10 22:39:53 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.1 2005/12/09 20:24:55 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.2 2005/12/10 22:39:53 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.1 $ $Date: 2005/12/09 20:24:55 $ $Author: spiderr $
+ * @version $Revision: 1.2 $ $Date: 2005/12/10 22:39:53 $ $Author: spiderr $
  */
 
 /**
@@ -44,10 +44,31 @@ class BitNewsletterEdition extends LibertyContent {
 		$this->mNewsletter = new BitNewsletter( $pNlId );
 	}
 
-	function replace_edition($nl_id, $subject, $data, $users) {
-		$now = date("U");
-		$query = "insert into `".BIT_DB_PREFIX."tiki_newsletters_editions`(`nl_id`,`subject`,`data`,`sent`,`users`) values(?,?,?,?,?)";
-		$result = $this->mDb->query($query,array((int)$nl_id,$subject,$data,(int)$now,$users));
+	function verify( &$pParamHash ) {
+		if( !empty( $pParamHash['nl_id'] ) ) {
+			$pParamHash['edition_store']["nl_id"] = $pParamHash['nl_id'];
+		} else {
+			$this->mErrors['nl_id'] = tra( 'No newsletter was selected for this edition.' );
+		}
+		return( count( $this->mErrors ) == 0 );
+	}
+
+	function store( $pParamHash ) {
+		if( $this->verify( $pParamHash ) ) {
+			$this->mDb->StartTrans();
+			if( parent::store( $pParamHash ) ) {
+				if( $this->mEditionId ) {
+					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."tiki_newsletters_editions", $pParamHash['edition_store'], array ( "name" => "edition_id", "value" => $this->mEditionId ) );
+				} else {
+					$pParamHash['edition_store']['content_id'] = $pParamHash['content_id'];
+					$result = $this->mDb->associateInsert( BIT_DB_PREFIX."tiki_newsletters_editions", $pParamHash['edition_store'] );
+				}
+				$this->mDb->CompleteTrans();
+			} else {
+				$this->mDb->RollbackTrans();
+			}
+		}
+		return( count( $this->mErrors ) == 0 );
 	}
 
 	function load() {
@@ -76,6 +97,8 @@ class BitNewsletterEdition extends LibertyContent {
 		}
 		return( count( $this->mInfo ) );
 	}
+
+
 
 	function getList( &$pListHash ) {
 		$bindVars = array();

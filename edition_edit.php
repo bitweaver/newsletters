@@ -33,15 +33,12 @@ if (isset($_REQUEST["preview"])) {
 	$info["subject"] = $_REQUEST['title'];
 	$gBitSmarty->assign('info', $info);
 } elseif (isset($_REQUEST["save"])) {
-	// Now send the newsletter to all the email addresses and save it in sent_newsletters
-	$gBitSmarty->assign('presend', 'y');
-
-	$subscribers = $nllib->get_subscribers($_REQUEST["nl_id"]);
-	$gBitSmarty->assign('nl_id', $_REQUEST["nl_id"]);
-	$gBitSmarty->assign('edit', $_REQUEST['edit']);
-	$gBitSmarty->assign('subject', $_REQUEST['title']);
-	$cant = count($subscribers);
-	$gBitSmarty->assign('subscribers', $cant);
+	if( $gContent->store( $_REQUEST ) ) {
+vd( $gContent->mErrors );
+		$gBitSmarty->assign( 'success', tra( 'Newsletter edition saved' ) );
+	} else {
+		$gBitSmarty->assign( 'errors', $gContent->mErrors );
+	}
 }
 
 // Display the template
