@@ -6,8 +6,6 @@ $tables = array(
   nl_id I4 AUTO PRIMARY,
   content_id I4 NOTNULL,
   last_sent I8,
-  editions I8,
-  users I8,
   allow_user_sub C(1) default 'y',
   allow_any_sub C(1),
   unsub_msg C(1) default 'y',
@@ -31,6 +29,7 @@ $tables = array(
 'tiki_newsletters_editions' => "
   edition_id I4 AUTO PRIMARY,
   nl_id I4 NOTNULL,
+  is_draft C(1),
   content_id I4 NOTNULL
   CONSTRAINTS ', CONSTRAINT `tiki_nl_ed_nl_ref` FOREIGN KEY (`nl_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `nl_id` )
   			   , CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'

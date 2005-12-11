@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.4 2005/12/10 22:24:23 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.5 2005/12/11 06:34:18 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.4 2005/12/10 22:24:23 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.5 2005/12/11 06:34:18 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,13 +16,14 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.4 $ $Date: 2005/12/10 22:24:23 $ $Author: spiderr $
+ * @version $Revision: 1.5 $ $Date: 2005/12/11 06:34:18 $ $Author: spiderr $
  */
 
 /**
  * required setup
  */
 require_once( LIBERTY_PKG_PATH.'LibertyContent.php' );
+require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterEdition.php' );
 
 define( 'BITNEWSLETTER_CONTENT_TYPE_GUID', 'bitnewsletter' );
 
@@ -321,6 +322,14 @@ class BitNewsletter extends LibertyContent {
 		return( !empty( $this->mNlId ) );
 	}
 
+	function getEditions() {
+		$ret = array();
+		if( $this->isValid() ) {
+			$listHash = array( 'nl_id' => $this->mNlId  );
+			BitNewsletterEdition::getList( $listHash );
+		}
+		return $ret;
+	}
 }
 
 ?>

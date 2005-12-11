@@ -21,6 +21,12 @@ require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_edition_inc.php' );
 
 $listHash = array();
 $newsletters = $gContent->mNewsletter->getList( $listHash );
+
+if( empty( $newsletters ) ) {
+	header( 'Location: '.NEWSLETTERS_PKG_URL.'admin/index.php' );
+	die;
+}
+
 $gBitSmarty->assign( 'newsletters', $newsletters );
 
 if (isset($_REQUEST["preview"])) {
@@ -34,7 +40,6 @@ if (isset($_REQUEST["preview"])) {
 	$gBitSmarty->assign('info', $info);
 } elseif (isset($_REQUEST["save"])) {
 	if( $gContent->store( $_REQUEST ) ) {
-vd( $gContent->mErrors );
 		$gBitSmarty->assign( 'success', tra( 'Newsletter edition saved' ) );
 	} else {
 		$gBitSmarty->assign( 'errors', $gContent->mErrors );
@@ -42,7 +47,7 @@ vd( $gContent->mErrors );
 }
 
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl' );
+$gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) );
 
 
 ?>

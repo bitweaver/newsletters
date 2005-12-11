@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.6 2005/12/10 22:24:23 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.7 2005/12/11 06:34:19 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -55,36 +55,38 @@ if( isset( $_REQUEST["subscribe"] ) ) {
 	$gContent->subscribe( $_REQUEST["email"] );
 }
 
-/* List newsletters */
-$listHash = array();
-$newsletters = $gContent->getList( $listHash );
+if( $gContent->isValid() ) {
+	$mid = 'bitpackage:newsletters/view_newsletter.tpl';
+} else {
+	/* List newsletters */
+	$listHash = array();
+	$newsletters = $gContent->getList( $listHash );
+	/*
+	for( $i = 0; $i < count( $newsletters ); $i++ ) {
+		if ($userlib->object_has_one_permission($newsletters["data"][$i]["nl_id"], 'newsletters')) {
+			$newsletters["data"][$i]["individual"] = 'y';
 
-for( $i = 0; $i < count( $newsletters ); $i++ ) {
-/*
-	if ($userlib->object_has_one_permission($newsletters["data"][$i]["nl_id"], 'newsletters')) {
-		$newsletters["data"][$i]["individual"] = 'y';
+			if ($userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_subscribe_newsletters')) {
+				$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
+			} else {
+				$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'n';
+			}
 
-		if ($userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_subscribe_newsletters')) {
-			$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
+			if ($tiki_p_admin == 'y'
+				|| $userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_admin_newsletters')) {
+				$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
+			}
 		} else {
-			$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'n';
+			$newsletters["data"][$i]["individual"] = 'n';
 		}
-
-		if ($tiki_p_admin == 'y'
-			|| $userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_admin_newsletters')) {
-			$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
-		}
-	} else {
-		$newsletters["data"][$i]["individual"] = 'n';
 	}
-*/
+	*/
+	$gBitSmarty->assign_by_ref('newsletters', $newsletters );
+	$gBitSmarty->assign( 'feedback', $feedback );
+	$mid = 'bitpackage:newsletters/newsletters.tpl';
 }
 
-
-$gBitSmarty->assign_by_ref('newsletters', $newsletters );
-$gBitSmarty->assign( 'feedback', $feedback );
-
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/newsletters.tpl');
+$gBitSystem->display( $mid );
 
 ?>

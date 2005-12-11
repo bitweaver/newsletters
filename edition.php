@@ -39,13 +39,13 @@ if (isset($_REQUEST["remove"] ) && $gContent->isValid() ) {
 }
 
 if( $gContent->isValid() ) {
-	$mid = 'bitpackage:bitcommerce/view_edition.tpl';
+	$mid = 'bitpackage:newsletters/view_edition.tpl';
 } else {
 	$listHash = array();
 	$editions = $gContent->getList( $listHash );
-	$gBitSmarty->assign_by_ref( 'editions', $editions );
+	$gBitSmarty->assign_by_ref( 'editionList', $editions );
 	$gBitSmarty->assign( 'listInfo', $listHash );
-	$mid = 'bitpackage:bitcommerce/list_editions.tpl';
+	$mid = 'bitpackage:newsletters/list_editions.tpl';
 }
 
 // Display the template

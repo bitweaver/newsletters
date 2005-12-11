@@ -60,7 +60,7 @@
 				{foreach from=$newsletters item=nl key=nlId}
 					{if $newsletters.individual ne 'y' or $newsletters.individual_bit_p_subscribe_newsletters eq 'y'}
 						<tr class="{cycle values='odd,even'}">
-							<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{$nl.title}</a></td>
+							<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}">{$nl.title}</a></td>
 							<td>{$nl.data}</td>
 						</tr>
 					{/if}

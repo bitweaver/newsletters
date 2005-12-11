@@ -1,7 +1,7 @@
 {strip}
 <div class="floaticon">{bithelp}</div>
 
-<div class="edit ___">
+<div class="edit newsletters">
 	<div class="header">
 		<h1>{tr}Newsletter Settings{/tr}</h1>
 	</div>
@@ -79,19 +79,17 @@
 				<th>{smartlink ititle="Description" isort=description offset=$offset}</th>
 				<th>{smartlink ititle="Created" isort=last_sent offset=$offset}</th>
 				<th>{smartlink ititle="Last Sent" isort=created offset=$offset}</th>
-				<th>{smartlink ititle="Users [ Confirmed ]" isort=users offset=$offset}</th>
-				<th>{smartlink ititle="Editions" isort=editions offset=$offset}</th>
+				<th>{smartlink ititle="Users Unsubscribed" isort=users offset=$offset}</th>
 				<th>{tr}Action{/tr}</th>
 			</tr>
 
 			{foreach key=nlId from=$newsletters item=nl}
 				<tr class="{cycle values='odd,even'}">
-					<td>{$nl.title}</td>
+					<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nlId}">{$nl.title}</a></td>
 					<td>{$nl.data}</td>
 					<td>{$nl.created|bit_short_date}</td>
 					<td>{$nl.last_sent|bit_short_date}</td>
 					<td style="text-align:right;"><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nlId}">{$nl.users|default:0} [ {$channels[user].confirmed|default:0} ]</a></td>
-					<td style="text-align:right;">{$nl.editions|default:0}</td>
 					<td style="text-align:right;">
 						<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove=1&amp;nl_id={$nlId}">{biticon ipackage=liberty iname=delete iexplain=Remove}</a>
 						<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;nl_id={$nlId}">{biticon ipackage=liberty iname=edit iexplain=Edit}</a>
