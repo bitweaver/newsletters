@@ -40,7 +40,8 @@ if (isset($_REQUEST["preview"])) {
 	$gBitSmarty->assign('info', $info);
 } elseif (isset($_REQUEST["save"])) {
 	if( $gContent->store( $_REQUEST ) ) {
-		$gBitSmarty->assign( 'success', tra( 'Newsletter edition saved' ) );
+		header( 'Location: '.$gContent->getDisplayUrl() );
+		die;
 	} else {
 		$gBitSmarty->assign( 'errors', $gContent->mErrors );
 	}

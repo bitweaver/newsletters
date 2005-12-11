@@ -14,16 +14,14 @@ $tables = array(
   CONSTRAINTS ', CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
 ",
 
-'tiki_newsletter_subscriptions' => "
-  nl_id I4 PRIMARY,
+'tiki_mail_unsubscriptions' => "
+  content_id I4 PRIMARY,
   email C(160) PRIMARY,
   user_id I4,
-  code C(32),
-  valid C(1),
-  subscribed_date I8,
+  unsubscribe_all C(1),
   unsubscribed_date I8
-  CONSTRAINTS ', CONSTRAINT `tiki_nl_sub_nl_ref` FOREIGN KEY (`nl_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `nl_id` ),
-			   , CONSTRAINT `tiki_nl_group_ref` FOREIGN KEY (`group_id`) REFERENCES `".BIT_DB_PREFIX."users_groups`( `group_id` )'
+  CONSTRAINTS ', CONSTRAINT `tiki_mail_unsub_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `content_id` ),
+			   , CONSTRAINT `tiki_mail_unsub_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
 ",
 
 'tiki_newsletters_editions' => "
@@ -35,18 +33,19 @@ $tables = array(
   			   , CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
 ",
 
-'tiki_newsletters_mailings' => "
-  edition_id I4 NOTNULL,
+'tiki_editions_mailings' => "
+  content_id I4 NOTNULL,
   queue_date I8,
   send_date I8,
   emails_sent I8
   CONSTRAINTS ', CONSTRAINT `tiki_nl_mail_ed_ref` FOREIGN KEY (`edition_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters_editions`( `edition_id` )'
 ",
 
-'tiki_newsletters_mailings_queue' => "
-  edition_id I4 PRIMARY,
+'tiki_mail_queue' => "
+  content_id I4 PRIMARY,
   email C(160) PRIMARY,
-  user_id C(1),
+  user_id I4,
+  queue_date I8 NOTNULL,
   sent_date I8
   CONSTRAINTS ', CONSTRAINT `tiki_nl_mailq_ed_ref` FOREIGN KEY (`edition_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters_editions`( `edition_id` ),
 			   , CONSTRAINT `tiki_nl_mailq_user_ref` FOREIGN KEY (`users_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `users_id` )'
@@ -75,8 +74,10 @@ $indices = array (
 	'tiki_nl_sub_email_idx' => array( 'table' => 'tiki_newsletter_subscriptions', 'cols' => 'email', 'opts' => NULL ),
 	'tiki_nl_ed_nl_idx' => array( 'table' => 'tiki_newsletters_editions', 'cols' => 'nl_id', 'opts' => NULL ),
 	'tiki_nl_group_nl_idx' => array( 'table' => 'tiki_newsletter_groups', 'cols' => 'nl_id', 'opts' => NULL ),
-	'tiki_nl_mq_email_idx' => array( 'table' => 'tiki_newsletters_mailings_queue', 'cols' => 'email', 'opts' => NULL ),
-	'tiki_nl_mq_sent_idx' => array( 'table' => 'tiki_newsletters_mailings_queue', 'cols' => 'sent_date', 'opts' => NULL ),
+	'tiki_mq_email_idx' => array( 'table' => 'tiki_mail_queue', 'cols' => 'email', 'opts' => NULL ),
+	'tiki_mq_user_idx' => array( 'table' => 'tiki_mail_queue', 'cols' => 'user_id', 'opts' => NULL ),
+	'tiki_mq_content_idx' => array( 'table' => 'tiki_mail_queue', 'cols' => 'content_id', 'opts' => NULL ),
+	'tiki_mq_sent_idx' => array( 'table' => 'tiki_mail_queue', 'cols' => 'sent_date', 'opts' => NULL ),
 );
 $gBitInstaller->registerSchemaIndexes( LIBERTY_PKG_NAME, $indices );
 

@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.5 2005/12/11 08:52:21 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.6 2005/12/11 22:53:05 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.5 2005/12/11 08:52:21 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.6 2005/12/11 22:53:05 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.5 $ $Date: 2005/12/11 08:52:21 $ $Author: spiderr $
+ * @version $Revision: 1.6 $ $Date: 2005/12/11 22:53:05 $ $Author: spiderr $
  */
 
 /**
@@ -90,14 +90,15 @@ class BitNewsletterEdition extends LibertyAttachable {
 			$query = "SELECT tne.*, tc.*
 					  FROM `".BIT_DB_PREFIX."tiki_newsletters_editions` tne
 						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tne.`content_id`=tc.`content_id` )
-					  WHERE `$lookupColumn`=? $whereSql";
-			$result = $this->mDb->query($query,$bindVars);
-			if ($result->numRows()) {
+					  WHERE tne.`$lookupColumn`=? $whereSql";
+			if ( $result = $this->mDb->query($query,$bindVars) ) {
 				$this->mInfo = $result->fetchRow();
 				$this->mEditionId = $this->mInfo['edition_id'];
 				$this->mContentId = $this->mInfo['content_id'];
 				$this->mNewsletter = new BitNewsletter( $this->mInfo['nl_id'] );
 				$this->mNewsletter->load();
+			} else {
+				unset( $this->mEditionId );
 			}
 		}
 		return( count( $this->mInfo ) );
@@ -180,12 +181,37 @@ class BitNewsletterEdition extends LibertyAttachable {
 			foreach( $pGroupArray as $groupId ) {
 				$ret = array_merge( $ret, $gBitUser->getGroupUserData( $groupId, array( 'email', 'uu.user_id', 'login', 'real_name' ) ) );
 			}
+
+			$query = "SELECT * FROM `".BIT_DB_PREFIX."tiki_mail_unsubscriptions` WHERE `content_id`=? OR `unsubscribe_all` IS NOT NULL";
+			if( $unsubs = $this->mDb->getArray( $query, array( $this->mNewsletter->mContentId ) ) ) {
+				$ret = array_diff_assoc( $ret, $unsubs );
+			}
+			$query = "SELECT `email`, `user_id` FROM `".BIT_DB_PREFIX."tiki_mail_queue` WHERE `content_id`=?";
+			if( $dupes = $this->mDb->getAssoc( $query, array( $this->mContentId ) ) ) {
+				$ret = array_diff_keys( $ret, $dupes );
+			}
 		}
 		return $ret;
 	}
 
 	function queueRecipients( $pRecipients ) {
-vd( $pRecipients );
+		$ret = 0;
+		if( $this->isValid() ) {
+vd( $this->mContentId );
+			$queueTime = time();
+			foreach( array_keys( $pRecipients ) AS $email ) {
+				$insertHash['email'] = $email;
+				if( !empty( $pRecipients[$email]['user_id'] ) ) {
+					$insertHash['user_id'] = $pRecipients[$email]['user_id'];
+				}
+				$insertHash['content_id'] = $this->mContentId;
+				$insertHash['queue_date'] = $queueTime;
+				$this->mDb->associateInsert( BIT_DB_PREFIX.'tiki_mail_queue', $insertHash );
+				$ret++;
+			}
+die;
+		}
+		return $ret;
 	}
 }
 
