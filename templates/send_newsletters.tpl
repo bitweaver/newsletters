@@ -30,11 +30,19 @@
 			{/jstab}
 			{jstab title="Preview Recipient List"}
 				{legend legend="Preview Recipient List"}
+				<div class="row">
+					{foreach from=$smarty.request.send_group item=groupId key=i}
+						<input type="hidden" name="send_group[]" value="{$groupId}" />
+					{/foreach}
+					{formlabel label="Actual Recipients"}
+					{forminput}
 					<ol>
 					{foreach from=$recipientList item=recipient key=email}
-						<li>{$email}</li>
+						<li>"{$recipient.login}" <{$email}></li>
 					{/foreach}
 					</ol>
+					{/forminput}
+				</div>
 				{/legend}
 			{/jstab}
 		{/jstabs}

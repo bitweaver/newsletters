@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.4 2005/12/11 08:22:51 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.5 2005/12/11 08:52:21 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.4 2005/12/11 08:22:51 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.5 2005/12/11 08:52:21 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.4 $ $Date: 2005/12/11 08:22:51 $ $Author: spiderr $
+ * @version $Revision: 1.5 $ $Date: 2005/12/11 08:52:21 $ $Author: spiderr $
  */
 
 /**
@@ -182,6 +182,10 @@ class BitNewsletterEdition extends LibertyAttachable {
 			}
 		}
 		return $ret;
+	}
+
+	function queueRecipients( $pRecipients ) {
+vd( $pRecipients );
 	}
 }
 
