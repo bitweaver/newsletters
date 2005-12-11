@@ -3,27 +3,63 @@
 
 <div class="edit newsletters">
 	<div class="header">
-		<h1>{tr}Send newsletters{/tr}</h1>
+		<h1>{tr}Send Newsletter{/tr}{if $gContent->isValid()}: {$gContent->getTitle()}{/if}</h1>
 	</div>
 
 	<div class="body">
 
-{if $emited eq 'y'}
-	{tr}The newsletter was sent to {$sent} email addresses{/tr}<br /><br />
-{/if}
-{if $presend eq 'y'}
-<div class="wikibody">{$subject}</div>
-<div class="wikibody">{$data}</div>
+{if $gContent->isValid()}
+{form}
+	<input type="hidden" name="edition_id" value="{$gContent->mEditionId|escape}" />
 
-{tr}This newsletter will be sent to {$subscribers} email addresses.{/tr}
+	{if $smarty.request.emited eq 'y'}
+		{tr}The newsletter was sent to {$sent} email addresses{/tr}<br /><br />
+	{elseif $smarty.request.preview}
 
-<form method="post" action="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php">
-<input type="hidden" name="nl_id" value="{$nl_id|escape}" />
-<input type="hidden" name="subject" value="{$subject|escape}" />
-<input type="hidden" name="data" value="{$data|escape}" />
-<input type="submit" name="send" value="{tr}send{/tr}" />
-<input type="submit" name="preview" value="{tr}cancel{/tr}" />
-</form>
+		<div class="row submit">
+			{forminput}
+				<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
+				<input type="submit" name="send" value="{tr}send{/tr}" />
+			{/forminput}
+		</div>
+		{jstabs}
+			{jstab title="Preview Newsletter"}
+				{legend legend="Preview Newsletter"}
+					{include file="bitpackage:newsletters/view_edition.tpl"}
+				{/legend}
+			{/jstab}
+			{jstab title="Preview Recipient List"}
+				{legend legend="Preview Recipient List"}
+					<ol>
+					{foreach from=$recipientList item=recipient key=email}
+						<li>{$email}</li>
+					{/foreach}
+					</ol>
+				{/legend}
+			{/jstab}
+		{/jstabs}
+
+		</div>
+	{else}
+		<div class="row">
+			{formlabel label="Groups"}
+			{forminput}
+			{tr}This newsletter will be sent to members of the checked groups below:{/tr}
+			<ul class="data">
+			{foreach from=$groupList item=group key=groupId }
+				<li class="item"><input type="checkbox" name="send_group[]" value="{$groupId}" />{$group.group_name}</li>
+			{/foreach}
+			</ul>
+			{/forminput}
+		</div>
+		<div class="row submit">
+			{forminput}
+				<input type="submit" name="preview" value="{tr}Preview{/tr}" />
+			{/forminput}
+		</div>
+	{/if}
+{/form}
+
 {else}
 
 <h2>{tr}Sent editions{/tr}</h2>

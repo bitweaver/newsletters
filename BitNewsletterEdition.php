@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.3 2005/12/11 06:34:19 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.4 2005/12/11 08:22:51 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.3 2005/12/11 06:34:19 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.4 2005/12/11 08:22:51 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.3 $ $Date: 2005/12/11 06:34:19 $ $Author: spiderr $
+ * @version $Revision: 1.4 $ $Date: 2005/12/11 08:22:51 $ $Author: spiderr $
  */
 
 /**
@@ -171,6 +171,17 @@ class BitNewsletterEdition extends LibertyAttachable {
 
 	function isDraft() {
 		return( $this->getField( 'is_draft' ) );
+	}
+
+	function getRecipients( $pGroupArray ) {
+		global $gBitUser;
+		$ret = array();
+		if( is_array( $pGroupArray ) ) {
+			foreach( $pGroupArray as $groupId ) {
+				$ret = array_merge( $ret, $gBitUser->getGroupUserData( $groupId, array( 'email', 'uu.user_id', 'login', 'real_name' ) ) );
+			}
+		}
+		return $ret;
 	}
 }
 

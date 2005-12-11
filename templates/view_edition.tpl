@@ -24,3 +24,5 @@
 			{$gContent->parseData()}
 		</div> <!-- end .content -->
 	</div> <!-- end .body -->
+
+</div>

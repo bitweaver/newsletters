@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.5 2005/12/11 06:34:19 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.6 2005/12/11 08:22:51 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -26,8 +26,14 @@ $gBitSmarty->assign('preview', 'n');
 $gBitSmarty->assign('presend', 'n');
 $gBitSmarty->assign('emited', 'n');
 
-if (isset($_REQUEST["send"])) {
-	$subscribers = $nllib->get_subscribers($_REQUEST["nl_id"]);
+if( $gContent->isValid() && isset( $_REQUEST['preview'] ) ) {
+	$recipients = $gContent->getRecipients( $_REQUEST['send_group'] );
+	$gBitSmarty->assign_by_ref( 'recipientList', $recipients );
+} elseif( $gContent->isValid() && isset( $_REQUEST["send"] ) ) {
+	$emails = $gContent->getRecipients( $_REQUEST['send_group'] );
+vd( $emails );
+vd( $_REQUEST );
+die;
 
 	$mail = new htmlMimeMail();
 	$mail->setFrom('noreply@noreply.com');
@@ -58,14 +64,20 @@ if (isset($_REQUEST["send"])) {
 	$nllib->replace_edition($_REQUEST["nl_id"], $_REQUEST['title'], $_REQUEST['edit'], $sent);
 }
 
-$listHash = array();
-$editions = $gContent->getList( $listHash );
-$gBitSmarty->assign_by_ref( 'editionList', $editions );
-$gBitSmarty->assign( 'listInfo', $listHash );
+if( $gContent->isValid() ) {
+	$groupListHash = array();
+	$groups = $gBitUser->getAllGroups( $groupListHash );
+	$gBitSmarty->assign_by_ref( 'groupList', $groups['data'] );
+} else {
+	$listHash = array();
+	$editions = $gContent->getList( $listHash );
+	$gBitSmarty->assign_by_ref( 'editionList', $editions );
+	$gBitSmarty->assign( 'listInfo', $listHash );
 
-if( $gBitSystem->isFeatureActive( 'tiki_p_use_content_templates' ) ) {
-	$templates = $tikilib->list_templates('newsletters', 0, -1, 'name_asc', '');
-	$gBitSmarty->assign_by_ref('templates', $templates["data"]);
+	if( $gBitSystem->isFeatureActive( 'tiki_p_use_content_templates' ) ) {
+		$templates = $tikilib->list_templates('newsletters', 0, -1, 'name_asc', '');
+		$gBitSmarty->assign_by_ref('templates', $templates["data"]);
+	}
 }
 
 // Display the template
