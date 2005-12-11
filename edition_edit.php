@@ -46,6 +46,8 @@ if (isset($_REQUEST["preview"])) {
 	}
 }
 
+// load the ajax library for this page
+$gBitSmarty->assign( 'loadAjax', TRUE );
 // Display the template
 $gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) );
 
