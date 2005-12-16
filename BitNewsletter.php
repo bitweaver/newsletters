@@ -1,22 +1,22 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.5 2005/12/11 06:34:18 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.6 2005/12/16 17:22:57 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.5 2005/12/11 06:34:18 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.6 2005/12/16 17:22:57 squareing Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
- * @package blogs
+ * @package newsletters
  *
  * created 2004/10/20
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.5 $ $Date: 2005/12/11 06:34:18 $ $Author: spiderr $
+ * @version $Revision: 1.6 $ $Date: 2005/12/16 17:22:57 $ $Author: squareing $
  */
 
 /**
@@ -255,8 +255,8 @@ class BitNewsletter extends LibertyContent {
 
 		$ret = array();
 
-		while ($res = $result->fetchRow()) {
-			$res["confirmed"] = $this->mDb->getOne("select count(*) from `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` where `valid`=? and `nl_id`=?",array('y',(int)$res["nl_id"]));
+		while( $res = $result->fetchRow() ) {
+			$res["confirmed"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` WHERE `valid`=? AND `nl_id`=?",array( 'y', (int)$res["nl_id"] ) );
 			$ret[$res['nl_id']] = $res;
 		}
 
@@ -326,7 +326,7 @@ class BitNewsletter extends LibertyContent {
 		$ret = array();
 		if( $this->isValid() ) {
 			$listHash = array( 'nl_id' => $this->mNlId  );
-			BitNewsletterEdition::getList( $listHash );
+			$ret = BitNewsletterEdition::getList( $listHash );
 		}
 		return $ret;
 	}

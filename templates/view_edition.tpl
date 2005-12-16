@@ -1,4 +1,4 @@
-<div class="display blogs">
+<div class="display newsletters">
 	<div class="floaticon">
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon'}
 
@@ -24,5 +24,4 @@
 			{$gContent->parseData()}
 		</div> <!-- end .content -->
 	</div> <!-- end .body -->
-
-</div>
+</div><!-- end .newsletters -->

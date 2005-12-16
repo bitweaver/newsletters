@@ -24,11 +24,9 @@
 
 	<div class="body">
 		<div class="content">
-
 			{$gContent->parseData()}
 
 			{include file="bitpackage:newsletters/list_editions_inc.tpl" editionList=$gContent->getEditions()}
-
 		</div> <!-- end .content -->
 	</div> <!-- end .body -->
 </div> <!-- end .newsletters -->
