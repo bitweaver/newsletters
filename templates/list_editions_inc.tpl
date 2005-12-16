@@ -9,7 +9,7 @@
 			<p>
 				{$ed.data|truncate:200}
 				<br />
-				{tr}in{/tr} <a href="{$smarty.const.NEWSLETTERS_PKG_URL}?nl_id={$ed.nl_id}">{$ed.newsletter_title}</a></h3>
+				{tr}in{/tr} <a href="{$smarty.const.NEWSLETTERS_PKG_URL}?nl_id={$ed.nl_id}">{$ed.newsletter_title}</a>
 			</p>
 		</li>
 	{foreachelse}
