@@ -1,22 +1,21 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.6 2005/12/11 22:53:05 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.7 2005/12/16 06:34:55 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.6 2005/12/11 22:53:05 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.7 2005/12/16 06:34:55 spiderr Exp $
  *
- * Virtual base class (as much as one can have such things in PHP) for all
- * derived tikiwiki classes that require database access.
- * @package blogs
+ * Class that handles editions of newsletters
+ * @package newsletters
  *
- * created 2004/10/20
+ * created 2005/12/08
  *
- * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
+ * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.6 $ $Date: 2005/12/11 22:53:05 $ $Author: spiderr $
+ * @version $Revision: 1.7 $ $Date: 2005/12/16 06:34:55 $ $Author: spiderr $
  */
 
 /**
@@ -194,22 +193,12 @@ class BitNewsletterEdition extends LibertyAttachable {
 		return $ret;
 	}
 
-	function queueRecipients( $pRecipients ) {
-		$ret = 0;
+	function render() {
+		global $gBitSmarty;
+		$ret = NULL;
 		if( $this->isValid() ) {
-vd( $this->mContentId );
-			$queueTime = time();
-			foreach( array_keys( $pRecipients ) AS $email ) {
-				$insertHash['email'] = $email;
-				if( !empty( $pRecipients[$email]['user_id'] ) ) {
-					$insertHash['user_id'] = $pRecipients[$email]['user_id'];
-				}
-				$insertHash['content_id'] = $this->mContentId;
-				$insertHash['queue_date'] = $queueTime;
-				$this->mDb->associateInsert( BIT_DB_PREFIX.'tiki_mail_queue', $insertHash );
-				$ret++;
-			}
-die;
+			$gBitSmarty->assign_by_ref( 'gContent', $this );
+			$ret = $gBitSmarty->fetch( 'bitpackage:newsletters/view_edition.tpl' );
 		}
 		return $ret;
 	}
