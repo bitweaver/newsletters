@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.6 2005/12/16 17:22:57 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.7 2005/12/20 17:59:16 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.6 2005/12/16 17:22:57 squareing Exp $
+ * $Id: BitNewsletter.php,v 1.7 2005/12/20 17:59:16 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.6 $ $Date: 2005/12/16 17:22:57 $ $Author: squareing $
+ * @version $Revision: 1.7 $ $Date: 2005/12/20 17:59:16 $ $Author: spiderr $
  */
 
 /**
@@ -38,19 +38,19 @@ class BitNewsletter extends LibertyContent {
 			'handler_file' => 'BitNewsletter.php',
 			'maintainer_url' => 'http://www.bitweaver.org'
 		) );
-		$this->mNlId = $pNlId;
+		$this->mNlId = $this->verifyId( $pNlId ) ? $pNlId : NULL;
 		$this->mContentId = $pContentId;
 		$this->mContentTypeGuid = BITNEWSLETTER_CONTENT_TYPE_GUID;
 	}
 
 	function load() {
-		if( !empty( $this->mNlId ) || !empty( $this->mContentId ) ) {
+		if( $this->verifyId( $this->mNlId ) || $this->verifyId( $this->mContentId ) ) {
 			global $gBitSystem;
 
 			$bindVars = array(); $selectSql = ''; $joinSql = ''; $whereSql = '';
 
-			$lookupColumn = !empty( $this->mNlId ) ? 'nl_id' : 'content_id';
-			$lookupId = !empty( $this->mNlId )? $this->mNlId : $this->mContentId;
+			$lookupColumn = $this->verifyId( $this->mNlId ) ? 'nl_id' : 'content_id';
+			$lookupId = $this->verifyId( $this->mNlId )? $this->mNlId : $this->mContentId;
 			array_push( $bindVars, $lookupId );
 
 			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
@@ -319,7 +319,7 @@ class BitNewsletter extends LibertyContent {
 	}
 
 	function isValid() {
-		return( !empty( $this->mNlId ) );
+		return( $this->verifyId( $this->mNlId ) );
 	}
 
 	function getEditions() {

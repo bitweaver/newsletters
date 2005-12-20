@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.7 2005/12/16 06:34:55 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.8 2005/12/20 17:59:16 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.7 2005/12/16 06:34:55 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.8 2005/12/20 17:59:16 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.7 $ $Date: 2005/12/16 06:34:55 $ $Author: spiderr $
+ * @version $Revision: 1.8 $ $Date: 2005/12/20 17:59:16 $ $Author: spiderr $
  */
 
 /**
@@ -45,7 +45,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 
 	function verify( &$pParamHash ) {
 
-		if( !empty( $pParamHash['nl_id'] ) ) {
+		if( $this->verifyId( $pParamHash['nl_id'] ) ) {
 			$pParamHash['edition_store']["nl_id"] = $pParamHash['nl_id'];
 		} else {
 			$this->mErrors['nl_id'] = tra( 'No newsletter was selected for this edition.' );
@@ -75,13 +75,13 @@ class BitNewsletterEdition extends LibertyAttachable {
 	}
 
 	function load() {
-		if( !empty( $this->mEditionId ) || !empty( $this->mContentId ) ) {
+		if( $this->verifyId( $this->mEditionId ) || $this->verifyId( $this->mContentId ) ) {
 			global $gBitSystem;
 
 			$bindVars = array(); $selectSql = ''; $joinSql = ''; $whereSql = '';
 
-			$lookupColumn = !empty( $this->mEditionId )? 'edition_id' : 'content_id';
-			$lookupId = !empty( $this->mEditionId )? $this->mEditionId : $this->mContentId;
+			$lookupColumn = $this->verifyId( $this->mEditionId )? 'edition_id' : 'content_id';
+			$lookupId = $this->verifyId( $this->mEditionId )? $this->mEditionId : $this->mContentId;
 			array_push( $bindVars, $lookupId );
 
 			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
@@ -104,7 +104,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 	}
 
 	function isValid() {
-		return( !empty( $this->mEditionId ) );
+		return( $this->verifyId( $this->mEditionId ) );
 	}
 
 	/**
@@ -115,11 +115,11 @@ class BitNewsletterEdition extends LibertyAttachable {
 	 */
 	function getDisplayUrl( $pEditionId=NULL ) {
 		$ret = NULL;
-		if( empty( $pEditionId ) ) {
+		if( !$this->verifyId( $pEditionId ) ) {
 			$pEditionId = $this->mEditionId;
 		}
 		global $gBitSystem;
-		if( is_numeric( $pEditionId ) ) {
+		if( $this->verifyId( $pEditionId ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
 				$ret = NEWSLETTERS_PKG_URL.'edition/'.$pEditionId;
 			} else {
