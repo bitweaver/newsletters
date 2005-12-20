@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.1 2005/12/16 06:34:54 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.2 2005/12/20 22:05:07 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.1 2005/12/16 06:34:54 spiderr Exp $
+ * $Id: BitMailer.php,v 1.2 2005/12/20 22:05:07 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.1 $ $Date: 2005/12/16 06:34:54 $ $Author: spiderr $
+ * @version $Revision: 1.2 $ $Date: 2005/12/20 22:05:07 $ $Author: spiderr $
  */
 
 /**
@@ -51,22 +51,20 @@ class BitMailer extends phpmailer {
         exit;
     }
 
-	function queueRecipients( $pRecipients ) {
+	function queueRecipients( $pContentId, $pRecipients ) {
 		$ret = 0;
-		if( $this->isValid() ) {
-vd( $this->mContentId );
+		if( !empty( $pRecipients ) && BitBase::verifyId( $pContentId ) ) {
 			$queueTime = time();
 			foreach( array_keys( $pRecipients ) AS $email ) {
 				$insertHash['email'] = $email;
 				if( !empty( $pRecipients[$email]['user_id'] ) ) {
 					$insertHash['user_id'] = $pRecipients[$email]['user_id'];
 				}
-				$insertHash['content_id'] = $this->mContentId;
+				$insertHash['content_id'] = $pContentId;
 				$insertHash['queue_date'] = $queueTime;
 				$this->mDb->associateInsert( BIT_DB_PREFIX.'tiki_mail_queue', $insertHash );
 				$ret++;
 			}
-die;
 		}
 		return $ret;
 	}

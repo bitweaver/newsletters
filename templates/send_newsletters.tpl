@@ -7,6 +7,12 @@
 	</div>
 
 	<div class="body">
+		{if $feedback}
+			<div class="row">
+				{formfeedback hash=$feedback}
+			</div>
+		{/if}
+
 		{if $gContent->isValid()}
 			{form}
 				<input type="hidden" name="edition_id" value="{$gContent->mEditionId|escape}" />
