@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.2 2005/12/20 22:05:07 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.3 2005/12/21 09:02:21 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.2 2005/12/20 22:05:07 spiderr Exp $
+ * $Id: BitMailer.php,v 1.3 2005/12/21 09:02:21 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.2 $ $Date: 2005/12/20 22:05:07 $ $Author: spiderr $
+ * @version $Revision: 1.3 $ $Date: 2005/12/21 09:02:21 $ $Author: spiderr $
  */
 
 /**
@@ -32,13 +32,16 @@ class BitMailer extends phpmailer {
     var $Mailer;                         // Alternative to IsSMTP()
     var $WordWrap;
 	function BitMailer () {
-		global $gBitDb, $gBitSystem;
+		global $gBitDb, $gBitSystem, $gBitLanguage;
 		$this->mDb = $gBitDb;
 		$this->From     = $gBitSystem->getPreference( 'bitmailer_sender_email', $gBitSystem->getPreference( 'sender_email', $_SERVER['SERVER_ADMIN'] ) );
 		$this->FromName     = $gBitSystem->getPreference( 'bitmailer_from', $gBitSystem->getPreference( 'siteTitle' ) );
 		$this->Host     = $gBitSystem->getPreference( 'bitmailer_servers', $gBitSystem->getPreference( 'feature_server_name', $_SERVER['HTTP_HOST'] ) );
 		$this->Mailer   = $gBitSystem->getPreference( 'bitmailer_protocol', 'smtp' ); // Alternative to IsSMTP()
 		$this->WordWrap = $gBitSystem->getPreference( 'bitmailer_word_wrap', 75 );
+		if( !$this->SetLanguage( $gBitLanguage->getLanguage(), UTIL_PKG_PATH.'phpmailer/language/' ) ) {
+			$this->SetLanguage( 'en' );
+		}
 	}
 
     // Replace the default error_handler
@@ -93,10 +96,13 @@ class BitMailer extends phpmailer {
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
 			}
 			if( !empty( $body[$pick['content_id']] ) ) {
-				$this->sendMail( $pick, $body[$pick['content_id']]['subject'], $body[$pick['content_id']]['body'] );
-die;
-				$this->mDb->query( $updateQuery, array( time(), $pick['content_id'], $pick['email'] ) );
-				$updateQuery = "UPDATE `".BIT_DB_PREFIX."tiki_mail_queue` SET `sent_date`=? WHERE `content_id`=? AND `email`=?";
+				$pick['code'] = md5( $pick['content_id'].$pick['email'].$pick['queue_date'] );
+
+				if( !$this->sendMail( $pick, $body[$pick['content_id']]['subject'], $body[$pick['content_id']]['body'] ) ) {
+					$this->logError( $pick );
+				}
+				$updateQuery = "UPDATE `".BIT_DB_PREFIX."tiki_mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
+				$this->mDb->query( $updateQuery, array( time(), $pick['code'], $pick['content_id'], $pick['email'] ) );
 				$this->mDb->CompleteTrans();
 				$this->mDb->StartTrans();
 			}
@@ -117,13 +123,24 @@ die;
 		$this->AddAddress( $pRecipient['email'], $pRecipient["full_name"] );
 		if(!$this->Send()) {
 			$ret = FALSE;
-			echo "There has been a mail error sending to " . $pRecipient["email"] . "<br>";
 		}
 
 		// Clear all addresses and attachments for next loop
 		$this->ClearAddresses();
 		$this->ClearAttachments();
 		return $ret;
+	}
+
+	function logError( $pInfo ) {
+		if( !empty( $pInfo['url_code'] ) && !$this->mDb->getOne( "SELECT `url_code` FROM `".BIT_DB_PREFIX."tiki_mail_errors` WHERE `url_code`=?", array( $pInfo['url_code'] ) ) ) {
+			$store['url_code'] = $pInfo['url_code'];
+			$store['user_id'] = !empty( $pInfo['user_id'] ) ? $pInfo['user_id'] : NULL;
+			$store['content_id'] = !empty( $pInfo['content_id'] ) ? $pInfo['content_id'] : NULL;
+			$store['email'] = !empty( $pInfo['email'] ) ? $pInfo['email'] : NULL;
+			$store['error_message'] = $this->ErrorInfo;
+			$store['error_date'] = time();
+			$this->mDb->associateInsert( BIT_DB_PREFIX."tiki_mail_errors", $store );
+		}
 	}
 
 }

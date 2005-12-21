@@ -14,6 +14,16 @@ $tables = array(
   CONSTRAINTS ', CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
 ",
 
+'tiki_mail_errors' => "
+  url_code C(32) PRIMARY,
+  email C(160),
+  user_id I4,
+  content_id I4,
+  error_date I8,
+  error_message X
+  CONSTRAINTS ', CONSTRAINT `tiki_mail_err_user_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
+"
+
 'tiki_mail_unsubscriptions' => "
   content_id I4 PRIMARY,
   email C(160) PRIMARY,
@@ -45,6 +55,7 @@ $tables = array(
   content_id I4 PRIMARY,
   email C(160) PRIMARY,
   user_id I4,
+  url_code C(32),
   queue_date I8 NOTNULL,
   begin_date I8,
   sent_date I8

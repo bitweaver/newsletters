@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.7 2005/12/20 17:59:16 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.8 2005/12/21 09:02:22 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.7 2005/12/20 17:59:16 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.8 2005/12/21 09:02:22 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.7 $ $Date: 2005/12/20 17:59:16 $ $Author: spiderr $
+ * @version $Revision: 1.8 $ $Date: 2005/12/21 09:02:22 $ $Author: spiderr $
  */
 
 /**
@@ -128,19 +128,12 @@ class BitNewsletter extends LibertyContent {
 			if( $this->getField( 'validate_addr' ) == 'y' ) {
 				// Generate a code and store it and send an email  with the
 				// URL to confirm the subscription put valid as 'n'
-				$foo = parse_url($_SERVER["REQUEST_URI"]);
-				$foopath = preg_replace('/tiki-admin_newsletter_subscriptions.php/', 'tiki-newsletters.php', $foo["path"]);
-				$url_subscribe = httpPrefix(). $foopath;
 				$query = "delete from `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` where `nl_id`=? and `email`=?";
 				$result = $this->mDb->query( $query, array( $this->mNlId, $email ) );
 				$query = "insert into `".BIT_DB_PREFIX."tiki_newsletter_subscriptions`(`nl_id`,`email`,`code`,`valid`,`subscribed`) values(?,?,?,?,?)";
 				$result = $this->mDb->query( $query, array( $this->mNlId, $email, $code, 'n', (int)$now ) );
 				// Now send an email to the address with the confirmation instructions
-				$gBitSmarty->assign( 'mail_date', date("U") );
-				$gBitSmarty->assign( 'mail_user', $email );
 				$gBitSmarty->assign( 'code', $code );
-				$gBitSmarty->assign( 'url_subscribe', $url_subscribe );
-				$gBitSmarty->assign( 'server_name', $_SERVER["SERVER_NAME"] );
 				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/confirm_newsletter_subscription.tpl');
 				@mail($email, tra('Newsletter subscription information at '). $_SERVER["SERVER_NAME"], $mail_data,
 					"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
@@ -158,10 +151,8 @@ class BitNewsletter extends LibertyContent {
 
 	function confirmSubscription($code) {
 		global $gBitSmarty;
-		global $user;
+		global $gBitUser;
 		global $sender_email;
-		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$url_subscribe = httpPrefix(). $foo["path"];
 		$query = "select * from `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` where `code`=?";
 		$result = $this->mDb->query($query,array($code));
 
@@ -173,10 +164,7 @@ class BitNewsletter extends LibertyContent {
 		$query = "update `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` set `valid`=? where `code`=?";
 		$result = $this->mDb->query($query,array('y',$code));
 		// Now send a welcome email
-		$gBitSmarty->assign('mail_date', date("U"));
-		$gBitSmarty->assign('mail_user', $user);
 		$gBitSmarty->assign('code', $res["code"]);
-		$gBitSmarty->assign('url_subscribe', $url_subscribe);
 		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_welcome.tpl');
 		@mail($res["email"], tra('Welcome to '). $info["name"] . tra(' at '). $_SERVER["SERVER_NAME"], $mail_data,
 			"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
@@ -201,9 +189,6 @@ class BitNewsletter extends LibertyContent {
 		$query = "delete from `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` where `code`=?";
 		$result = $this->mDb->query($query,array($code));
 		// Now send a bye bye email
-		$gBitSmarty->assign('mail_date', date("U"));
-		$gBitSmarty->assign('mail_user', $user);
-		$gBitSmarty->assign('url_subscribe', $url_subscribe);
 		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
 		@mail($res["email"], tra('Bye bye from '). $info["name"] . tra(' at '). $_SERVER["SERVER_NAME"], $mail_data,
 			"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
