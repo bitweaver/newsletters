@@ -22,7 +22,7 @@ $tables = array(
   error_date I8,
   error_message X
   CONSTRAINTS ', CONSTRAINT `tiki_mail_err_user_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
-"
+",
 
 'tiki_mail_unsubscriptions' => "
   content_id I4 PRIMARY,
