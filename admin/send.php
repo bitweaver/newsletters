@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.8 2005/12/20 22:05:07 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.9 2005/12/25 02:23:44 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -34,7 +34,7 @@ if( $gContent->isValid() && isset( $_REQUEST['preview'] ) ) {
 	if( $emails = $gContent->getRecipients( $_REQUEST['send_group'] ) ) {
 		global $gBitMailer;
 		$gBitMailer = new BitMailer();
-		$gBitMailer->queueRecipients( $gContent->mContentId, $emails );
+		$gBitMailer->queueRecipients( $gContent->mContentId, $gContent->mNewsletter->mContentId, $emails );
 		$feedback['success'] = count( $emails ).' '.tra( 'emails were queued to be sent:' ).' '.$gContent->getTitle();
 		$gContent->mEditionId = NULL;
 	} else {

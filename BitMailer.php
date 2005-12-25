@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.3 2005/12/21 09:02:21 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.4 2005/12/25 02:23:44 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.3 2005/12/21 09:02:21 spiderr Exp $
+ * $Id: BitMailer.php,v 1.4 2005/12/25 02:23:44 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.3 $ $Date: 2005/12/21 09:02:21 $ $Author: spiderr $
+ * @version $Revision: 1.4 $ $Date: 2005/12/25 02:23:44 $ $Author: spiderr $
  */
 
 /**
@@ -54,7 +54,7 @@ class BitMailer extends phpmailer {
         exit;
     }
 
-	function queueRecipients( $pContentId, $pRecipients ) {
+	function queueRecipients( $pContentId, $pNewsletterContentId, $pRecipients ) {
 		$ret = 0;
 		if( !empty( $pRecipients ) && BitBase::verifyId( $pContentId ) ) {
 			$queueTime = time();
@@ -64,6 +64,7 @@ class BitMailer extends phpmailer {
 					$insertHash['user_id'] = $pRecipients[$email]['user_id'];
 				}
 				$insertHash['content_id'] = $pContentId;
+				$insertHash['nl_content_id'] = $pNewsletterContentId;
 				$insertHash['queue_date'] = $queueTime;
 				$this->mDb->associateInsert( BIT_DB_PREFIX.'tiki_mail_queue', $insertHash );
 				$ret++;
@@ -73,6 +74,7 @@ class BitMailer extends phpmailer {
 	}
 
 	function tendQueue() {
+		global $gBitSmarty;
 		$body = array();
 		$this->mDb->StartTrans();
 		$query = "SELECT *
@@ -96,13 +98,16 @@ class BitMailer extends phpmailer {
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
 			}
 			if( !empty( $body[$pick['content_id']] ) ) {
-				$pick['code'] = md5( $pick['content_id'].$pick['email'].$pick['queue_date'] );
+				$pick['url_code'] = md5( $pick['content_id'].$pick['email'].$pick['queue_date'] );
+				$gBitSmarty->assign( 'url_code', $pick['url_code'] );
+				$unsub = $gBitSmarty->fetch( 'bitpackage:newsletters/unsubscribe_inc.tpl' );
+				$htmlBody = $unsub . $body[$pick['content_id']]['body'] . $unsub;
 
-				if( !$this->sendMail( $pick, $body[$pick['content_id']]['subject'], $body[$pick['content_id']]['body'] ) ) {
+				if( !$this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
 					$this->logError( $pick );
 				}
 				$updateQuery = "UPDATE `".BIT_DB_PREFIX."tiki_mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
-				$this->mDb->query( $updateQuery, array( time(), $pick['code'], $pick['content_id'], $pick['email'] ) );
+				$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
 				$this->mDb->CompleteTrans();
 				$this->mDb->StartTrans();
 			}
@@ -141,6 +146,37 @@ class BitMailer extends phpmailer {
 			$store['error_date'] = time();
 			$this->mDb->associateInsert( BIT_DB_PREFIX."tiki_mail_errors", $store );
 		}
+	}
+
+	// Looks up the code from the url to determine if the unsubscribe URL is valid.
+	// Can be statically called
+	function lookupUrlCode( $pUrlCode ) {
+		global $gBitDb;
+		$ret = NULL;
+		if( !empty( $pUrlCode ) ) {
+			$query = "SELECT * FROM `".BIT_DB_PREFIX."tiki_mail_queue` tmq
+						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tmq.`nl_content_id`=tc.`content_id` )
+					  WHERE `url_code`=? ";
+			$ret = $gBitDb->getRow( $query, array( $pUrlCode ) );
+		}
+		return( $ret );
+	}
+
+	// Accepts a single row has containing the column of tiki_mail_unsubscriptions as the key to lookup the unsubscription info
+	// Can be statically called
+	function getUnsubscription( $pMixed ) {
+		global $gBitDb;
+		$ret = NULL;
+		if( is_array( $pMixed ) ) {
+			$col = key( $pMixed );
+			$bindVars[] = current( $pMixed );
+			$query = "SELECT * FROM `".BIT_DB_PREFIX."tiki_mail_unsubscriptions` tmu
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( tmu.`user_id`=uu.`user_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tmu.`content_id`=tc.`content_id` )
+					WHERE $col=? ";
+			$ret = $gBitDb->getRow( $query, $bindVars );
+		}
+		return( $ret );
 	}
 
 }

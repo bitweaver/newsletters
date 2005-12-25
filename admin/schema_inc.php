@@ -54,6 +54,7 @@ $tables = array(
 'tiki_mail_queue' => "
   content_id I4 PRIMARY,
   email C(160) PRIMARY,
+  nl_content_id I4 NOTNULL,
   user_id I4,
   url_code C(32),
   queue_date I8 NOTNULL,

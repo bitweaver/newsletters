@@ -4,8 +4,6 @@
 
 	$_SERVER['SCRIPT_URL'] = '';
 	$_SERVER['HTTP_HOST'] = '';
-	$_SERVER['HTTP_HOST'] = '';
-	$_SERVER['HTTP_HOST'] = '';
 	$_SERVER['SERVER_NAME'] = '';
 	$_SERVER['SERVER_ADMIN'] = '';
 	$_SERVER['SERVER_SOFTWARE'] = 'command line';

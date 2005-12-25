@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.9 2005/12/21 09:02:22 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.10 2005/12/25 02:23:44 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.9 2005/12/21 09:02:22 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.10 2005/12/25 02:23:44 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.9 $ $Date: 2005/12/21 09:02:22 $ $Author: spiderr $
+ * @version $Revision: 1.10 $ $Date: 2005/12/25 02:23:44 $ $Author: spiderr $
  */
 
 /**
@@ -198,9 +198,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 		$ret = NULL;
 		if( $this->isValid() ) {
 			$gBitSmarty->assign_by_ref( 'gContent', $this );
-			$ret =  $gBitSmarty->fetch( 'bitpackage:newsletters/unsubscribe_inc.tpl' );
-			$ret .= $gBitSmarty->fetch( 'bitpackage:newsletters/view_edition.tpl' );
-			$ret .=  $gBitSmarty->fetch( 'bitpackage:newsletters/unsubscribe_inc.tpl' );
+			$ret = $gBitSmarty->fetch( 'bitpackage:newsletters/view_edition.tpl' );
 		}
 		return $ret;
 	}

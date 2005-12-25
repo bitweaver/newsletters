@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.8 2005/12/21 09:02:22 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.9 2005/12/25 02:23:44 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.8 2005/12/21 09:02:22 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.9 2005/12/25 02:23:44 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.8 $ $Date: 2005/12/21 09:02:22 $ $Author: spiderr $
+ * @version $Revision: 1.9 $ $Date: 2005/12/25 02:23:44 $ $Author: spiderr $
  */
 
 /**
@@ -171,14 +171,16 @@ class BitNewsletter extends LibertyContent {
 		return $this->get_newsletter($res["nl_id"]);
 	}
 
-	function unsubscribe($code) {
-		global $gBitSmarty;
-		global $user;
-		global $sender_email;
-		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$url_subscribe = httpPrefix(). $foo["path"];
+	function unsubscribe( $pCode ) {
+		global $gBitSystem, $gBitSmarty;
+
+/*		'content_id' =
+		'email' =
+		'user_id' =
+		'unsubscribe_all' =
+*/
 		$query = "select * from `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` where `code`=?";
-		$result = $this->mDb->query($query,array($code));
+		$result = $this->mDb->query($query, array( $pCode ) );
 
 		if (!$result->numRows()) return false;
 
@@ -191,7 +193,7 @@ class BitNewsletter extends LibertyContent {
 		// Now send a bye bye email
 		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
 		@mail($res["email"], tra('Bye bye from '). $info["name"] . tra(' at '). $_SERVER["SERVER_NAME"], $mail_data,
-			"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
+			"From: ".$gBitSystem->getPreference( 'sender_email' )."\r\nContent-type: text/plain;charset=utf-8\r\n");
 		$this->update_users($res["nl_id"]);
 		return $this->get_newsletter($res["nl_id"]);
 	}

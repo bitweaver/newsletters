@@ -2,6 +2,11 @@
 {form legend="Newsletter Features"}
 	<input type="hidden" name="page" value="{$page}" />
 
+	{if !$gBitSystem->getPreference( 'feature_server_name' )}
+		{formfeedback error="Server name is not defined!"}
+		{tr}You must <a href="{$smarty.const.KERNEL_PKG_URL}admin/index.php?page=server">define the server name</a> for proper background operation of the mail script.{/tr}
+	{/if}
+
 	{foreach from=$formNewsletterFeatures key=item item=output}
 		<div class="row">
 			{formlabel label=`$output.label` for=$item}

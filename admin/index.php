@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/Attic/index.php,v 1.7 2005/12/16 17:22:58 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/Attic/index.php,v 1.8 2005/12/25 02:23:44 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -8,7 +8,6 @@
 
 // Initialization
 require_once( '../../bit_setup_inc.php' );
-include_once( NEWSLETTERS_PKG_PATH.'nl_lib.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
 $gBitSystem->verifyPermission( 'tiki_p_admin_newsletters' );
 
