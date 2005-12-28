@@ -98,8 +98,10 @@ $gBitInstaller->registerSchemaIndexes( LIBERTY_PKG_NAME, $indices );
 // ### Default UserPermissions
 $gBitInstaller->registerUserPermissions( NEWSLETTERS_PKG_NAME, array(
 	array('bit_p_admin_newsletters', 'Can admin newsletters', 'editors', 'newsletters'),
+	array('bit_p_create_newsletters', 'Can create newsletters', 'editors', 'newsletters'),
+	array('bit_p_create_editions', 'Can create editions', 'editors', 'newsletters'),
 	array('bit_p_send_newsletters', 'Can send newsletters', 'editors', 'newsletters'),
-	array('bit_p_subscribe_newsletters', 'Can subscribe to newsletters', 'basic', 'newsletters'),
+	array('bit_p_subscribe_newsletters', 'Can subscribe to newsletters', 'registered', 'newsletters'),
 	array('bit_p_subscribe_email', 'Can subscribe any email to newsletters', 'editors', 'newsletters'),
 ) );
 

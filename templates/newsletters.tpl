@@ -27,7 +27,7 @@
 
 				{if ($gContent->mInfo.allow_user_sub eq 'y') or $gBitUser->hasPermission( 'bit_p_subscribe_newsletters' )}
 					{form}
-						<input type="hidden" name="nl_id" value="{$gContent->mNlId}" />
+						<input type="hidden" name="nl_id" value="{$gContent->mNewsletterId}" />
 						<div class="row">
 							{formlabel label="Email" for=""}
 							{forminput}

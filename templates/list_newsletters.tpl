@@ -12,7 +12,7 @@
 				{if $individual eq 'y'}
 					<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$gContent->mInfo.name}&amp;object_type=newsletter&amp;permType=newsletters&amp;object_id={$gContent->mInfo.nl_id}">{tr}There are individual permissions set for this newsletter{/tr}</a><br /><br />
 				{/if}
-				<input type="hidden" name="nl_id" value="{$gContent->mNlId}" />
+				<input type="hidden" name="nl_id" value="{$gContent->mNewsletterId}" />
 
 				<div class="row">
 					{formlabel label="Title" for="title"}
@@ -104,7 +104,9 @@
 				{/foreach}
 			</table>
 
-			<a href="{$smarty.server.php_self}?new=1">Create new newsletter</a>
+			{if $gBitUser->hasPermission('bit_p_create_newsletters')}
+				<a href="{$smarty.server.php_self}?new=1">Create new newsletter</a>
+			{/if}
 
 			{pagination}
 		{/if}

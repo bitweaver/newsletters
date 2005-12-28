@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.1 2005/12/16 16:55:28 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.2 2005/12/28 23:21:24 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -19,7 +19,7 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 		// user cancelled - just continue on, doing nothing
 	} elseif( empty( $_REQUEST['confirm'] ) ) {
 		$formHash['remove'] = TRUE;
-		$formHash['nl_id'] = $gContent->mNlId;
+		$formHash['nl_id'] = $gContent->mNewsletterId;
 		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the newsletter '.$gContent->getTitle().'?' ) );
 	} else {
 		if( $gContent->expunge() ) {

@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine  on
+    RewriteCond	%{SCRIPT_FILENAME}  -f [OR]
+    RewriteCond	%{SCRIPT_FILENAME}/index.php    -f
+    RewriteRule	^(.*)$            - [L]
+
+	RewriteRule ^edition/([0-9]*)$  edition.php?edition_id=$1  [L]
+	RewriteRule ^([0-9]*)$  		index.php?nl_id=$1  [L]
+</IfModule>
