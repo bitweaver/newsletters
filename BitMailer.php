@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.8 2005/12/28 23:21:24 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.9 2005/12/28 23:43:24 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.8 2005/12/28 23:21:24 spiderr Exp $
+ * $Id: BitMailer.php,v 1.9 2005/12/28 23:43:24 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.8 $ $Date: 2005/12/28 23:21:24 $ $Author: spiderr $
+ * @version $Revision: 1.9 $ $Date: 2005/12/28 23:43:24 $ $Author: spiderr $
  */
 
 /**
@@ -182,10 +182,11 @@ class BitMailer extends phpmailer {
 	}
 
 	function storeSubscriptions( $pSubHash ) {
+		$ret = FALSE;
 		global $gBitSystem, $gBitDb;
 		$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `".key( $pSubHash['sub_lookup'] )."`=?";
 		$result = $gBitDb->query($query, array( current( $pSubHash['sub_lookup'] ) ) );
-
+		$ret = TRUE;
 		if( !empty( $pSubHash['unsub_content'] ) ) {
 			foreach( $pSubHash['unsub_content'] as $conId ) {
 				$storeHash = array();
@@ -199,6 +200,7 @@ class BitMailer extends phpmailer {
 				$gBitDb->associateInsert( BIT_DB_PREFIX."tiki_mail_subscriptions", $storeHash );
 			}
 		}
+		return $ret;
 	}
 
 

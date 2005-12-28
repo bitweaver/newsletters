@@ -6,7 +6,7 @@
 	</div>
 
 	<div class="body">
-	{formfeedback success=$success error=$gContent->mErrors}
+	{formfeedback hash=$feedback}
 	{form enctype="multipart/form-data" id="editpageform"}
 		<input type="hidden" name="response_content_id" value="{$subInfo.content_id}" />
 {if $smarty.request.sub}
