@@ -79,7 +79,7 @@
 					<th>{smartlink ititle="Description" isort=description offset=$offset}</th>
 					<th>{smartlink ititle="Created" isort=last_sent offset=$offset}</th>
 					<th>{smartlink ititle="Last Sent" isort=created offset=$offset}</th>
-					<th>{smartlink ititle="Users Unsubscribed" isort=users offset=$offset}</th>
+					<th>{smartlink ititle="Unsubscribed" isort=users offset=$offset}</th>
 					<th>{tr}Action{/tr}</th>
 				</tr>
 
@@ -89,7 +89,7 @@
 						<td>{$nl.data}</td>
 						<td>{$nl.created|bit_short_date}</td>
 						<td>{$nl.last_sent|bit_short_date}</td>
-						<td style="text-align:right;"><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nlId}">{$nl.users|default:0} [ {$channels[user].confirmed|default:0} ]</a></td>
+						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nlId}"> {$nl.unsub_count|default:0}</a></td>
 						<td style="text-align:right;">
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?nl_id={$nlId}">{biticon ipackage=liberty iname=new iexplain="New Edition"}</a>
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?remove=1&amp;nl_id={$nlId}">{biticon ipackage=liberty iname=delete iexplain=Remove}</a>

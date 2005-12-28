@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.6 2005/12/28 16:01:51 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.7 2005/12/28 20:12:46 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.6 2005/12/28 16:01:51 spiderr Exp $
+ * $Id: BitMailer.php,v 1.7 2005/12/28 20:12:46 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.6 $ $Date: 2005/12/28 16:01:51 $ $Author: spiderr $
+ * @version $Revision: 1.7 $ $Date: 2005/12/28 20:12:46 $ $Author: spiderr $
  */
 
 /**
@@ -35,7 +35,7 @@ class BitMailer extends phpmailer {
 		global $gBitDb, $gBitSystem, $gBitLanguage;
 		$this->mDb = $gBitDb;
 		$this->From     = $gBitSystem->getPreference( 'bitmailer_sender_email', $gBitSystem->getPreference( 'sender_email', $_SERVER['SERVER_ADMIN'] ) );
-		$this->FromName     = $gBitSystem->getPreference( 'bitmailer_from', $gBitSystem->getPreference( 'siteTitle' ) );
+		$this->FromName = $gBitSystem->getPreference( 'bitmailer_from', $gBitSystem->getPreference( 'siteTitle' ) );
 		$this->Host     = $gBitSystem->getPreference( 'bitmailer_servers', $gBitSystem->getPreference( 'feature_server_name', $_SERVER['HTTP_HOST'] ) );
 		$this->Mailer   = $gBitSystem->getPreference( 'bitmailer_protocol', 'smtp' ); // Alternative to IsSMTP()
 		$this->WordWrap = $gBitSystem->getPreference( 'bitmailer_word_wrap', 75 );
@@ -164,7 +164,7 @@ class BitMailer extends phpmailer {
 		return( $ret );
 	}
 
-	// Accepts a single row has containing the column of tiki_mail_unsubscriptions as the key to lookup the unsubscription info
+	// Accepts a single row has containing the column of tiki_mail_subscriptions as the key to lookup the unsubscription info
 	// Can be statically called
 	function getUnsubscriptions( $pMixed ) {
 		global $gBitDb;
@@ -172,14 +172,51 @@ class BitMailer extends phpmailer {
 		if( is_array( $pMixed ) ) {
 			$col = key( $pMixed );
 			$bindVars[] = current( $pMixed );
-			$query = "SELECT tmu.`content_id` AS `hash_key`, * FROM `".BIT_DB_PREFIX."tiki_mail_unsubscriptions` tmu
-						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( tmu.`user_id`=uu.`user_id` )
-						LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tmu.`content_id`=tc.`content_id` )
-					WHERE tmu.`$col`=? ";
+			$query = "SELECT tms.`nl_content_id` AS `hash_key`, * FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` tms
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( tms.`user_id`=uu.`user_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tms.`nl_content_id`=tc.`content_id` )
+					WHERE tms.`$col`=? ";
 			$ret = $gBitDb->getAssoc( $query, $bindVars );
 		}
 		return( $ret );
 	}
+
+	function storeSubscriptions( $pSubHash ) {
+		global $gBitSystem, $gBitDb;
+vd( $pSubHash );
+		$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `".key( $pSubHash['sub_lookup'] )."`=?";
+		$result = $gBitDb->query($query, array( current( $pSubHash['sub_lookup'] ) ) );
+
+		if( !empty( $pSubHash['unsub_content'] ) ) {
+			foreach( $pSubHash['unsub_content'] as $conId ) {
+				$storeHash = array();
+				$storeHash['nl_content_id'] = $conId;
+				$storeHash['unsubscribe_all'] = !empty( $pSubHash['unsubscribe_all'] ) ? 'y' : NULL;
+				$storeHash['unsubscribe_date'] = time();
+				$storeHash[key( $pSubHash['sub_lookup'] )] = current( $pSubHash['sub_lookup'] );
+				if( !empty( $pSubHash['response_content_id'] ) ) {
+					$storeHash['response_content_id'] = $pSubHash['response_content_id'];
+				}
+				$gBitDb->associateInsert( BIT_DB_PREFIX."tiki_mail_subscriptions", $storeHash );
+			}
+		}
+die;
+		if (!$result->numRows()) return false;
+
+		$res = $result->fetchRow();
+		$info = $this->get_newsletter($res["nl_id"]);
+		$gBitSmarty->assign('info', $info);
+		$gBitSmarty->assign('code', $res["code"]);
+		$query = "delete from `".BIT_DB_PREFIX."tiki_newsletter_subscriptions` where `code`=?";
+		$result = $this->mDb->query($query,array($code));
+		// Now send a bye bye email
+		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
+		@mail($res["email"], tra('Bye bye from '). $info["name"] . tra(' at '). $_SERVER["SERVER_NAME"], $mail_data,
+			"From: ".$gBitSystem->getPreference( 'sender_email' )."\r\nContent-type: text/plain;charset=utf-8\r\n");
+		$this->update_users($res["nl_id"]);
+		return $this->get_newsletter($res["nl_id"]);
+	}
+
 
 }
 ?>

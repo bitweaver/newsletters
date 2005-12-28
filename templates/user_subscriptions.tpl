@@ -8,7 +8,8 @@
 	{if $subInfo}
 	{formfeedback success=$success error=$gContent->mErrors}
 	{form enctype="multipart/form-data" id="editpageform"}
-		<input type="hidden" name="unsub_content_id" value="{$subInfo.content_id}" />
+		<input type="hidden" name="response_content_id" value="{$subInfo.content_id}" />
+		<input type="hidden" name="sub" value="{$smarty.request.sub}" />
 		<div class="row">
 <em>
 			{formlabel label="In Response To"}

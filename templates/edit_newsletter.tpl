@@ -1,3 +1,4 @@
+{if !$newsletters || $gContent->isValid() || $smarty.request.new}
 {strip}
 <div class="floaticon">{bithelp}</div>
 
@@ -7,7 +8,6 @@
 	</div>
 
 	<div class="body">
-		{if !$newsletters || $gContent->isValid() || $smarty.request.new}
 			{form legend="Create / Edit Newsletters"}
 				{if $individual eq 'y'}
 					<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$gContent->mInfo.name}&amp;object_type=newsletter&amp;permType=newsletters&amp;object_id={$gContent->mInfo.nl_id}">{tr}There are individual permissions set for this newsletter{/tr}</a><br /><br />
@@ -68,46 +68,9 @@
 				</div>
 			{/form}
 
-		{else}
-
-			{minifind}
-
-			<table class="data">
-				<caption>{tr}Newsletters{/tr}</caption>
-				<tr>
-					<th>{smartlink ititle="Name" isort=name offset=$offset}</th>
-					<th>{smartlink ititle="Description" isort=description offset=$offset}</th>
-					<th>{smartlink ititle="Created" isort=last_sent offset=$offset}</th>
-					<th>{smartlink ititle="Last Sent" isort=created offset=$offset}</th>
-					<th>{smartlink ititle="Users Unsubscribed" isort=users offset=$offset}</th>
-					<th>{tr}Action{/tr}</th>
-				</tr>
-
-				{foreach key=nlId from=$newsletters item=nl}
-					<tr class="{cycle values='odd,even'}">
-						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nlId}">{$nl.title}</a></td>
-						<td>{$nl.data}</td>
-						<td>{$nl.created|bit_short_date}</td>
-						<td>{$nl.last_sent|bit_short_date}</td>
-						<td style="text-align:right;"><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nlId}">{$nl.users|default:0} [ {$channels[user].confirmed|default:0} ]</a></td>
-						<td style="text-align:right;">
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?nl_id={$nlId}">{biticon ipackage=liberty iname=new iexplain="New Edition"}</a>
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?&amp;nl_id={$nlId}">{biticon ipackage=liberty iname=edit iexplain=Edit}</a>
-							{if $channels[user].individual eq 'y'}({/if}<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$nl.title}&amp;object_type={$smarty.const.BITNEWSLETTER_CONTENT_TYPE_GUID}&amp;permType=newsletters&amp;object_id={$nlId}">{biticon ipackage=liberty iname=permissions iexplain=Permissions}</a>{if $nl.individual eq 'y'}){/if}
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?remove=1&amp;nl_id={$nlId}">{biticon ipackage=liberty iname=delete iexplain=Remove}</a>
-						</td>
-					</tr>
-				{foreachelse}
-					<tr class="norecords">
-						<td colspan="7">{tr}No Records Found{/tr}</td>
-					</tr>
-				{/foreach}
-			</table>
-
-			<a href="{$smarty.server.php_self}?new=1">Create new newsletter</a>
-
-			{pagination}
-		{/if}
 	</div><!-- end .body -->
 </div><!-- end .___ -->
 {/strip}
+{else}
+	{include file="bitpackage:newsletters/list_newsletters.tpl"}
+{/if}

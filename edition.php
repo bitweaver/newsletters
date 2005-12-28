@@ -12,7 +12,6 @@
 
 // Initialization
 require_once( '../bit_setup_inc.php' );
-include_once( NEWSLETTERS_PKG_PATH.'nl_lib.php' );
 include_once( UTIL_PKG_PATH.'htmlMimeMail.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );

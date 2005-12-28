@@ -14,6 +14,26 @@ $tables = array(
   CONSTRAINTS ', CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
 ",
 
+'tiki_newsletters_editions' => "
+  edition_id I4 AUTO PRIMARY,
+  nl_id I4 NOTNULL,
+  is_draft C(1),
+  content_id I4 NOTNULL
+  CONSTRAINTS ', CONSTRAINT `tiki_nl_ed_nl_ref` FOREIGN KEY (`nl_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `nl_id` )
+  			   , CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
+",
+
+'tiki_mail_subscriptions' => "
+  email C(160),
+  user_id I4,
+  nl_content_id I4,
+  response_content_id I4,
+  unsubscribe_all C(1),
+  unsubscribe_date I8
+  CONSTRAINTS ', CONSTRAINT `tiki_mail_unsub_con_ref` FOREIGN KEY (`unsub_content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `unsub_content_id` ),
+			   , CONSTRAINT `tiki_mail_unsub_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
+",
+
 'tiki_mail_errors' => "
   url_code C(32) PRIMARY,
   email C(160),
@@ -24,31 +44,12 @@ $tables = array(
   CONSTRAINTS ', CONSTRAINT `tiki_mail_err_user_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
 ",
 
-'tiki_mail_unsubscriptions' => "
-  content_id I4 PRIMARY,
-  email C(160) PRIMARY,
-  user_id I4,
-  unsubscribe_all C(1),
-  unsubscribed_date I8
-  CONSTRAINTS ', CONSTRAINT `tiki_mail_unsub_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `content_id` ),
-			   , CONSTRAINT `tiki_mail_unsub_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
-",
-
-'tiki_newsletters_editions' => "
-  edition_id I4 AUTO PRIMARY,
-  nl_id I4 NOTNULL,
-  is_draft C(1),
-  content_id I4 NOTNULL
-  CONSTRAINTS ', CONSTRAINT `tiki_nl_ed_nl_ref` FOREIGN KEY (`nl_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `nl_id` )
-  			   , CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
-",
-
-'tiki_editions_mailings' => "
+'tiki_mail_mailings' => "
   content_id I4 NOTNULL,
   queue_date I8,
   send_date I8,
   emails_sent I8
-  CONSTRAINTS ', CONSTRAINT `tiki_nl_mail_ed_ref` FOREIGN KEY (`edition_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters_editions`( `edition_id` )'
+  CONSTRAINTS ', CONSTRAINT `tiki_mail_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content` ( `content_id` )'
 ",
 
 'tiki_mail_queue' => "
