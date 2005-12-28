@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.4 2005/12/25 02:23:44 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.5 2005/12/28 15:23:32 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.4 2005/12/25 02:23:44 spiderr Exp $
+ * $Id: BitMailer.php,v 1.5 2005/12/28 15:23:32 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.4 $ $Date: 2005/12/25 02:23:44 $ $Author: spiderr $
+ * @version $Revision: 1.5 $ $Date: 2005/12/28 15:23:32 $ $Author: spiderr $
  */
 
 /**
@@ -156,6 +156,7 @@ class BitMailer extends phpmailer {
 		if( !empty( $pUrlCode ) ) {
 			$query = "SELECT * FROM `".BIT_DB_PREFIX."tiki_mail_queue` tmq
 						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tmq.`nl_content_id`=tc.`content_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( tmq.`user_id`=uu.`user_id` )
 					  WHERE `url_code`=? ";
 			$ret = $gBitDb->getRow( $query, array( $pUrlCode ) );
 		}
@@ -164,7 +165,7 @@ class BitMailer extends phpmailer {
 
 	// Accepts a single row has containing the column of tiki_mail_unsubscriptions as the key to lookup the unsubscription info
 	// Can be statically called
-	function getUnsubscription( $pMixed ) {
+	function getUnsubscriptions( $pMixed ) {
 		global $gBitDb;
 		$ret = NULL;
 		if( is_array( $pMixed ) ) {

@@ -6,6 +6,15 @@
 
 	<div class="body">
 	{if $subInfo}
+	{formfeedback success=$success error=$gContent->mErrors}
+	{form enctype="multipart/form-data" id="editpageform"}
+		<div class="row">
+			{formlabel label="User Information"}
+			{forminput}
+				{displayname hash=$subInfo}<br/>
+				{$subInfo.email}
+			{/forminput}
+		</div>
 		<div class="row">
 			{formlabel label="Subscriptions"}
 			{forminput}
@@ -15,9 +24,13 @@
 		<div class="row">
 			{formlabel label="Permanent Unsubscribe"}
 			{forminput}
-				<input type="checkbox" name="unsubscribe_all" value="{$subInfo.nl_content_id}" {if subInfo.unsubscribe_all}{/if} /> {tr}Remove myself from all lists, and receive no further mailings from{/tr} {$gBitSystem->getPreference('siteTitle','this site')}.</br>
+				<input type="checkbox" name="unsubscribe_all" value="{$subInfo.nl_content_id}" {if $subInfo.unsubscribe_all}checked="checked"{/if} /> {tr}Remove myself from all lists, and receive no further mailings from{/tr} {$gBitSystem->getPreference('siteTitle','this site')}.</br>
 			{/forminput}
 		</div>
+		<div class="row submit">
+			<input type="submit" name="update" value="{tr}Update Subscriptions{/tr}" />
+		</div>
+	{/form}
 	{else}
 		<div class="row">
 			{tr}The subscription URL is no longer valid.{/tr}

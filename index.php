@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.8 2005/12/25 02:23:44 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.9 2005/12/28 15:23:32 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -26,11 +26,16 @@ if( isset( $_REQUEST["sub"] ) ) {
 		$gBitSmarty->assign( 'subInfo', BitMailer::lookupUrlCode( $_REQUEST["sub"] ) );
 	}
 	$mid = 'bitpackage:newsletters/user_subscriptions.tpl';
-} elseif( isset( $_REQUEST["unsubscribe"] ) ) {
+} elseif( isset( $_REQUEST["update"] ) ) {
+	/* List newsletters */
+	$listHash = array();
+	$newsletters = $gContent->getList( $listHash );
+vd( $newsletters );
+vd( $_REQUEST );
+	$feedback['success'] = tra( "Your subscriptions were updated." );
 	if( $conf = $gContent->unsubscribe( $_REQUEST["unsubscribe"] ) ) {
-		$feedback['success'] = tra( "Your email address was removed from the list of subscriptors." );
-		$gBitSmarty->assign('nl_info', $conf);
 	}
+	$mid = 'bitpackage:newsletters/user_subscriptions.tpl';
 }
 
 if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'bit_p_subscribe_newsletters' ) && empty( $_REQUEST["confirm_subscription"] ) ) {
