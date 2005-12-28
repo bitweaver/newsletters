@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.9 2005/12/28 15:23:32 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.10 2005/12/28 16:01:51 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -21,15 +21,27 @@ if( isset( $_REQUEST["confirm_subscription"] ) ) {
 	}
 }
 
+if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'bit_p_subscribe_newsletters' ) && empty( $_REQUEST["sub"] ) ) {
+	$gBitSystem->fatalError( tra("You must be logged in to subscribe to newsletters"));
+}
+
+require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
+$feedback = array();
+
+/* List newsletters */
+$listHash = array();
+$newsletters = $gContent->getList( $listHash );
+$gBitSmarty->assign_by_ref('newsletters', $newsletters );
+
 if( isset( $_REQUEST["sub"] ) ) {
-	if( strlen( $_REQUEST["sub"] ) == 32 ) {
-		$gBitSmarty->assign( 'subInfo', BitMailer::lookupUrlCode( $_REQUEST["sub"] ) );
+	if( strlen( $_REQUEST["sub"] ) == 32 && ($subInfo = BitMailer::lookupUrlCode( $_REQUEST["sub"] )) ) {
+		$gBitSmarty->assign( 'subInfo', $subInfo );
+		$lookup['email'] = $subInfo['email'];
+		$unsubs = BitMailer::getUnsubscriptions( $lookup );
+		$gBitSmarty->assign( 'unsubs', $unsubs );
 	}
 	$mid = 'bitpackage:newsletters/user_subscriptions.tpl';
 } elseif( isset( $_REQUEST["update"] ) ) {
-	/* List newsletters */
-	$listHash = array();
-	$newsletters = $gContent->getList( $listHash );
 vd( $newsletters );
 vd( $_REQUEST );
 	$feedback['success'] = tra( "Your subscriptions were updated." );
@@ -37,13 +49,6 @@ vd( $_REQUEST );
 	}
 	$mid = 'bitpackage:newsletters/user_subscriptions.tpl';
 }
-
-if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'bit_p_subscribe_newsletters' ) && empty( $_REQUEST["confirm_subscription"] ) ) {
-	$gBitSystem->fatalError( tra("You must be logged in to subscribe to newsletters"));
-}
-
-require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
-$feedback = array();
 
 $foo = parse_url($_SERVER["REQUEST_URI"]);
 $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
@@ -90,7 +95,6 @@ if( $gContent->isValid() ) {
 		}
 	}
 	*/
-	$gBitSmarty->assign_by_ref('newsletters', $newsletters );
 	$gBitSmarty->assign( 'feedback', $feedback );
 	$mid = 'bitpackage:newsletters/newsletters.tpl';
 }

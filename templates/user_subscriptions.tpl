@@ -8,6 +8,15 @@
 	{if $subInfo}
 	{formfeedback success=$success error=$gContent->mErrors}
 	{form enctype="multipart/form-data" id="editpageform"}
+		<input type="hidden" name="unsub_content_id" value="{$subInfo.content_id}" />
+		<div class="row">
+<em>
+			{formlabel label="In Response To"}
+			{forminput}
+				{tr}{$subInfo.content_description}{/tr}: {$subInfo.title}
+			{/forminput}
+</em>
+		</div>
 		<div class="row">
 			{formlabel label="User Information"}
 			{forminput}
@@ -18,13 +27,17 @@
 		<div class="row">
 			{formlabel label="Subscriptions"}
 			{forminput}
-				<input type="checkbox" name="nl_content_id" value="{$subInfo.nl_content_id}" /> {$subInfo.title} </br>
+				{foreach from=$newsletters key=nlId item=nl}
+					<input type="checkbox" name="nl_content_id[]" value="{$nlId}" {if !$unsubs.$nlId}checked="checked"{/if}/> {$nl.title} <br/>
+				{foreachelse}
+					{tr}No newsletters were found{/tr}
+				{/foreach}
 			{/forminput}
 		</div>
 		<div class="row">
 			{formlabel label="Permanent Unsubscribe"}
 			{forminput}
-				<input type="checkbox" name="unsubscribe_all" value="{$subInfo.nl_content_id}" {if $subInfo.unsubscribe_all}checked="checked"{/if} /> {tr}Remove myself from all lists, and receive no further mailings from{/tr} {$gBitSystem->getPreference('siteTitle','this site')}.</br>
+				<input type="checkbox" name="unsubscribe_all" value="y" {if $subInfo.unsubscribe_all}checked="checked"{/if} /> {tr}Remove myself from all lists, and receive no further mailings from{/tr} {$gBitSystem->getPreference('siteTitle','this site')}.</br>
 			{/forminput}
 		</div>
 		<div class="row submit">
