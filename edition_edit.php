@@ -12,9 +12,8 @@
 
 // Initialization
 require_once( '../bit_setup_inc.php' );
-include_once( UTIL_PKG_PATH.'htmlMimeMail.php' );
-
 $gBitSystem->verifyPackage( 'newsletters' );
+$gBitSystem->verifyPermission( 'bit_p_create_editions' );
 
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_edition_inc.php' );
 
@@ -22,7 +21,7 @@ $listHash = array();
 $newsletters = $gContent->mNewsletter->getList( $listHash );
 
 if( empty( $newsletters ) ) {
-	header( 'Location: '.NEWSLETTERS_PKG_URL.'admin/index.php' );
+	header( 'Location: '.NEWSLETTERS_PKG_URL.'newsletters.php' );
 	die;
 }
 
