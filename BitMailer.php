@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.12 2005/12/29 18:46:39 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.13 2005/12/29 21:55:55 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.12 2005/12/29 18:46:39 spiderr Exp $
+ * $Id: BitMailer.php,v 1.13 2005/12/29 21:55:55 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.12 $ $Date: 2005/12/29 18:46:39 $ $Author: spiderr $
+ * @version $Revision: 1.13 $ $Date: 2005/12/29 21:55:55 $ $Author: spiderr $
  */
 
 /**
@@ -103,6 +103,7 @@ class BitMailer extends phpmailer {
 				$unsub = '';
 				if( $body[$pick['content_id']]['object']->mNewsletter->mInfo['unsub_msg'] ) {
 					$gBitSmarty->assign( 'url_code', $pick['url_code'] );
+					$gBitSmarty->assign( 'sending', TRUE );
 					$unsub = $gBitSmarty->fetch( 'bitpackage:newsletters/unsubscribe_inc.tpl' );
 				}
 				$htmlBody = $unsub . $body[$pick['content_id']]['body'] . $unsub . '<img src="'.NEWSLETTERS_PKG_URI.'track.php?sub='.$pick['url_code'].'" alt="" />';

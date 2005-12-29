@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.10 2005/12/29 18:46:39 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.11 2005/12/29 21:55:55 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -31,6 +31,7 @@ $gBitSmarty->assign('emited', 'n');
 if( $gContent->isValid() && isset( $_REQUEST['preview'] ) ) {
 	$recipients = $gContent->getRecipients( $_REQUEST['send_group'] );
 	$gBitSmarty->assign_by_ref( 'recipientList', $recipients );
+	$gBitSmarty->assign( 'sending', TRUE );
 } elseif( $gContent->isValid() && isset( $_REQUEST["send"] ) ) {
 	if( $emails = $gContent->getRecipients( $_REQUEST['send_group'] ) ) {
 		global $gBitMailer;

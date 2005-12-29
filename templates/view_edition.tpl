@@ -1,4 +1,5 @@
 <div class="display newsletters">
+	{if !$sending}
 	<div class="floaticon">
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon'}
 
@@ -10,6 +11,7 @@
 			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?edition_id={$gContent->mEditionId}">{biticon ipackage=liberty iname="mail_send" iexplain="email this post"}</a>
 		{/if}
 	</div>
+	{/if}
 
 	<div class="header">
 		<h1>{$gContent->getTitle()}</h1>
