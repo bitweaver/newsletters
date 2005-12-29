@@ -31,7 +31,7 @@
 			{formlabel label="Subscriptions"}
 			{forminput}
 				{foreach from=$newsletters key=nlId item=nl}
-					<input type="checkbox" name="nl_content_id[]" value="{$nlId}" {if !$unsubs.$nlId}checked="checked"{/if}/> <a href="{$nl.display_url}"/>{$nl.title}</a> <br/>
+					<input type="checkbox" name="nl_content_id[]" value="{$nlId}" {if !$unsubs.$nlId && !$subInfo.unsubscribe_all}checked="checked"{/if}/> <a href="{$nl.display_url}"/>{$nl.title}</a> <br/>
 				{foreachelse}
 					{tr}No newsletters were found{/tr}
 				{/foreach}

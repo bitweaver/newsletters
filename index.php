@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.13 2005/12/28 23:43:24 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.14 2005/12/29 15:31:32 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -47,17 +47,32 @@ if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
 	if( isset( $_REQUEST["update"] ) ) {
 		$subHash['response_content_id'] = $_REQUEST['response_content_id'];
 		$subHash['sub_lookup'] = !empty( $subInfo['user_id'] ) ? array( 'user_id' => $subInfo['user_id'] ) : array( 'email' => $subInfo['email'] );
+
+		if( !empty( $_REQUEST['unsubscribe_all'] ) ) {
+			$subHash['unsubscribe_all'] = 'y';
+			$subHash['unsub_content'] = array_keys( $newsletters );
+		} else {
+			$subHash['unsubscribe_all'] = NULL;
+		}
+
 		foreach( array_keys( $newsletters ) as $nlContentId ) {
-			if( !in_array( $nlContentId, $_REQUEST['nl_content_id'] ) ) {
+			if( empty( $_REQUEST['nl_content_id'] ) || !in_array( $nlContentId, $_REQUEST['nl_content_id'] ) ) {
 				$subHash['unsub_content'][] = $nlContentId;
 			}
 		}
+
 		if( BitMailer::storeSubscriptions( $subHash ) ) {
 			$feedback['success'] = tra( "Your subscriptions were updated." );
 		} else {
 			$feedback['error'] = tra( "Subscriptions were not updated." );
 		}
 		$unsubs = BitMailer::getUnsubscriptions( $lookup );
+		foreach( $unsubs as $sub ) {
+			if( !empty( $sub['unsubscribe_all'] ) ) {
+				$subInfo['unsubscribe_all'] = TRUE;
+				break;
+			}
+		}
 	}
 	$gBitSmarty->assign( 'subInfo', $subInfo );
 	$gBitSmarty->assign( 'unsubs', $unsubs );

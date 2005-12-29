@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.11 2005/12/28 20:12:46 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.12 2005/12/29 15:31:32 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.11 2005/12/28 20:12:46 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.12 2005/12/29 15:31:32 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.11 $ $Date: 2005/12/28 20:12:46 $ $Author: spiderr $
+ * @version $Revision: 1.12 $ $Date: 2005/12/29 15:31:32 $ $Author: spiderr $
  */
 
 /**
@@ -181,7 +181,8 @@ class BitNewsletterEdition extends LibertyAttachable {
 				$ret = array_merge( $ret, $gBitUser->getGroupUserData( $groupId, array( 'email', 'uu.user_id', 'login', 'real_name' ) ) );
 			}
 
-			$query = "SELECT * FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE (`nl_content_id`=? AND `unsubscribed_date` IS NOT NULL) OR `unsubscribe_all` IS NOT NULL";
+			$query = "SELECT * FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions`
+					  WHERE (`nl_content_id`=? AND `unsubscribe_date` IS NOT NULL) OR `unsubscribe_all` IS NOT NULL";
 			if( $unsubs = $this->mDb->getArray( $query, array( $this->mNewsletter->mContentId ) ) ) {
 				$ret = array_diff_assoc( $ret, $unsubs );
 			}

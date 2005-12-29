@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.9 2005/12/28 23:43:24 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.10 2005/12/29 15:31:29 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.9 2005/12/28 23:43:24 spiderr Exp $
+ * $Id: BitMailer.php,v 1.10 2005/12/29 15:31:29 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.9 $ $Date: 2005/12/28 23:43:24 $ $Author: spiderr $
+ * @version $Revision: 1.10 $ $Date: 2005/12/29 15:31:29 $ $Author: spiderr $
  */
 
 /**
@@ -154,7 +154,7 @@ class BitMailer extends phpmailer {
 		global $gBitDb;
 		$ret = NULL;
 		if( is_array( $pLookup ) ) {
-			$query = "SELECT tmq.*, tc.*, tct.*, uu.`real_name`, uu.`login`, uu.`email` FROM `".BIT_DB_PREFIX."tiki_mail_queue` tmq
+			$query = "SELECT tmq.*, tc.title, tct.*, uu.`real_name`, uu.`login`, uu.`email` FROM `".BIT_DB_PREFIX."tiki_mail_queue` tmq
 						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tmq.`content_id`=tc.`content_id` )
 						INNER JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON( tct.`content_type_guid`=tc.`content_type_guid` )
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( tmq.`user_id`=uu.`user_id` )
@@ -172,18 +172,19 @@ class BitMailer extends phpmailer {
 		if( is_array( $pMixed ) ) {
 			$col = key( $pMixed );
 			$bindVars[] = current( $pMixed );
-			$query = "SELECT tms.`nl_content_id` AS `hash_key`, * FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` tms
+			$query = "SELECT tms.`nl_content_id` AS `hash_key`, tms.*, uu.*, tc.title
+					  FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` tms
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( tms.`user_id`=uu.`user_id` )
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tms.`nl_content_id`=tc.`content_id` )
-					WHERE tms.`$col`=? ";
+					  WHERE tms.`$col`=? ";
 			$ret = $gBitDb->getAssoc( $query, $bindVars );
 		}
 		return( $ret );
 	}
 
 	function storeSubscriptions( $pSubHash ) {
-		$ret = FALSE;
 		global $gBitSystem, $gBitDb;
+		$ret = FALSE;
 		$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `".key( $pSubHash['sub_lookup'] )."`=?";
 		$result = $gBitDb->query($query, array( current( $pSubHash['sub_lookup'] ) ) );
 		$ret = TRUE;
