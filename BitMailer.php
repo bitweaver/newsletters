@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.13 2005/12/29 21:55:55 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.14 2005/12/29 22:19:04 bitweaver Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.13 2005/12/29 21:55:55 spiderr Exp $
+ * $Id: BitMailer.php,v 1.14 2005/12/29 22:19:04 bitweaver Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.13 $ $Date: 2005/12/29 21:55:55 $ $Author: spiderr $
+ * @version $Revision: 1.14 $ $Date: 2005/12/29 22:19:04 $ $Author: bitweaver $
  */
 
 /**
@@ -108,7 +108,10 @@ class BitMailer extends phpmailer {
 				}
 				$htmlBody = $unsub . $body[$pick['content_id']]['body'] . $unsub . '<img src="'.NEWSLETTERS_PKG_URI.'track.php?sub='.$pick['url_code'].'" alt="" />';
 
-				if( !$this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
+				print "TO: $pick[email]\t";
+				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
+					print "SENT\n";
+				} else {
 					$this->logError( $pick );
 				}
 				$updateQuery = "UPDATE `".BIT_DB_PREFIX."tiki_mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
@@ -119,8 +122,6 @@ class BitMailer extends phpmailer {
 			$rs->MoveNext();
 		}
 		$this->mDb->CompleteTrans();
-
-		$this->mDb->query( "UPDATE tiki_mail_queue set sent_date=NULL" );
 	}
 
 
@@ -157,6 +158,7 @@ class BitMailer extends phpmailer {
 			$store['error_date'] = time();
 			$this->mDb->associateInsert( BIT_DB_PREFIX."tiki_mail_errors", $store );
 		}
+		print "ERROR: ".$this->ErrorInfo."\n";
 	}
 
 	// Looks up the code from the url to determine if the unsubscribe URL is valid.
