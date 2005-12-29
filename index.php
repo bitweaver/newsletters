@@ -1,31 +1,22 @@
 <?php
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.15 2005/12/29 17:22:47 spiderr Exp $
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.14 2005/12/29 15:31:32 spiderr Exp $
-
-// Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 
 // Initialization
 require_once( '../bit_setup_inc.php' );
-
 include_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
-
-$gBitSmarty->assign('confirm', 'n');
-if( isset( $_REQUEST["confirm_subscription"] ) ) {
-	if( $conf = $gContent->confirmSubscription( $_REQUEST["confirm_subscription"] ) ) {
-		$gBitSmarty->assign( 'confirm', 'y' );
-		$gBitSmarty->assign( 'nl_info', $conf );
-	}
-}
 
 if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'bit_p_subscribe_newsletters' ) && empty( $_REQUEST["sub"] ) ) {
 	$gBitSystem->fatalError( tra("You must be logged in to subscribe to newsletters"));
 }
 
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
+
 $feedback = array();
 
 /* List newsletters */
