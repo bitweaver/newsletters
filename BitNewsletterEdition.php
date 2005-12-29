@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.12 2005/12/29 15:31:32 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.13 2005/12/29 18:46:39 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.12 2005/12/29 15:31:32 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.13 2005/12/29 18:46:39 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.12 $ $Date: 2005/12/29 15:31:32 $ $Author: spiderr $
+ * @version $Revision: 1.13 $ $Date: 2005/12/29 18:46:39 $ $Author: spiderr $
  */
 
 /**
@@ -45,10 +45,10 @@ class BitNewsletterEdition extends LibertyAttachable {
 
 	function verify( &$pParamHash ) {
 
-		if( $this->verifyId( $pParamHash['nl_id'] ) ) {
+		if( @$this->verifyId( $pParamHash['nl_content_id'] ) ) {
 			$pParamHash['edition_store']["nl_content_id"] = $pParamHash['nl_content_id'];
 		} else {
-			$this->mErrors['nl_id'] = tra( 'No newsletter was selected for this edition.' );
+			$this->mErrors['nl_content_id'] = tra( 'No newsletter was selected for this edition.' );
 		}
 		$pParamHash['edition_store']['is_draft'] = !empty( $pParamHash['is_draft'] ) ? 'y' : NULL;
 

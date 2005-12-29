@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.9 2005/12/25 02:23:44 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.10 2005/12/29 18:46:39 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -11,6 +11,7 @@ require_once( '../../bit_setup_inc.php' );
 include_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
+$gBitSystem->verifyPermission( 'tiki_p_admin_newsletters' );
 
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_edition_inc.php' );
 

@@ -16,10 +16,10 @@ $tables = array(
 
 'tiki_newsletters_editions' => "
   edition_id I4 AUTO PRIMARY,
-  nl_id I4 NOTNULL,
+  nl_content_id I4 NOTNULL,
   is_draft C(1),
   content_id I4 NOTNULL
-  CONSTRAINTS ', CONSTRAINT `tiki_nl_ed_nl_ref` FOREIGN KEY (`nl_id`) REFERENCES `".BIT_DB_PREFIX."tiki_newsletters`( `nl_id` )
+  CONSTRAINTS ', CONSTRAINT `tiki_nl_ed_nl_con_ref` FOREIGN KEY (`nl_content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )
   			   , CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'
 ",
 
@@ -99,10 +99,9 @@ $gBitInstaller->registerSchemaIndexes( LIBERTY_PKG_NAME, $indices );
 
 // ### Default UserPermissions
 $gBitInstaller->registerUserPermissions( NEWSLETTERS_PKG_NAME, array(
-	array('bit_p_admin_newsletters', 'Can admin newsletters', 'editors', 'newsletters'),
+	array('bit_p_admin_newsletters', 'Can admin and send newsletters', 'editors', 'newsletters'),
 	array('bit_p_create_newsletters', 'Can create newsletters', 'editors', 'newsletters'),
 	array('bit_p_create_editions', 'Can create editions', 'editors', 'newsletters'),
-	array('bit_p_send_newsletters', 'Can send newsletters', 'editors', 'newsletters'),
 	array('bit_p_subscribe_newsletters', 'Can subscribe to newsletters', 'registered', 'newsletters'),
 	array('bit_p_subscribe_email', 'Can subscribe any email to newsletters', 'editors', 'newsletters'),
 ) );

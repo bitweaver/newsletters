@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.11 2005/12/29 17:22:47 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.12 2005/12/29 18:46:39 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.11 2005/12/29 17:22:47 spiderr Exp $
+ * $Id: BitMailer.php,v 1.12 2005/12/29 18:46:39 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.11 $ $Date: 2005/12/29 17:22:47 $ $Author: spiderr $
+ * @version $Revision: 1.12 $ $Date: 2005/12/29 18:46:39 $ $Author: spiderr $
  */
 
 /**
@@ -94,13 +94,17 @@ class BitMailer extends phpmailer {
 				if( $content->load() ) {
 					$body[$pick['content_id']]['body'] = $content->render();
 					$body[$pick['content_id']]['subject'] = $content->getTitle();
+					$body[$pick['content_id']]['object'] = $content;
 				}
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
 			}
 			if( !empty( $body[$pick['content_id']] ) ) {
 				$pick['url_code'] = md5( $pick['content_id'].$pick['email'].$pick['queue_date'] );
-				$gBitSmarty->assign( 'url_code', $pick['url_code'] );
-				$unsub = $gBitSmarty->fetch( 'bitpackage:newsletters/unsubscribe_inc.tpl' );
+				$unsub = '';
+				if( $body[$pick['content_id']]['object']->mNewsletter->mInfo['unsub_msg'] ) {
+					$gBitSmarty->assign( 'url_code', $pick['url_code'] );
+					$unsub = $gBitSmarty->fetch( 'bitpackage:newsletters/unsubscribe_inc.tpl' );
+				}
 				$htmlBody = $unsub . $body[$pick['content_id']]['body'] . $unsub . '<img src="'.NEWSLETTERS_PKG_URI.'track.php?sub='.$pick['url_code'].'" alt="" />';
 
 				if( !$this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {

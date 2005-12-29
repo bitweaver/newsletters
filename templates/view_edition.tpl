@@ -6,8 +6,9 @@
 			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?edition_id={$gContent->mEditionId}">{biticon ipackage=liberty iname="edit" iexplain="edit"}</a>
 			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?edition_id={$gContent->mEditionId}&amp;remove=1">{biticon ipackage=liberty iname="delete" iexplain="delete"}</a>
 		{/if}
-
-		<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?edition_id={$gContent->mEditionId}">{biticon ipackage=liberty iname="mail_send" iexplain="email this post"}</a>
+		{if $gBitUser->hasPermission('bit_p_admin_newsletters')}
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?edition_id={$gContent->mEditionId}">{biticon ipackage=liberty iname="mail_send" iexplain="email this post"}</a>
+		{/if}
 	</div>
 
 	<div class="header">

@@ -23,11 +23,11 @@
 				{jstab title="Edition Body"}
 					{legend legend="Edition Body"}
 						<div class="row">
-							{formlabel label="Newsletter" for="nl_id"}
+							{formlabel label="Newsletter" for="nl_content_id"}
 							{forminput}
-								<select name="nl_id" id="nl_id">
-									{foreach from=$newsletters item=nl key=nlId}
-										<option value="{$nlId}" {if $nlId eq $nl_id}selected="selected"{/if}>{$nl.title}</option>
+								<select name="nl_content_id" id="nl_content_id">
+									{foreach from=$newsletters item=nl key=nlConId}
+										<option value="{$nlConId}" {if $nl.con_id eq $nl_id}selected="selected"{/if}>{$nl.title}</option>
 									{/foreach}
 								</select>
 								{formhelp note="Pick the newsletter you want to post to."}
