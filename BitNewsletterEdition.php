@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.13 2005/12/29 18:46:39 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.14 2005/12/30 00:24:18 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.13 2005/12/29 18:46:39 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.14 2005/12/30 00:24:18 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.13 $ $Date: 2005/12/29 18:46:39 $ $Author: spiderr $
+ * @version $Revision: 1.14 $ $Date: 2005/12/30 00:24:18 $ $Author: spiderr $
  */
 
 /**
@@ -51,6 +51,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 			$this->mErrors['nl_content_id'] = tra( 'No newsletter was selected for this edition.' );
 		}
 		$pParamHash['edition_store']['is_draft'] = !empty( $pParamHash['is_draft'] ) ? 'y' : NULL;
+		$pParamHash['edition_store']['reply_to'] = !empty( $pParamHash['reply_to'] ) ? $pParamHash['reply_to'] : NULL;
 
 		return( count( $this->mErrors ) == 0 );
 	}

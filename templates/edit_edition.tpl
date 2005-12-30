@@ -62,15 +62,23 @@
 						<div class="row">
 							{formlabel label="Subject" for="subject"}
 							{forminput}
-								<input type="text" maxlength="250" size="40" name="title" id="subject" value="{$gContent->getTitle()|escape}" />
+								<input type="text" maxlength="250" size="40" name="title" id="subject" value="{$gContent->getTitle()|escape:html}" />
 								{formhelp note="This will appear in the <strong>subject</strong> line of the email."}
+							{/forminput}
+						</div>
+
+						<div class="row">
+							{formlabel label="Reply-To" for="replyto"}
+							{forminput}
+								<input type="text" maxlength="250" size="40" name="reply_to" id="replyto" value="{$gContent->getField('reply_to')|default:$gBitSystem->getPreference('sender_email',$smarty.server.SERVER_ADMIN)|escape:html}" />
+								{formhelp note="This is the email address to which any replies will be sent."}
 							{/forminput}
 						</div>
 
 						<div class="row">
 							{formlabel label="Body" for="body"}
 							{forminput}
-								<textarea name="edit" id="body" rows="25" cols="50">{$gContent->getField('data')|escape}</textarea>
+								<textarea name="edit" id="body" rows="25" cols="50">{$gContent->getField('data')|escape:html}</textarea>
 								{formhelp note=""}
 							{/forminput}
 						</div>

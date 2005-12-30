@@ -18,6 +18,7 @@ $tables = array(
   edition_id I4 AUTO PRIMARY,
   nl_content_id I4 NOTNULL,
   is_draft C(1),
+  reply_to C(160),
   content_id I4 NOTNULL
   CONSTRAINTS ', CONSTRAINT `tiki_nl_ed_nl_con_ref` FOREIGN KEY (`nl_content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )
   			   , CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."tiki_content`( `content_id` )'

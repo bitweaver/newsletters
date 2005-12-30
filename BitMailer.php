@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.14 2005/12/29 22:19:04 bitweaver Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.15 2005/12/30 00:24:18 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.14 2005/12/29 22:19:04 bitweaver Exp $
+ * $Id: BitMailer.php,v 1.15 2005/12/30 00:24:18 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.14 $ $Date: 2005/12/29 22:19:04 $ $Author: bitweaver $
+ * @version $Revision: 1.15 $ $Date: 2005/12/30 00:24:18 $ $Author: spiderr $
  */
 
 /**
@@ -36,7 +36,7 @@ class BitMailer extends phpmailer {
 		$this->mDb = $gBitDb;
 		$this->From     = $gBitSystem->getPreference( 'bitmailer_sender_email', $gBitSystem->getPreference( 'sender_email', $_SERVER['SERVER_ADMIN'] ) );
 		$this->FromName = $gBitSystem->getPreference( 'bitmailer_from', $gBitSystem->getPreference( 'siteTitle' ) );
-		$this->Host     = $gBitSystem->getPreference( 'bitmailer_servers', $gBitSystem->getPreference( 'feature_server_name', $_SERVER['HTTP_HOST'] ) );
+		$this->Host     = $gBitSystem->getPreference( 'bitmailer_servers', $gBitSystem->getPreference( 'feature_server_name', '127.0.0.1' ) );
 		$this->Mailer   = $gBitSystem->getPreference( 'bitmailer_protocol', 'smtp' ); // Alternative to IsSMTP()
 		$this->WordWrap = $gBitSystem->getPreference( 'bitmailer_word_wrap', 75 );
 		if( !$this->SetLanguage( $gBitLanguage->getLanguage(), UTIL_PKG_PATH.'phpmailer/language/' ) ) {
@@ -74,7 +74,7 @@ class BitMailer extends phpmailer {
 	}
 
 	function tendQueue() {
-		global $gBitSmarty;
+		global $gBitSmarty, $gBitSystem;
 		$body = array();
 		$this->mDb->StartTrans();
 		$query = "SELECT *
@@ -94,6 +94,7 @@ class BitMailer extends phpmailer {
 				if( $content->load() ) {
 					$body[$pick['content_id']]['body'] = $content->render();
 					$body[$pick['content_id']]['subject'] = $content->getTitle();
+					$body[$pick['content_id']]['reply_to'] = $content->getField( 'reply_to', $gBitSystem->getPreference( 'sender_email', $_SERVER['SERVER_ADMIN'] ) );
 					$body[$pick['content_id']]['object'] = $content;
 				}
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
@@ -108,6 +109,7 @@ class BitMailer extends phpmailer {
 				}
 				$htmlBody = $unsub . $body[$pick['content_id']]['body'] . $unsub . '<img src="'.NEWSLETTERS_PKG_URI.'track.php?sub='.$pick['url_code'].'" alt="" />';
 
+				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getPreference( 'bitmailer_from' ) );
 				print "TO: $pick[email]\t";
 				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
 					print "SENT\n";
