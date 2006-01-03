@@ -75,11 +75,19 @@
 							{/forminput}
 						</div>
 
+						{include file="bitpackage:liberty/edit_format.tpl"}
+
+						{if $gBitSystem->isPackageActive( 'smileys' )}
+							{include file="bitpackage:smileys/smileys_full.tpl"}
+						{/if}
+
+						{if $gBitSystem->isPackageActive( 'quicktags' )}
+							{include file="bitpackage:quicktags/quicktags_full.tpl"}
+						{/if}
 						<div class="row">
 							{formlabel label="Body" for="body"}
 							{forminput}
-								<textarea name="edit" id="body" rows="25" cols="50">{$gContent->getField('data')|escape:html}</textarea>
-								{formhelp note=""}
+								<textarea id="editwiki" name="edit" rows="{$rows|default:20}" cols="{$cols|default:50}">{$gContent->getField('data')|escape:html}</textarea>
 							{/forminput}
 						</div>
 					{/legend}

@@ -45,6 +45,11 @@ if (isset($_REQUEST["preview"])) {
 	}
 }
 
+// Configure quicktags list
+if( $gBitSystem->isPackageActive( 'quicktags' ) ) {
+	include_once( QUICKTAGS_PKG_PATH.'quicktags_inc.php' );
+}
+
 // load the ajax library for this page
 $gBitSmarty->assign( 'loadAjax', TRUE );
 // Display the template
