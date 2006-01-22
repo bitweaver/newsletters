@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.12 2005/12/28 23:21:24 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13 2006/01/22 20:21:56 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.12 2005/12/28 23:21:24 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.13 2006/01/22 20:21:56 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.12 $ $Date: 2005/12/28 23:21:24 $ $Author: spiderr $
+ * @version $Revision: 1.13 $ $Date: 2006/01/22 20:21:56 $ $Author: spiderr $
  */
 
 /**
@@ -197,18 +197,23 @@ class BitNewsletter extends LibertyContent {
 		}
 		$this->prepGetList( $pListHash );
 		$bindVars = array();
+		$mid = '';
+
+		if( @$this->verifyId( $pListHash['nl_id'] ) ) {
+			$mid .= ' AND tn.nl_id=? ';
+			$bindVars[] = $pListHash['nl_id'];
+		}
+
 		if( !empty( $pListHash['find'] ) ) {
 			$findesc = '%' . $pListHash['find'] . '%';
-			$mid = " where (`name` like ? or `description` like ?)";
+			$mid .= " AND (`name` like ? or `description` like ?)";
 			$bindVars[] = $findesc;
 			$bindVars[] = $findesc;
-		} else {
-			$mid = " ";
 		}
 
 		$query = "SELECT *
 				  FROM `".BIT_DB_PREFIX."tiki_newsletters` tn INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tn.`content_id`=tc.`content_id`)
-				  $mid
+				  WHERE tn.`content_id`=tc.`content_id` $mid
 				  ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] );
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
@@ -265,10 +270,13 @@ class BitNewsletter extends LibertyContent {
 		$ret = FALSE;
 		if( $this->isValid() ) {
 			$this->mDb->StartTrans();
-			$query = "delete from `".BIT_DB_PREFIX."tiki_newsletters` where `nl_id`=?";
+			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_newsletters` where `nl_id`=?";
 			$result = $this->mDb->query( $query, array( $this->mNewsletterId ) );
-			$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_id`=?";
-			$result = $this->mDb->query( $query, array( $this->mNewsletterId ) );
+			// Clear out all individual subscriptions/unsubscriptions, but preserve the unsubscribe_all's
+			$query = "DELETE FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE `nl_content_id`=? AND `unsubscribe_all` IS NOT NULL";
+			$result = $this->mDb->query( $query, array( $this->mContentId ) );
+			$query = "UPDATE `".BIT_DB_PREFIX."tiki_mail_subscriptions` SET `nl_content_id`=NULL WHERE `nl_content_id`=? AND `unsubscribe_all` IS NOT NULL";
+			$result = $this->mDb->query( $query, array( $this->mContentId ) );
 			if( parent::expunge() ) {
 				$ret = TRUE;
 				$this->mDb->CompleteTrans();

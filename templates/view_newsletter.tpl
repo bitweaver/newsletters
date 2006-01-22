@@ -3,8 +3,8 @@
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon'}
 
 		{if $gContent->isOwner() || $gBitUser->hasPermission( 'bit_p_admin_newsletters' )}
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?nl_id={$gContent->mNewsletterId}">{biticon ipackage=liberty iname="edit" iexplain="edit"}</a>
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/index.php?nl_id={$gContent->mNewsletterId}&amp;remove=1">{biticon ipackage=liberty iname="delete" iexplain="delete"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}">{biticon ipackage=liberty iname="edit" iexplain="edit"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}&amp;remove=1">{biticon ipackage=liberty iname="delete" iexplain="delete"}</a>
 		{/if}
 
 		{if $gBitUser->hasPermission( 'bit_p_print' )}
