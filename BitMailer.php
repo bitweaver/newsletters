@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.15 2005/12/30 00:24:18 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.16 2006/01/31 20:18:49 bitweaver Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.15 2005/12/30 00:24:18 spiderr Exp $
+ * $Id: BitMailer.php,v 1.16 2006/01/31 20:18:49 bitweaver Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.15 $ $Date: 2005/12/30 00:24:18 $ $Author: spiderr $
+ * @version $Revision: 1.16 $ $Date: 2006/01/31 20:18:49 $ $Author: bitweaver $
  */
 
 /**
@@ -66,7 +66,7 @@ class BitMailer extends phpmailer {
 				$insertHash['content_id'] = $pContentId;
 				$insertHash['nl_content_id'] = $pNewsletterContentId;
 				$insertHash['queue_date'] = $queueTime;
-				$this->mDb->associateInsert( BIT_DB_PREFIX.'tiki_mail_queue', $insertHash );
+				$this->mDb->associateInsert( BIT_DB_PREFIX.'mail_queue', $insertHash );
 				$ret++;
 			}
 		}
@@ -78,7 +78,7 @@ class BitMailer extends phpmailer {
 		$body = array();
 		$this->mDb->StartTrans();
 		$query = "SELECT *
-				  FROM `".BIT_DB_PREFIX."tiki_mail_queue` tmq
+				  FROM `".BIT_DB_PREFIX."mail_queue` mq
 				  WHERE `sent_date` IS NULL ".$this->mDb->SQLForUpdate();
 		while( ($rs = $this->mDb->query( $query, NULL, 1 )) && $rs->RowCount() ) {
 			$pick = $rs->fields;
@@ -116,7 +116,7 @@ class BitMailer extends phpmailer {
 				} else {
 					$this->logError( $pick );
 				}
-				$updateQuery = "UPDATE `".BIT_DB_PREFIX."tiki_mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
+				$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
 				$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
 				$this->mDb->CompleteTrans();
 				$this->mDb->StartTrans();
@@ -146,19 +146,19 @@ class BitMailer extends phpmailer {
 
 	function trackMail( $pUrlCode ) {
 		global $gBitDb;
-		$query = "UPDATE `".BIT_DB_PREFIX."tiki_mail_queue` SET `reads`=`reads`+1, `last_read_date`=? WHERE `url_code`=? ";
+		$query = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `reads`=`reads`+1, `last_read_date`=? WHERE `url_code`=? ";
 		$gBitDb->query( $query, array( time(), $pUrlCode ) );
 	}
 
 	function logError( $pInfo ) {
-		if( !empty( $pInfo['url_code'] ) && !$this->mDb->getOne( "SELECT `url_code` FROM `".BIT_DB_PREFIX."tiki_mail_errors` WHERE `url_code`=?", array( $pInfo['url_code'] ) ) ) {
+		if( !empty( $pInfo['url_code'] ) && !$this->mDb->getOne( "SELECT `url_code` FROM `".BIT_DB_PREFIX."mail_errors` WHERE `url_code`=?", array( $pInfo['url_code'] ) ) ) {
 			$store['url_code'] = $pInfo['url_code'];
 			$store['user_id'] = !empty( $pInfo['user_id'] ) ? $pInfo['user_id'] : NULL;
 			$store['content_id'] = !empty( $pInfo['content_id'] ) ? $pInfo['content_id'] : NULL;
 			$store['email'] = !empty( $pInfo['email'] ) ? $pInfo['email'] : NULL;
 			$store['error_message'] = $this->ErrorInfo;
 			$store['error_date'] = time();
-			$this->mDb->associateInsert( BIT_DB_PREFIX."tiki_mail_errors", $store );
+			$this->mDb->associateInsert( BIT_DB_PREFIX."mail_errors", $store );
 		}
 		print "ERROR: ".$this->ErrorInfo."\n";
 	}
@@ -169,17 +169,17 @@ class BitMailer extends phpmailer {
 		global $gBitDb;
 		$ret = NULL;
 		if( is_array( $pLookup ) ) {
-			$query = "SELECT tmq.*, tc.title, tct.*, uu.`real_name`, uu.`login`, uu.`email` FROM `".BIT_DB_PREFIX."tiki_mail_queue` tmq
-						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tmq.`content_id`=tc.`content_id` )
+			$query = "SELECT mq.*, tc.title, tct.*, uu.`real_name`, uu.`login`, uu.`email` FROM `".BIT_DB_PREFIX."mail_queue` mq
+						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( mq.`content_id`=tc.`content_id` )
 						INNER JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON( tct.`content_type_guid`=tc.`content_type_guid` )
-						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( tmq.`user_id`=uu.`user_id` )
-					  WHERE tmq.`".key( $pLookup )."`=? ";
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( mq.`user_id`=uu.`user_id` )
+					  WHERE mq.`".key( $pLookup )."`=? ";
 			$ret = $gBitDb->getRow( $query, array( current( $pLookup ) ) );
 		}
 		return( $ret );
 	}
 
-	// Accepts a single row has containing the column of tiki_mail_subscriptions as the key to lookup the unsubscription info
+	// Accepts a single row has containing the column of mail_subscriptions as the key to lookup the unsubscription info
 	// Can be statically called
 	function getUnsubscriptions( $pMixed ) {
 		global $gBitDb;
@@ -187,11 +187,11 @@ class BitMailer extends phpmailer {
 		if( is_array( $pMixed ) ) {
 			$col = key( $pMixed );
 			$bindVars[] = current( $pMixed );
-			$query = "SELECT tms.`nl_content_id` AS `hash_key`, tms.*, uu.*, tc.title
-					  FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` tms
-						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( tms.`user_id`=uu.`user_id` )
-						LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tms.`nl_content_id`=tc.`content_id` )
-					  WHERE tms.`$col`=? ";
+			$query = "SELECT ms.`nl_content_id` AS `hash_key`, ms.*, uu.*, tc.title
+					  FROM `".BIT_DB_PREFIX."mail_subscriptions` ms
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( ms.`user_id`=uu.`user_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( ms.`nl_content_id`=tc.`content_id` )
+					  WHERE ms.`$col`=? ";
 			$ret = $gBitDb->getAssoc( $query, $bindVars );
 		}
 		return( $ret );
@@ -200,7 +200,7 @@ class BitMailer extends phpmailer {
 	function storeSubscriptions( $pSubHash ) {
 		global $gBitSystem, $gBitDb;
 		$ret = FALSE;
-		$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `".key( $pSubHash['sub_lookup'] )."`=?";
+		$query = "delete from `".BIT_DB_PREFIX."mail_subscriptions` where `".key( $pSubHash['sub_lookup'] )."`=?";
 		$result = $gBitDb->query($query, array( current( $pSubHash['sub_lookup'] ) ) );
 		$ret = TRUE;
 		if( !empty( $pSubHash['unsub_content'] ) ) {
@@ -213,7 +213,7 @@ class BitMailer extends phpmailer {
 				if( !empty( $pSubHash['response_content_id'] ) ) {
 					$storeHash['response_content_id'] = $pSubHash['response_content_id'];
 				}
-				$gBitDb->associateInsert( BIT_DB_PREFIX."tiki_mail_subscriptions", $storeHash );
+				$gBitDb->associateInsert( BIT_DB_PREFIX."mail_subscriptions", $storeHash );
 			}
 		}
 		return $ret;

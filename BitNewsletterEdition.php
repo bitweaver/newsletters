@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.16 2006/01/31 11:51:50 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.17 2006/01/31 20:18:49 bitweaver Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.16 2006/01/31 11:51:50 wolff_borg Exp $
+ * $Id: BitNewsletterEdition.php,v 1.17 2006/01/31 20:18:49 bitweaver Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.16 $ $Date: 2006/01/31 11:51:50 $ $Author: wolff_borg $
+ * @version $Revision: 1.17 $ $Date: 2006/01/31 20:18:49 $ $Author: bitweaver $
  */
 
 /**
@@ -61,10 +61,10 @@ class BitNewsletterEdition extends LibertyAttachable {
 			$this->mDb->StartTrans();
 			if( parent::store( $pParamHash ) ) {
 				if( $this->mEditionId ) {
-					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."tiki_newsletters_editions", $pParamHash['edition_store'], array ( "name" => "edition_id", "value" => $this->mEditionId ) );
+					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."newsletters_editions", $pParamHash['edition_store'], array ( "name" => "edition_id", "value" => $this->mEditionId ) );
 				} else {
 					$pParamHash['edition_store']['content_id'] = $pParamHash['content_id'];
-					$result = $this->mDb->associateInsert( BIT_DB_PREFIX."tiki_newsletters_editions", $pParamHash['edition_store'] );
+					$result = $this->mDb->associateInsert( BIT_DB_PREFIX."newsletters_editions", $pParamHash['edition_store'] );
 				}
 				$this->mDb->CompleteTrans();
 				$this->load();
@@ -87,10 +87,10 @@ class BitNewsletterEdition extends LibertyAttachable {
 
 			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
-			$query = "SELECT tne.*, tc.*
-					  FROM `".BIT_DB_PREFIX."tiki_newsletters_editions` tne
-						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tne.`content_id`=tc.`content_id` )
-					  WHERE tne.`$lookupColumn`=? $whereSql";
+			$query = "SELECT ne.*, tc.*
+					  FROM `".BIT_DB_PREFIX."newsletters_editions` ne
+						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( ne.`content_id`=tc.`content_id` )
+					  WHERE ne.`$lookupColumn`=? $whereSql";
 			if ( $result = $this->mDb->query($query,$bindVars) ) {
 				$this->mInfo = $result->fetchRow();
 				$this->mEditionId = $this->mInfo['edition_id'];
@@ -141,7 +141,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 		$mid = '';
 
 		if( @$this->verifyId( $pListHash['nl_id'] ) ) {
-			$mid .= (empty( $mid ) ? 'WHERE' : 'AND').' tn.nl_id=? ';
+			$mid .= (empty( $mid ) ? 'WHERE' : 'AND').' n.nl_id=? ';
 			$bindVars[] = $pListHash['nl_id'];
 		}
 
@@ -151,13 +151,13 @@ class BitNewsletterEdition extends LibertyAttachable {
 			$bindVars[] = $findesc;
 			$bindVars[] = $findesc;
 		}
-		$query = "SELECT `edition_id` AS `hash_key`, tne.*, tc.*, tc2.`title` AS `newsletter_title`
-				  FROM `".BIT_DB_PREFIX."tiki_newsletters_editions` tne
-				  	INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tc.`content_id`=tne.`content_id` )
-				  	INNER JOIN `".BIT_DB_PREFIX."tiki_newsletters` tn ON( tne.`nl_content_id`=tn.`content_id` )
-				  	LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc2 ON( tn.`content_id`=tc2.`content_id` )
+		$query = "SELECT `edition_id` AS `hash_key`, ne.*, tc.*, tc2.`title` AS `newsletter_title`
+				  FROM `".BIT_DB_PREFIX."newsletters_editions` ne
+				  	INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tc.`content_id`=ne.`content_id` )
+				  	INNER JOIN `".BIT_DB_PREFIX."newsletters` n ON( ne.`nl_content_id`=n.`content_id` )
+				  	LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc2 ON( n.`content_id`=tc2.`content_id` )
 				  $mid ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] );
-		$query_cant = "select count(*) from `".BIT_DB_PREFIX."tiki_newsletters` tn INNER JOIN `".BIT_DB_PREFIX."tiki_newsletters_editions` tne ON(tn.`content_id`=tne.`nl_content_id`) $mid";
+		$query_cant = "select count(*) from `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."newsletters_editions` ne ON(n.`content_id`=ne.`nl_content_id`) $mid";
 		$ret = $gBitDb->getAssoc( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 		foreach( array_keys( $ret ) as $k ) {
 			$ret[$k]['display_url'] = BitNewsletterEdition::getDisplayUrl( $k );
@@ -174,7 +174,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 		$ret = FALSE;
 		if( $this->isValid() ) {
 			$this->mDb->StartTrans();
-			$query = "delete from `".BIT_DB_PREFIX."tiki_newsletters_editions` where `edition_id`=?";
+			$query = "delete from `".BIT_DB_PREFIX."newsletters_editions` where `edition_id`=?";
 			$result = $this->mDb->query( $query, array( $this->mContentId ) );
 			if( LibertyAttachable::expunge() ) {
 				$ret = TRUE;
@@ -198,12 +198,12 @@ class BitNewsletterEdition extends LibertyAttachable {
 				$ret = array_merge( $ret, $gBitUser->getGroupUserData( $groupId, array( 'email', 'uu.user_id', 'login', 'real_name' ) ) );
 			}
 
-			$query = "SELECT * FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions`
+			$query = "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions`
 					  WHERE (`nl_content_id`=? AND `unsubscribe_date` IS NOT NULL) OR `unsubscribe_all` IS NOT NULL";
 			if( $unsubs = $this->mDb->getArray( $query, array( $this->mNewsletter->mContentId ) ) ) {
 				$ret = array_diff_assoc( $ret, $unsubs );
 			}
-			$query = "SELECT `email`, `user_id` FROM `".BIT_DB_PREFIX."tiki_mail_queue` WHERE `content_id`=?";
+			$query = "SELECT `email`, `user_id` FROM `".BIT_DB_PREFIX."mail_queue` WHERE `content_id`=?";
 			if( $dupes = $this->mDb->getAssoc( $query, array( $this->mContentId ) ) ) {
 				$ret = array_diff_keys( $ret, $dupes );
 			}
