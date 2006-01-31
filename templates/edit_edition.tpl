@@ -54,7 +54,7 @@
 						<div class="row">
 							{formlabel label="Draft" for="draft"}
 							{forminput}
-								<input type="checkbox" name="is_draft" id="draft" value="y" {if $gContent->getField('is_draft')}checked="checked"{/if} />
+								<input type="checkbox" name="is_draft" id="draft" value="y" {if $pageInfo.is_draft eq 'y'}checked="checked"{/if} />
 								{formhelp note=""}
 							{/forminput}
 						</div>
@@ -62,7 +62,7 @@
 						<div class="row">
 							{formlabel label="Subject" for="subject"}
 							{forminput}
-								<input type="text" maxlength="250" size="40" name="title" id="subject" value="{$gContent->getTitle()|escape:html}" />
+								<input type="text" maxlength="250" size="40" name="title" id="subject" value="{$pageInfo.title|escape:html}" />
 								{formhelp note="This will appear in the <strong>subject</strong> line of the email."}
 							{/forminput}
 						</div>
@@ -70,7 +70,7 @@
 						<div class="row">
 							{formlabel label="Reply-To" for="replyto"}
 							{forminput}
-								<input type="text" maxlength="250" size="40" name="reply_to" id="replyto" value="{$gContent->getField('reply_to')|default:$gBitSystem->getPreference('sender_email',$smarty.server.SERVER_ADMIN)|escape:html}" />
+								<input type="text" maxlength="250" size="40" name="reply_to" id="replyto" value="{$pageInfo.reply_to|default:$gBitSystem->getPreference('sender_email',$smarty.server.SERVER_ADMIN)|escape:html}" />
 								{formhelp note="This is the email address to which any replies will be sent."}
 							{/forminput}
 						</div>
@@ -87,7 +87,7 @@
 						<div class="row">
 							{formlabel label="Body" for="body"}
 							{forminput}
-								<textarea id="editwiki" name="edit" rows="{$rows|default:20}" cols="{$cols|default:50}">{$gContent->getField('data')|escape:html}</textarea>
+								<textarea id="{$textarea_id}" name="edit" rows="{$rows|default:20}" cols="{$cols|default:50}">{$pageInfo.data|escape:html}</textarea>
 							{/forminput}
 						</div>
 					{/legend}
