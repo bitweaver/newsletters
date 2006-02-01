@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.15 2006/01/22 20:21:56 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.15.2.1 2006/02/01 04:32:51 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.15 2006/01/22 20:21:56 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.15.2.1 2006/02/01 04:32:51 wolff_borg Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.15 $ $Date: 2006/01/22 20:21:56 $ $Author: spiderr $
+ * @version $Revision: 1.15.2.1 $ $Date: 2006/02/01 04:32:51 $ $Author: wolff_borg $
  */
 
 /**
@@ -170,9 +170,20 @@ class BitNewsletterEdition extends LibertyAttachable {
 		return $ret;
 	}
 
-	function expunge($edition_id) {
-		$query = "delete from `".BIT_DB_PREFIX."tiki_newsletters_editions` where `edition_id`=$edition_id";
-		$result = $this->mDb->query($query,array((int)$edition_id));
+	function expunge() {
+		$ret = FALSE;
+		if( $this->isValid() ) {
+			$this->mDb->StartTrans();
+			$query = "delete from `".BIT_DB_PREFIX."tiki_newsletters_editions` where `edition_id`=?";
+			$result = $this->mDb->query( $query, array( $this->mContentId ) );
+			if( LibertyAttachable::expunge() ) {
+				$ret = TRUE;
+				$this->mDb->CompleteTrans();
+			} else {
+				$this->mDb->RollbackTrans();
+			}
+		}
+		return $ret;
 	}
 
 	function isDraft() {
