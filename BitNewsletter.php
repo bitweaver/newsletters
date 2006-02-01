@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.14 2006/01/31 20:18:49 bitweaver Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.15 2006/02/01 18:42:23 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.14 2006/01/31 20:18:49 bitweaver Exp $
+ * $Id: BitNewsletter.php,v 1.15 2006/02/01 18:42:23 squareing Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.14 $ $Date: 2006/01/31 20:18:49 $ $Author: bitweaver $
+ * @version $Revision: 1.15 $ $Date: 2006/02/01 18:42:23 $ $Author: squareing $
  */
 
 /**
@@ -57,7 +57,7 @@ class BitNewsletter extends LibertyContent {
 
 			$query = "SELECT *
 					  FROM `".BIT_DB_PREFIX."newsletters` n
-						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( n.`content_id`=tc.`content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( n.`content_id`=lc.`content_id` )
 					  WHERE n.`$lookupColumn`=? $whereSql";
 			$result = $this->mDb->query($query,$bindVars);
 			if ($result->numRows()) {
@@ -212,8 +212,8 @@ class BitNewsletter extends LibertyContent {
 		}
 
 		$query = "SELECT *
-				  FROM `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( n.`content_id`=tc.`content_id`)
-				  WHERE n.`content_id`=tc.`content_id` $mid
+				  FROM `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( n.`content_id`=lc.`content_id`)
+				  WHERE n.`content_id`=lc.`content_id` $mid
 				  ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] );
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 

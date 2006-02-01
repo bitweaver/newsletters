@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.16 2006/01/31 20:18:49 bitweaver Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.17 2006/02/01 18:42:23 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.16 2006/01/31 20:18:49 bitweaver Exp $
+ * $Id: BitMailer.php,v 1.17 2006/02/01 18:42:23 squareing Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.16 $ $Date: 2006/01/31 20:18:49 $ $Author: bitweaver $
+ * @version $Revision: 1.17 $ $Date: 2006/02/01 18:42:23 $ $Author: squareing $
  */
 
 /**
@@ -169,9 +169,9 @@ class BitMailer extends phpmailer {
 		global $gBitDb;
 		$ret = NULL;
 		if( is_array( $pLookup ) ) {
-			$query = "SELECT mq.*, tc.title, tct.*, uu.`real_name`, uu.`login`, uu.`email` FROM `".BIT_DB_PREFIX."mail_queue` mq
-						INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( mq.`content_id`=tc.`content_id` )
-						INNER JOIN `".BIT_DB_PREFIX."tiki_content_types` tct ON( tct.`content_type_guid`=tc.`content_type_guid` )
+			$query = "SELECT mq.*, lc.title, tct.*, uu.`real_name`, uu.`login`, uu.`email` FROM `".BIT_DB_PREFIX."mail_queue` mq
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( mq.`content_id`=lc.`content_id` )
+						INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` tct ON( tct.`content_type_guid`=lc.`content_type_guid` )
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( mq.`user_id`=uu.`user_id` )
 					  WHERE mq.`".key( $pLookup )."`=? ";
 			$ret = $gBitDb->getRow( $query, array( current( $pLookup ) ) );
@@ -187,10 +187,10 @@ class BitMailer extends phpmailer {
 		if( is_array( $pMixed ) ) {
 			$col = key( $pMixed );
 			$bindVars[] = current( $pMixed );
-			$query = "SELECT ms.`nl_content_id` AS `hash_key`, ms.*, uu.*, tc.title
+			$query = "SELECT ms.`nl_content_id` AS `hash_key`, ms.*, uu.*, lc.title
 					  FROM `".BIT_DB_PREFIX."mail_subscriptions` ms
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( ms.`user_id`=uu.`user_id` )
-						LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( ms.`nl_content_id`=tc.`content_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( ms.`nl_content_id`=lc.`content_id` )
 					  WHERE ms.`$col`=? ";
 			$ret = $gBitDb->getAssoc( $query, $bindVars );
 		}
