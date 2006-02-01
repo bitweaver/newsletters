@@ -86,11 +86,11 @@ $gBitInstaller->registerPackageInfo( NEWSLETTERS_PKG_NAME, array(
 
 // ### Indexes
 $indices = array (
-	'tiki_nl_sub_nl_idx' => array( 'table' => 'tiki_newsletter_subscriptions', 'cols' => 'nl_id', 'opts' => NULL ),
-	'tiki_nl_sub_group_idx' => array( 'table' => 'tiki_newsletter_subscriptions', 'cols' => 'group_id', 'opts' => NULL ),
-	'tiki_nl_sub_email_idx' => array( 'table' => 'tiki_newsletter_subscriptions', 'cols' => 'email', 'opts' => NULL ),
-	'tiki_nl_ed_nl_idx' => array( 'table' => 'newsletters_editions', 'cols' => 'nl_id', 'opts' => NULL ),
-	'tiki_nl_group_nl_idx' => array( 'table' => 'tiki_newsletter_groups', 'cols' => 'nl_id', 'opts' => NULL ),
+	'nl_sub_nl_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'nl_id', 'opts' => NULL ),
+	'nl_sub_group_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'group_id', 'opts' => NULL ),
+	'nl_sub_email_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'email', 'opts' => NULL ),
+	'nl_ed_nl_idx' => array( 'table' => 'newsletters_editions', 'cols' => 'nl_id', 'opts' => NULL ),
+	//'nl_group_nl_idx' => array( 'table' => 'newsletter_groups', 'cols' => 'nl_id', 'opts' => NULL ),
 	'mq_email_idx' => array( 'table' => 'mail_queue', 'cols' => 'email', 'opts' => NULL ),
 	'mq_user_idx' => array( 'table' => 'mail_queue', 'cols' => 'user_id', 'opts' => NULL ),
 	'mq_content_idx' => array( 'table' => 'mail_queue', 'cols' => 'content_id', 'opts' => NULL ),
