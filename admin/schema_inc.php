@@ -95,7 +95,7 @@ $indices = array (
 	'mailq_content_idx' => array( 'table' => 'mail_queue', 'cols' => 'content_id', 'opts' => NULL ),
 	'mailq_sent_idx' => array( 'table' => 'mail_queue', 'cols' => 'sent_date', 'opts' => NULL ),
 );
-$gBitInstaller->registerSchemaIndexes( LIBERTY_PKG_NAME, $indices );
+$gBitInstaller->registerSchemaIndexes( NEWSLETTERS_PKG_NAME, $indices );
 
 // ### Default UserPermissions
 $gBitInstaller->registerUserPermissions( NEWSLETTERS_PKG_NAME, array(
