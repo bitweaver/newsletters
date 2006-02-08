@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.19 2006/02/01 19:01:48 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.20 2006/02/08 23:24:28 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.19 2006/02/01 19:01:48 squareing Exp $
+ * $Id: BitNewsletterEdition.php,v 1.20 2006/02/08 23:24:28 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.19 $ $Date: 2006/02/01 19:01:48 $ $Author: squareing $
+ * @version $Revision: 1.20 $ $Date: 2006/02/08 23:24:28 $ $Author: spiderr $
  */
 
 /**
@@ -61,7 +61,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 			$this->mDb->StartTrans();
 			if( parent::store( $pParamHash ) ) {
 				if( $this->mEditionId ) {
-					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."newsletters_editions", $pParamHash['edition_store'], array ( "name" => "edition_id", "value" => $this->mEditionId ) );
+					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."newsletters_editions", $pParamHash['edition_store'], array ( "edition_id" => $this->mEditionId ) );
 				} else {
 					$pParamHash['edition_store']['content_id'] = $pParamHash['content_id'];
 					$result = $this->mDb->associateInsert( BIT_DB_PREFIX."newsletters_editions", $pParamHash['edition_store'] );

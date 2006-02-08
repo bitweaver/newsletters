@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.15 2006/02/01 18:42:23 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.16 2006/02/08 23:24:28 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.15 2006/02/01 18:42:23 squareing Exp $
+ * $Id: BitNewsletter.php,v 1.16 2006/02/08 23:24:28 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.15 $ $Date: 2006/02/01 18:42:23 $ $Author: squareing $
+ * @version $Revision: 1.16 $ $Date: 2006/02/08 23:24:28 $ $Author: spiderr $
  */
 
 /**
@@ -74,7 +74,7 @@ class BitNewsletter extends LibertyContent {
 			$this->mDb->StartTrans();
 			if( parent::store( $pParamHash ) ) {
 				if( $this->mNewsletterId ) {
-					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."newsletters", $pParamHash['newsletter_store'], array ( "name" => "nl_id", "value" => $this->mNewsletterId ) );
+					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."newsletters", $pParamHash['newsletter_store'], array ( "nl_id" => $this->mNewsletterId ) );
 				} else {
 					$pParamHash['newsletter_store']['content_id'] = $pParamHash['content_id'];
 					$result = $this->mDb->associateInsert( BIT_DB_PREFIX."newsletters", $pParamHash['newsletter_store'] );
