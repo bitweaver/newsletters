@@ -28,6 +28,9 @@ $tables = array(
   email C(160),
   user_id I4,
   nl_content_id I4,
+  sub_code C(36),
+  is_valid C(1),
+  subscribed_date I8,
   response_content_id I4,
   unsubscribe_all C(1),
   unsubscribe_date I8

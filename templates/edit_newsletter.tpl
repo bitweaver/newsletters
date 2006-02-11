@@ -53,7 +53,7 @@
 						{formhelp note="Append instructions on how to subscribe / unsubscribe to ever outgoing newsletter. This is only useful when users can un / subscribe to the list themselves."}
 					{/forminput}
 				</div>
-{*
+
 				<div class="row">
 					{formlabel label="Validate e-mail Addresses" for="validate_addr"}
 					{forminput}
@@ -61,7 +61,7 @@
 						{formhelp note="Validate all email addresses before they are added to the list. This might result in members not being added despite working email addresses."}
 					{/forminput}
 				</div>
-*}
+
 				<div class="row submit">
 					<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
 					<input type="submit" name="save" value="{tr}Save{/tr}" />

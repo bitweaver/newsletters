@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.1 2006/02/11 04:35:51 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.2 2006/02/11 14:17:58 wolff_borg Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -26,6 +26,15 @@ if( !empty( $_REQUEST['nl_id'] ) ) {
 }
 $newsletters = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref('newsletters', $newsletters );
+
+$foo = parse_url($_SERVER["REQUEST_URI"]);
+$gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
+
+if (isset($_REQUEST["sub"])) {
+	$gContent->confirmSubscription($_REQUEST["sub"]);
+	$gBitSmarty->assign('confirm', 'y');
+}
+
 if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
 	if( isset( $_REQUEST["sub"] ) && strlen( $_REQUEST["sub"] ) == 32 && ($subInfo = BitMailer::lookupSubscription( array( 'url_code' => $_REQUEST["sub"] ) )) ) {
 		$lookup['email'] = $subInfo['email'];
@@ -72,18 +81,15 @@ if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
 	$mid = 'bitpackage:newsletters/user_subscriptions.tpl';
 }
 
-$foo = parse_url($_SERVER["REQUEST_URI"]);
-$gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
-
 $user_email = $gBitUser->isRegistered() ? $gBitUser->mInfo['email'] : '';
 
 $gBitSmarty->assign('email', $user_email);
 
-if( isset( $_REQUEST["subscribe"] ) ) {
+if( isset( $_REQUEST["subscribe"] ) && !empty( $_REQUEST["email"] ) ) {
 	$gBitSystem->verifyPermission( 'bit_p_subscribe_newsletters' );
 	$feedback['success'] = tra( "Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed." );
 
-	if( !$gBitUser->hasPermission( 'tiki_p_subscribe_email' ) ) {
+	if( !$gBitUser->hasPermission( 'bit_p_subscribe_email' ) ) {
 		$_REQUEST["email"] = $gBitUser->mInfo['email'];
 	}
 
@@ -91,12 +97,17 @@ if( isset( $_REQUEST["subscribe"] ) ) {
 	$gContent->subscribe( $_REQUEST["email"] );
 }
 
-if( $gContent->isValid() ) {
+$subscribe = false;
+if (isset($_REQUEST["info"])) {
+	$subscribe = true;
+	$gBitSmarty->assign('subscribe', 'y');
+}
+
+/*if( !$subscribe && $gContent->isValid() ) {
 	$mid = 'bitpackage:newsletters/view_newsletter.tpl';
 	$title = "View Newsletter";
-} elseif( empty( $mid ) ) {
+} else*/ {
 	/* List newsletters */
-	$listHash = array();
 	$newsletters = $gContent->getList( $listHash );
 	/*
 	for( $i = 0; $i < count( $newsletters ); $i++ ) {

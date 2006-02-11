@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13 2006/01/22 20:21:56 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.1 2006/02/11 14:17:58 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.13 2006/01/22 20:21:56 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.13.2.1 2006/02/11 14:17:58 wolff_borg Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.13 $ $Date: 2006/01/22 20:21:56 $ $Author: spiderr $
+ * @version $Revision: 1.13.2.1 $ $Date: 2006/02/11 14:17:58 $ $Author: wolff_borg $
  */
 
 /**
@@ -102,7 +102,7 @@ class BitNewsletter extends LibertyContent {
 	function getSubscribers($nl_id) {
 		$ret = array();
 		if( $this->isValid() ) {
-			$query = "select email from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `valid`=? and `nl_id`=?";
+			$query = "select email from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `is_valid`=? and `nl_content_id`=?";
 			if( $result = $this->mDb->query( $query, array( 'y', $this->mNewsletterId ) ) ) {
 				$ret = $res->GetRows();
 			}
@@ -111,65 +111,90 @@ class BitNewsletter extends LibertyContent {
 	}
 
 	function remove_newsletter_subscription($nl_id, $email) {
-		$valid = $this->mDb->getOne("select `valid` from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_id`=? and `email`=?", array((int)$nl_id,$email));
-		$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_id`=? and `email`=?";
+		$is_valid = $this->mDb->getOne("select `is_valid` from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?", array((int)$nl_id,$email));
+		$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?";
 		$result = $this->mDb->query($query, array((int)$nl_id,$email));
-		$this->update_users($nl_id);
 	}
 
 	function subscribe( $email ) {
 		$ret = FALSE;
 		if( $this->isValid() ) {
+			global $gBitSystem;
 			global $gBitSmarty;
 			global $gBitUser;
 
-			$code = md5( BitUser::genPass() );
+			$sub_code = md5( BitUser::genPass() );
 			$now = date("U");
-			if( $this->getField( 'validate_addr' ) == 'y' ) {
+			if( $this->mInfo['validate_addr'] == 'y' ) {
 				// Generate a code and store it and send an email  with the
 				// URL to confirm the subscription put valid as 'n'
-				$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_id`=? and `email`=?";
+				$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?";
 				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email ) );
-				$query = "insert into `".BIT_DB_PREFIX."tiki_mail_subscriptions`(`nl_id`,`email`,`code`,`valid`,`subscribed`) values(?,?,?,?,?)";
-				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email, $code, 'n', (int)$now ) );
+				$query = "insert into `".BIT_DB_PREFIX."tiki_mail_subscriptions`(`nl_content_id`,`email`,`sub_code`,`is_valid`,`subscribed_date`) values(?,?,?,?,?)";
+				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email, $sub_code, 'n', (int)$now ) );
 				// Now send an email to the address with the confirmation instructions
-				$gBitSmarty->assign( 'code', $code );
+				$gBitSmarty->assign( 'sub_code', $sub_code );
 				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/confirm_newsletter_subscription.tpl');
-				@mail($email, tra('Newsletter subscription information at '). $_SERVER["SERVER_NAME"], $mail_data,
-					"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
+				@mail($email, tra('Newsletter subscription information at '). $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
+					"From: " . $gBitSystem->getPreference( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
 			} else {
-				$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_id`=? and `email`=?";
+				$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?";
 				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email ) );
-				$query = "insert into `".BIT_DB_PREFIX."tiki_mail_subscriptions`(`nl_id`,`email`,`code`,`valid`,`subscribed`) values(?,?,?,?,?)";
-				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email, $code, 'y', (int)$now ) );
+				$query = "insert into `".BIT_DB_PREFIX."tiki_mail_subscriptions`(`nl_content_id`,`email`,`sub_code`,`is_valid`,`subscribed_date`) values(?,?,?,?,?)";
+				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email, $sub_code, 'y', (int)$now ) );
 			}
-			$this->updateUsers();
 			$ret = TRUE;
 		}
 		return $ret;
 	}
 
-	function confirmSubscription($code) {
+	function confirmSubscription($sub_code) {
+		global $gBitSystem;
 		global $gBitSmarty;
 		global $gBitUser;
-		global $sender_email;
-		$query = "select * from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `code`=?";
-		$result = $this->mDb->query($query,array($code));
+		$query = "select * from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `sub_code`=?";
+		$result = $this->mDb->query($query,array($sub_code));
 
 		if (!$result->numRows()) return false;
 
 		$res = $result->fetchRow();
-		$info = $this->get_newsletter($res["nl_id"]);
-		$gBitSmarty->assign('info', $info);
-		$query = "update `".BIT_DB_PREFIX."tiki_mail_subscriptions` set `valid`=? where `code`=?";
-		$result = $this->mDb->query($query,array('y',$code));
+		$this->mNewsletterId = $res['nl_content_id'];
+		$this->load();
+		$query = "update `".BIT_DB_PREFIX."tiki_mail_subscriptions` set `is_valid`=? where `sub_code`=?";
+		$result = $this->mDb->query($query,array('y',$sub_code));
 		// Now send a welcome email
-		$gBitSmarty->assign('code', $res["code"]);
+		$gBitSmarty->assign( 'sub_code', $res["sub_code"] );
 		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_welcome.tpl');
-		@mail($res["email"], tra('Welcome to '). $info["name"] . tra(' at '). $_SERVER["SERVER_NAME"], $mail_data,
-			"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
-		return $this->get_newsletter($res["nl_id"]);
+		@mail($res["email"], tra('Welcome to '). $this->mInfo["name"] . tra(' at '). $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
+			"From: " . $gBitSystem->getPreference( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
 	}
+
+	function unsubscribe($sub_code) {
+		global $gBitSystem;
+		global $gBitSmarty;
+		global $gBitUser;
+		$query = "select * from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `sub_code`=?";
+		$result = $this->mDb->query($query,array($sub_code));
+
+		if (!$result->numRows()) return false;
+
+		$res = $result->fetchRow();
+		$info = $this->get_newsletter($res["nlId"]);
+		$smarty->assign('info', $info);
+		$smarty->assign('sub_code', $res["sub_code"]);
+		$query = "delete from `".TIKI_DB_PREFIX."tiki_newsletter_subscriptions` where `sub_code`=?";
+		$result = $this->query($query,array($sub_code));
+		// Now send a bye bye email
+		$smarty->assign('mail_date', date("U"));
+		$smarty->assign('mail_user', $user);
+		$smarty->assign('url_subscribe', $url_subscribe);
+		$mail_data = $smarty->fetch('tikipackage:newsletters/newsletter_byebye.tpl');
+		@mail($res["email"], tra('Bye bye from '). $info["name"] . tra(' at '). $_SERVER["SERVER_NAME"], $mail_data,
+			"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
+		$this->update_users($res["nlId"]);
+		return $this->get_newsletter($res["nlId"]);
+	}
+
 /*
 	function add_all_users($nl_id) {
 		$query = "select `email` from `".BIT_DB_PREFIX."users_users`";
@@ -222,7 +247,8 @@ class BitNewsletter extends LibertyContent {
 		$ret = array();
 		while( $res = $result->fetchRow() ) {
 			$res['display_url'] = $this->getDisplayUrl( $res['nl_id'] );
-			$res["unsub_count"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE (`nl_content_id`=? AND `unsubscribe_date` IS NOT NULL) OR `unsubscribe_all` IS NOT NULL",array( (int)$res["content_id"] ) );
+			$res["confirmed"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE `is_valid`=? and `nl_content_id`=?",array( 'y', (int)$res["nl_id"] ) );
+			$res["unsub_count"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE `nl_content_id`=?",array( (int)$res["nl_id"] ) );
 			$ret[$res['content_id']] = $res;
 		}
 
@@ -233,11 +259,11 @@ class BitNewsletter extends LibertyContent {
 		$bindVars = array((int)$nl_id);
 		if ($find) {
 			$findesc = '%' . $find . '%';
-			$mid = " where `nl_id`=? and (`name` like ? or `description` like ?)";
+			$mid = " where `nl_content_id`=? and (`name` like ? or `description` like ?)";
 			$bindVars[] = $findesc;
 			$bindVars[] = $findesc;
 		} else {
-			$mid = " where `nl_id`=? ";
+			$mid = " where `nl_content_id`=? ";
 		}
 
 		$query = "select * from `".BIT_DB_PREFIX."tiki_mail_subscriptions` $mid order by ".$this->mDb->convert_sortmode("$sort_mode");
@@ -260,8 +286,8 @@ class BitNewsletter extends LibertyContent {
 
 		$foo = str_replace('send_newsletters', 'newsletters', $foo);
 		$url_subscribe = httpPrefix(). $foo["path"];
-		$code = $this->mDb->getOne("select `code` from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_id`=? and `email`=?",array((int)$nl_id,$email));
-		$url_unsub = $url_subscribe . '?unsubscribe=' . $code;
+		$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?",array((int)$nl_id,$email));
+		$url_unsub = $url_subscribe . '?unsubscribe=' . $sub_code;
 		$msg = '<br/><br/>' . tra( 'You can unsubscribe from this newsletter following this link'). ": <a href='$url_unsub'>$url_unsub</a>";
 		return $msg;
 	}

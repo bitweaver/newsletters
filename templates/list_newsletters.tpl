@@ -26,11 +26,11 @@
 
 				{foreach key=nlId from=$newsletters item=nl}
 					<tr class="{cycle values='odd,even'}">
-						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nlId}">{$nl.title}</a></td>
+						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}">{$nl.title}</a></td>
 						<td>{$nl.data}</td>
 						<td>{$nl.created|bit_short_date}</td>
 						<td>{$nl.last_sent|bit_short_date}</td>
-						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl.nl_id}"> {$nl.unsub_count|default:0}</a></td>
+						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl.nl_id}">{$nl.unsub_count}({$nl.confirmed})</a></td>
 						<td style="text-align:right;">
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?nl_id={$nl.nl_id}">{biticon ipackage=liberty iname=new iexplain="New Edition"}</a>
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?remove=1&amp;nl_id={$nl.nl_id}">{biticon ipackage=liberty iname=delete iexplain=Remove}</a>
