@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.15.2.1 2006/02/01 04:32:51 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.15.2.2 2006/02/11 04:35:51 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.15.2.1 2006/02/01 04:32:51 wolff_borg Exp $
+ * $Id: BitNewsletterEdition.php,v 1.15.2.2 2006/02/11 04:35:51 wolff_borg Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.15.2.1 $ $Date: 2006/02/01 04:32:51 $ $Author: wolff_borg $
+ * @version $Revision: 1.15.2.2 $ $Date: 2006/02/11 04:35:51 $ $Author: wolff_borg $
  */
 
 /**
@@ -161,6 +161,9 @@ class BitNewsletterEdition extends LibertyAttachable {
 		$ret = $gBitDb->getAssoc( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 		foreach( array_keys( $ret ) as $k ) {
 			$ret[$k]['display_url'] = BitNewsletterEdition::getDisplayUrl( $k );
+			// remove formating tags
+			$data = preg_replace( '/{[^{}]*}/', '', $ret[$k]['data'] );
+			$ret[$k]['parsed'] = BitNewsletterEdition::parseData( $data, $ret[$k]['format_guid'] );
 		}
         $pListHash['total_records'] = $gBitDb->getOne( $query_cant, $bindVars );
 		$pListHash['block_pages'] = 5;

@@ -9,7 +9,7 @@
 
 			<h2><a href="{$ed.display_url}">{$ed.title}</a></h2>
 			<p>
-				{$ed.data|truncate:200:'...'}
+				{$ed.parsed|truncate:200:'...'}
 				<br />
 				{tr}in{/tr} <a href="{$smarty.const.NEWSLETTERS_PKG_URL}?nl_content_id={$ed.nl_content_id}">{$ed.newsletter_title}</a>
 			</p>

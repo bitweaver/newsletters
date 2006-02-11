@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16 2006/01/22 20:21:56 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.1 2006/02/11 04:35:51 wolff_borg Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -93,6 +93,7 @@ if( isset( $_REQUEST["subscribe"] ) ) {
 
 if( $gContent->isValid() ) {
 	$mid = 'bitpackage:newsletters/view_newsletter.tpl';
+	$title = "View Newsletter";
 } elseif( empty( $mid ) ) {
 	/* List newsletters */
 	$listHash = array();
@@ -118,11 +119,12 @@ if( $gContent->isValid() ) {
 	}
 	*/
 	$mid = 'bitpackage:newsletters/newsletters.tpl';
+	$title = "List Newsletters";
 }
 
 $gBitSmarty->assign( 'feedback', $feedback );
 
 // Display the template
-$gBitSystem->display( $mid );
+$gBitSystem->display( $mid, $title );
 
 ?>
