@@ -39,8 +39,8 @@
 					</div>
 					<div class="row submit">
 						{forminput}
-							<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
 							<input type="submit" name="subscribe" value="{tr}Subscribe{/tr}" />
+							<input type="submit" name="sub" value="{tr}Unsubscribe{/tr}" />
 						{/forminput}
 					</div>
 				{/form}

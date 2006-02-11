@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.1 2006/02/11 14:17:58 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.2 2006/02/11 15:34:17 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.13.2.1 2006/02/11 14:17:58 wolff_borg Exp $
+ * $Id: BitNewsletter.php,v 1.13.2.2 2006/02/11 15:34:17 wolff_borg Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.13.2.1 $ $Date: 2006/02/11 14:17:58 $ $Author: wolff_borg $
+ * @version $Revision: 1.13.2.2 $ $Date: 2006/02/11 15:34:17 $ $Author: wolff_borg $
  */
 
 /**
@@ -179,20 +179,15 @@ class BitNewsletter extends LibertyContent {
 		if (!$result->numRows()) return false;
 
 		$res = $result->fetchRow();
-		$info = $this->get_newsletter($res["nlId"]);
-		$smarty->assign('info', $info);
-		$smarty->assign('sub_code', $res["sub_code"]);
-		$query = "delete from `".TIKI_DB_PREFIX."tiki_newsletter_subscriptions` where `sub_code`=?";
-		$result = $this->query($query,array($sub_code));
+		$this->mNewsletterId = $res['nl_content_id'];
+		$this->load();
+		$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `sub_code`=?";
+		$result = $this->mDb->query($query,array($sub_code));
 		// Now send a bye bye email
-		$smarty->assign('mail_date', date("U"));
-		$smarty->assign('mail_user', $user);
-		$smarty->assign('url_subscribe', $url_subscribe);
-		$mail_data = $smarty->fetch('tikipackage:newsletters/newsletter_byebye.tpl');
-		@mail($res["email"], tra('Bye bye from '). $info["name"] . tra(' at '). $_SERVER["SERVER_NAME"], $mail_data,
-			"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
-		$this->update_users($res["nlId"]);
-		return $this->get_newsletter($res["nlId"]);
+		$gBitSmarty->assign('sub_code', $res["sub_code"]);
+		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
+		@mail($res["email"], tra('Bye bye from '). $this->mInfo["name"] . tra(' at '). $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
+			"From: " . $gBitSystem->getPreference( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
 	}
 
 /*

@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.2 2006/02/11 14:17:58 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.3 2006/02/11 15:34:17 wolff_borg Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -33,6 +33,11 @@ $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
 if (isset($_REQUEST["sub"])) {
 	$gContent->confirmSubscription($_REQUEST["sub"]);
 	$gBitSmarty->assign('confirm', 'y');
+}
+
+if (isset($_REQUEST["unsubscribe"])) {
+        $gContent->unsubscribe($_REQUEST["unsubscribe"]);
+	$gBitSmarty->assign('unsub', 'y');
 }
 
 if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
