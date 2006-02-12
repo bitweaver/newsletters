@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.2 2006/02/11 15:34:17 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.3 2006/02/12 00:37:27 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.13.2.2 2006/02/11 15:34:17 wolff_borg Exp $
+ * $Id: BitNewsletter.php,v 1.13.2.3 2006/02/12 00:37:27 wolff_borg Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.13.2.2 $ $Date: 2006/02/11 15:34:17 $ $Author: wolff_borg $
+ * @version $Revision: 1.13.2.3 $ $Date: 2006/02/12 00:37:27 $ $Author: wolff_borg $
  */
 
 /**
@@ -165,7 +165,7 @@ class BitNewsletter extends LibertyContent {
 		// Now send a welcome email
 		$gBitSmarty->assign( 'sub_code', $res["sub_code"] );
 		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_welcome.tpl');
-		@mail($res["email"], tra('Welcome to '). $this->mInfo["name"] . tra(' at '). $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
+		@mail($res["email"], tra('Welcome to '). $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
 			"From: " . $gBitSystem->getPreference( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
 	}
 

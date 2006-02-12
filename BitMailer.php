@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.15 2005/12/30 00:24:18 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.15.2.1 2006/02/12 00:37:27 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.15 2005/12/30 00:24:18 spiderr Exp $
+ * $Id: BitMailer.php,v 1.15.2.1 2006/02/12 00:37:27 wolff_borg Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.15 $ $Date: 2005/12/30 00:24:18 $ $Author: spiderr $
+ * @version $Revision: 1.15.2.1 $ $Date: 2006/02/12 00:37:27 $ $Author: wolff_borg $
  */
 
 /**
@@ -89,6 +89,7 @@ class BitMailer extends phpmailer {
 				$pick['full_name'] = NULL;
 			}
 			if( !isset( $body[$pick['content_id']] ) ) {
+				$gBitSmarty->assign( 'sending', TRUE );
 				// We only support sending of newsletters currently
 				$content = new BitNewsletterEdition( NULL, $pick['content_id'] );
 				if( $content->load() ) {
@@ -100,15 +101,16 @@ class BitMailer extends phpmailer {
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
 			}
 			if( !empty( $body[$pick['content_id']] ) ) {
-				$pick['url_code'] = md5( $pick['content_id'].$pick['email'].$pick['queue_date'] );
+				$urlCode = $this->mDb->getCol( "SELECT `sub_code` FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE `email`=?", array( $pick['email'] ) );
+				$pick['url_code'] = $urlCode[0];
 				$unsub = '';
 				if( $body[$pick['content_id']]['object']->mNewsletter->mInfo['unsub_msg'] ) {
 					$gBitSmarty->assign( 'url_code', $pick['url_code'] );
-					$gBitSmarty->assign( 'sending', TRUE );
 					$unsub = $gBitSmarty->fetch( 'bitpackage:newsletters/unsubscribe_inc.tpl' );
 				}
-				$htmlBody = $unsub . $body[$pick['content_id']]['body'] . $unsub . '<img src="'.NEWSLETTERS_PKG_URI.'track.php?sub='.$pick['url_code'].'" alt="" />';
-
+				$gBitSystem->preDisplay('');
+				$header = $gBitSmarty->fetch( 'bitpackage:themes/header_inc.tpl' );
+				$htmlBody = $header . "<div id='bitmain'>". $unsub . $body[$pick['content_id']]['body'] . $unsub . '<img src="'.NEWSLETTERS_PKG_URI.'track.php?sub='.$pick['url_code'].'" alt="" /></div>';
 				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getPreference( 'bitmailer_from' ) );
 				print "TO: $pick[email]\t";
 				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
