@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.3 2005/12/29 15:31:32 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.3.2.1 2006/02/13 12:35:35 wolff_borg Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -37,21 +37,21 @@ if ($userlib->object_has_one_permission($_REQUEST["nl_id"], 'newsletter')) {
 }
 */
 
-if (isset($_REQUEST["remove"])) {
-	check_ticket('admin-nl-subsriptions');
-	$nllib->remove_newsletter_subscription($_REQUEST["remove"], $_REQUEST["email"]);
-}
+if( $gContent->isValid() ) {
+	$nl_id = $_REQUEST['nl_id'];
+	$gBitSmarty->assign( 'nl_id', $nl_id );
 
-if (isset($_REQUEST["add_all"])) {
-	check_ticket('admin-nl-subsriptions');
-	$nllib->add_all_users($_REQUEST["nl_id"]);
-}
+	if (isset($_REQUEST["remove"])) {
+		$gContent->removeSubscription($_REQUEST["email"]);
+	}
 
-if (isset($_REQUEST["save"])) {
-	check_ticket('admin-nl-subsriptions');
-	$sid = $nllib->newsletter_subscribe($_REQUEST["nl_id"], $_REQUEST["email"]);
-}
+	if (isset($_REQUEST["save"])) {
+		$gContent->subscribe($_REQUEST["email"]);
+	}
 
+	$subscribers = $gContent->getAllSubscribers($nl_id);
+	$gBitSmarty->assign( 'subscribers', $subscribers );
+}
 /*
 $cat_type='newsletter';
 $cat_objid = $_REQUEST["nl_id"];

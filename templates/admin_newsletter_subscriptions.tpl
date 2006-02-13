@@ -7,46 +7,57 @@
 
 	<div class="body">
 		{form}
+			<h2>{tr}Add a subscription newsletters{/tr}</h2>
 			<input type="hidden" name="nl_id" value="{$nl_id|escape}" />
 
 			<div class="row">
-				{formlabel label="" for=""}
+				{formlabel label="Email" for=""}
 				{forminput}
+					{if $gBitUser->hasPermission( 'bit_p_subscribe_email' )}
+						<input type="text" name="email" value="{$email|escape}" />
+					{else}
+						<input type="hidden" name="email" value="{$email|escape}" />
+						{$email|escape}
+					{/if}
 					{formhelp note=""}
 				{/forminput}
 			</div>
 
 			<div class="row submit">
+				{forminput}
+					<input type="submit" name="save" value="{tr}Subscribe{/tr}" />
+				{/forminput}
 			</div>
 		{/form}
 
 		{minifind}
+
+		<table class="data">
+			<caption>{tr}Subscriptions{/tr}</caption>
+			<tr>
+				<th>{smartlink ititle="Email" isort=email offset=$offset idefault=1}</th>
+				<th>{smartlink ititle="Valid" isort=valid offset=$offset idefault=1}</th>
+				<th>{smartlink ititle="Subscribed" isort=subscribed offset=$offset idefault=1}</th>
+				<th>{tr}Action{/tr}</th>
+			</tr>
+			{foreach from=$subscribers item=sb}
+				<tr class="{cycle values='odd,even'}">
+					<td>{$sb.email}</td>
+					<td>{$sb.is_valid}</td>
+					<td>{$sb.subscribed_date|bit_short_datetime}</td>
+					<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?remove=1&amp;nl_id={$nl_id}&amp;email={$sb.email}">{tr}remove{/tr}</a></td>
+				</tr>
+			{foreachelse}
+				<tr class="norecords">
+					<td colspan="2">{tr}No Records Found{/tr}</td>
+				</tr>
+			{/foreach}
+		</table>
 	</div><!-- end .body -->
 </div><!-- end .newsletters -->
 
 
-<table class="panel">
-	<caption>Newsletters</caption>
-	<tr>
-		<td>{tr}Name{/tr}:</td>
-		<td>{$nl_info.name}</td>
-	</tr>
-	<tr>
-		<td>{tr}Description{/tr}:</td>
-		<td>{$nl_info.description}</td>
-	</tr>
-</table>
-
 {* original code
-<h2>{tr}Add a subscription newsletters{/tr}</h2>
-<form action="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php" method="post">
-<input type="hidden" name="nl_id" value="{$nl_id|escape}" />
-<table class="panel">
-<tr><td>{tr}Email{/tr}:</td><td><input type="text" name="email" /></td></tr>
-<tr class="panelsubmitrow"><td colspan="2"><input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
-</table>
-</form>
-
 <h2>{tr}Add all your site users to this newsletter (broadcast){/tr}</h2>
 <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;add_all=1">{tr}Add users{/tr}</a>
 
