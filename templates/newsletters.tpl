@@ -10,6 +10,7 @@
 		{/if}
 		{formfeedback hash=$feedback}
 		{if $subscribe eq 'y'}
+			<h2>{tr}Subscribe to Newsletter{/tr}</h2>
 			<div class="row">
 				{formlabel label="Name" for=""}
 				{forminput}
@@ -53,13 +54,17 @@
 			<caption>{tr}Newsletters{/tr}</caption>
 			<tr>
 				<th>{smartlink ititle="Name" isort=name offset=$offset idefault=1}</th>
-				<th>{smartlink ititle="Description" isort=descritpion offset=$offset}</th>
+				<th>{smartlink ititle="Description" isort=descritpion offset=$offset idefault=1}</th>
+				<th>{tr}Subscribe{/tr}</th>
+				<th>{tr}Editions{/tr}</th>
 			</tr>
 			{foreach from=$newsletters item=nl}
 				{if $newsletters.individual ne 'y' or $newsletters.individual_bit_p_subscribe_newsletters eq 'y'}
 					<tr class="{cycle values='odd,even'}">
-						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{$nl.title}</a></td>
+						<td>{$nl.title}</td>
 						<td>{$nl.data}</td>
+						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{tr}Subscribe{/tr}</a></td>
+						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php?nl_id={$nl.nl_id}">{tr}Editions{/tr}</a></td>
 					</tr>
 				{/if}
 			{foreachelse}
