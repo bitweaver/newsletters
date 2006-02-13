@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.15.2.4 2006/02/11 15:57:00 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.15.2.5 2006/02/13 12:33:35 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.15.2.4 2006/02/11 15:57:00 wolff_borg Exp $
+ * $Id: BitNewsletterEdition.php,v 1.15.2.5 2006/02/13 12:33:35 wolff_borg Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.15.2.4 $ $Date: 2006/02/11 15:57:00 $ $Author: wolff_borg $
+ * @version $Revision: 1.15.2.5 $ $Date: 2006/02/13 12:33:35 $ $Author: wolff_borg $
  */
 
 /**
@@ -31,10 +31,10 @@ class BitNewsletterEdition extends LibertyAttachable {
 		parent::LibertyContent();
 		$this->registerContentType( BITNEWSLETTEREDITION_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => BITNEWSLETTEREDITION_CONTENT_TYPE_GUID,
-			'content_description' => 'Newsletter',
-			'handler_class' => 'BitNewsletter',
+			'content_description' => 'Edition',
+			'handler_class' => 'BitNewsletterEdition',
 			'handler_package' => 'newsletters',
-			'handler_file' => 'BitNewsletter.php',
+			'handler_file' => 'BitNewsletterEdition.php',
 			'maintainer_url' => 'http://www.bitweaver.org'
 		) );
 		$this->mEditionId = $pEditionId;
@@ -122,12 +122,12 @@ class BitNewsletterEdition extends LibertyAttachable {
 		global $gBitSystem;
 		if( $this->verifyId( $pEditionId ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = NEWSLETTERS_PKG_URL.'edition/'.$pEditionId;
+				$ret = NEWSLETTERS_PKG_URI.'edition/'.$pEditionId;
 			} else {
-				$ret = NEWSLETTERS_PKG_URL.'edition.php?edition_id='.$pEditionId;
+				$ret = NEWSLETTERS_PKG_URI.'edition.php?edition_id='.$pEditionId;
 			}
 		} else {
-			$ret = NEWSLETTERS_PKG_URL.'edition.php';
+			$ret = NEWSLETTERS_PKG_URI.'edition.php';
 		}
 		return $ret;
 	}
@@ -203,8 +203,8 @@ class BitNewsletterEdition extends LibertyAttachable {
 
 			if ( array_search( 'send_subs', $pGroupArray ) !== false ) {
 				$query = "SELECT * FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions`
-					  WHERE (`nl_content_id`=? AND `unsubscribe_date` IS NULL) AND `unsubscribe_all` IS NULL";
-				$subs = $this->mDb->getArray( $query, array( $this->mNewsletter->mNewsletterId) );
+					  WHERE `is_valid`=? AND (`nl_content_id`=? AND `unsubscribe_date` IS NULL) AND `unsubscribe_all` IS NULL";
+				$subs = $this->mDb->getArray( $query, array( 'y', $this->mNewsletter->mNewsletterId) );
 				foreach( $subs as $sub) {
 					if (!isset($ret[$sub['email']]))
 						$ret[$sub['email']] = $sub;
