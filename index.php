@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.3 2006/02/11 15:34:17 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.4 2006/02/13 12:34:16 wolff_borg Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -23,6 +23,8 @@ $feedback = array();
 $listHash = array();
 if( !empty( $_REQUEST['nl_id'] ) ) {
 	$listHash['nl_id'] = $_REQUEST['nl_id'];
+	$subscribe = true;
+	$gBitSmarty->assign('subscribe', 'y');
 }
 $newsletters = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref('newsletters', $newsletters );
@@ -37,7 +39,7 @@ if (isset($_REQUEST["sub"])) {
 
 if (isset($_REQUEST["unsubscribe"])) {
         $gContent->unsubscribe($_REQUEST["unsubscribe"]);
-	$gBitSmarty->assign('unsub', 'y');
+	$feedback['success'] = tra( "Your email address was removed from the list of subscriptors." );
 }
 
 if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
@@ -103,10 +105,6 @@ if( isset( $_REQUEST["subscribe"] ) && !empty( $_REQUEST["email"] ) ) {
 }
 
 $subscribe = false;
-if (isset($_REQUEST["info"])) {
-	$subscribe = true;
-	$gBitSmarty->assign('subscribe', 'y');
-}
 
 /*if( !$subscribe && $gContent->isValid() ) {
 	$mid = 'bitpackage:newsletters/view_newsletter.tpl';
