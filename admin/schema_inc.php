@@ -11,7 +11,7 @@ $tables = array(
   unsub_msg C(1) default 'y',
   validate_addr C(1) default 'y',
   frequency I8
-  CONSTRAINT ', CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
+  CONSTRAINT ', CONSTRAINT `tiki_nl_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
 ",
 
 'newsletters_editions' => "
