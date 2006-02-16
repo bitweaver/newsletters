@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.4 2006/02/13 12:30:47 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.5 2006/02/16 12:52:41 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.13.2.4 2006/02/13 12:30:47 wolff_borg Exp $
+ * $Id: BitNewsletter.php,v 1.13.2.5 2006/02/16 12:52:41 wolff_borg Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.13.2.4 $ $Date: 2006/02/13 12:30:47 $ $Author: wolff_borg $
+ * @version $Revision: 1.13.2.5 $ $Date: 2006/02/16 12:52:41 $ $Author: wolff_borg $
  */
 
 /**
@@ -102,8 +102,8 @@ class BitNewsletter extends LibertyContent {
 	function getSubscribers($nl_id) {
 		$ret = array();
 		if( $this->isValid() ) {
-			$query = "select * from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `is_valid`=? and `nl_content_id`=?";
-			if( $res = $this->mDb->query( $query, array( 'y', $this->mNewsletterId ) ) ) {
+			$query = "select * from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `unsubscribe_date` is NULL and `nl_content_id`=?";
+			if( $res = $this->mDb->query( $query, array( $this->mNewsletterId ) ) ) {
 				$ret = $res->GetRows();
 			}
 		}
@@ -122,8 +122,9 @@ class BitNewsletter extends LibertyContent {
 	}
 
 	function removeSubscription( $email ) {
-		$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?";
-		$result = $this->mDb->query($query, array($this->mNewsletterId, $email));
+		$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?", array($this->mNewsletterId, $email));
+		$this->unsubscribe($sub_code);
+		
 	}
 
 	function subscribe( $email ) {
@@ -192,8 +193,8 @@ class BitNewsletter extends LibertyContent {
 		$res = $result->fetchRow();
 		$this->mNewsletterId = $res['nl_content_id'];
 		$this->load();
-		$query = "update `".BIT_DB_PREFIX."tiki_mail_subscriptions` set `unsubscribe_date`=?,`is_valid`=? where `sub_code`=? and `unsubscribe_date` is NULL";
-		$result = $this->mDb->query($query,array($now, 'n', $sub_code, 'y'));
+		$query = "update `".BIT_DB_PREFIX."tiki_mail_subscriptions` set `unsubscribe_date`=? where `sub_code`=? and `unsubscribe_date` is NULL";
+		$result = $this->mDb->query($query,array($now, $sub_code));
 		// Now send a bye bye email
 /*		$gBitSmarty->assign('sub_code', $res["sub_code"]);
 		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
@@ -254,7 +255,7 @@ class BitNewsletter extends LibertyContent {
 		$ret = array();
 		while( $res = $result->fetchRow() ) {
 			$res['display_url'] = $this->getDisplayUrl( $res['nl_id'] );
-			$res["confirmed"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE `is_valid`=? and `nl_content_id`=?",array( 'y', (int)$res["nl_id"] ) );
+			$res["confirmed"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE `unsubscribe_date` IS NULL and `nl_content_id`=?",array( (int)$res["nl_id"] ) );
 			$res["unsub_count"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE `nl_content_id`=?",array( (int)$res["nl_id"] ) );
 			$ret[$res['content_id']] = $res;
 		}
