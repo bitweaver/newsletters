@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.4 2006/02/13 12:34:16 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.5 2006/02/16 12:55:01 wolff_borg Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -38,7 +38,11 @@ if (isset($_REQUEST["sub"])) {
 }
 
 if (isset($_REQUEST["unsubscribe"])) {
-        $gContent->unsubscribe($_REQUEST["unsubscribe"]);
+	if (!empty( $_REQUEST["email"] )) {
+echo "XXX". $gContent->removeSubscription($_REQUEST["email"]);
+	} elseif (!empty( $_REQUEST["unsubscribe"] )) {
+	        $gContent->unsubscribe($_REQUEST["unsubscribe"]);
+	}
 	$feedback['success'] = tra( "Your email address was removed from the list of subscriptors." );
 }
 

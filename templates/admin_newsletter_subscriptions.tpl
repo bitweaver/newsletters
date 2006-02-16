@@ -36,8 +36,9 @@
 			<caption>{tr}Subscriptions{/tr}</caption>
 			<tr>
 				<th>{smartlink ititle="Email" isort=email offset=$offset idefault=1}</th>
-				<th>{smartlink ititle="Valid" isort=valid offset=$offset idefault=1}</th>
-				<th>{smartlink ititle="Subscribed" isort=subscribed offset=$offset idefault=1}</th>
+				<th>{smartlink ititle="Valid" isort=is_valid offset=$offset idefault=1}</th>
+				<th>{smartlink ititle="Subscribed" isort=subscribed_date offset=$offset idefault=1}</th>
+				<th>{smartlink ititle="Unsubscribed" isort=unsubscribe_date offset=$offset idefault=1}</th>
 				<th>{tr}Action{/tr}</th>
 			</tr>
 			{foreach from=$subscribers item=sb}
@@ -45,6 +46,7 @@
 					<td>{$sb.email}</td>
 					<td>{$sb.is_valid}</td>
 					<td>{$sb.subscribed_date|bit_short_datetime}</td>
+					<td>{if $sb.unsubscribe_date ne NULL}{$sb.unsubscribe_date|bit_short_datetime}{/if}</td>
 					<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?remove=1&amp;nl_id={$nl_id}&amp;email={$sb.email}">{tr}remove{/tr}</a></td>
 				</tr>
 			{foreachelse}
