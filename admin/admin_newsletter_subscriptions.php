@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.3.2.1 2006/02/13 12:35:35 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.3.2.2 2006/02/19 04:38:47 wolff_borg Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -9,7 +9,7 @@
 // Initialization
 require_once( '../../bit_setup_inc.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
-$gBitSystem->verifyPermission( 'tiki_p_admin_newsletters' );
+$gBitSystem->verifyPermission( 'bit_p_admin_newsletters' );
 
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
 
@@ -42,11 +42,17 @@ if( $gContent->isValid() ) {
 	$gBitSmarty->assign( 'nl_id', $nl_id );
 
 	if (isset($_REQUEST["remove"])) {
-		$gContent->removeSubscription($_REQUEST["email"]);
+		$gContent->removeSubscription($_REQUEST["email"], FALSE, TRUE );
 	}
 
 	if (isset($_REQUEST["save"])) {
-		$gContent->subscribe($_REQUEST["email"]);
+		$new_subs = preg_split("/[\s,]+/", $_REQUEST["new_subscribers"]);
+		foreach($new_subs as $sub) {
+			$sub = trim($sub);
+			if (empty($sub))
+				continue;
+			$gContent->subscribe($sub, TRUE );
+		}
 	}
 
 	$subscribers = $gContent->getAllSubscribers($nl_id);

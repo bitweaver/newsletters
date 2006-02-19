@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.5 2006/02/16 12:55:01 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.6 2006/02/19 04:38:47 wolff_borg Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -23,8 +23,10 @@ $feedback = array();
 $listHash = array();
 if( !empty( $_REQUEST['nl_id'] ) ) {
 	$listHash['nl_id'] = $_REQUEST['nl_id'];
-	$subscribe = true;
-	$gBitSmarty->assign('subscribe', 'y');
+	if (isset($_REQUEST['info'])) {
+		$subscribe = true;
+		$gBitSmarty->assign('subscribe', 'y');
+	}
 }
 $newsletters = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref('newsletters', $newsletters );
@@ -33,15 +35,15 @@ $foo = parse_url($_SERVER["REQUEST_URI"]);
 $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
 
 if (isset($_REQUEST["sub"])) {
-	$gContent->confirmSubscription($_REQUEST["sub"]);
+	$gContent->confirmSubscription($_REQUEST["sub"], TRUE );
 	$gBitSmarty->assign('confirm', 'y');
 }
 
 if (isset($_REQUEST["unsubscribe"])) {
 	if (!empty( $_REQUEST["email"] )) {
-echo "XXX". $gContent->removeSubscription($_REQUEST["email"]);
+		$gContent->removeSubscription($_REQUEST["email"], TRUE );
 	} elseif (!empty( $_REQUEST["unsubscribe"] )) {
-	        $gContent->unsubscribe($_REQUEST["unsubscribe"]);
+	        $gContent->unsubscribe($_REQUEST["unsubscribe"], TRUE );
 	}
 	$feedback['success'] = tra( "Your email address was removed from the list of subscriptors." );
 }
@@ -105,7 +107,7 @@ if( isset( $_REQUEST["subscribe"] ) && !empty( $_REQUEST["email"] ) ) {
 	}
 
 	// Now subscribe the email address to the newsletter
-	$gContent->subscribe( $_REQUEST["email"] );
+	$gContent->subscribe( $_REQUEST["email"], TRUE );
 }
 
 $subscribe = false;
@@ -121,15 +123,15 @@ $subscribe = false;
 		if ($userlib->object_has_one_permission($newsletters["data"][$i]["nl_id"], 'newsletters')) {
 			$newsletters["data"][$i]["individual"] = 'y';
 
-			if ($userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_subscribe_newsletters')) {
-				$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
+			if ($userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'bit_p_subscribe_newsletters')) {
+				$newsletters["data"][$i]["individual_bit_p_subscribe_newsletters"] = 'y';
 			} else {
-				$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'n';
+				$newsletters["data"][$i]["individual_bit_p_subscribe_newsletters"] = 'n';
 			}
 
-			if ($tiki_p_admin == 'y'
-				|| $userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_admin_newsletters')) {
-				$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
+			if ($bit_p_admin == 'y'
+				|| $userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'bit_p_admin_newsletters')) {
+				$newsletters["data"][$i]["individual_bit_p_subscribe_newsletters"] = 'y';
 			}
 		} else {
 			$newsletters["data"][$i]["individual"] = 'n';

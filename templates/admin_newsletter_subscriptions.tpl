@@ -7,19 +7,17 @@
 
 	<div class="body">
 		{form}
-			<h2>{tr}Add a subscription newsletters{/tr}</h2>
 			<input type="hidden" name="nl_id" value="{$nl_id|escape}" />
 
 			<div class="row">
-				{formlabel label="Email" for=""}
+				{formfeedback warning="<strong>Be sure you have confirmed your 'Validate Email' Newsletter setting, before mass subscribing users.</strong> With Validate Email enabled, a confirmation email will be sent to every subsciber inviting them to the newsletter. With Validate Email disabled, emails will be subscribed but not validated by the users. <strong>Any duplicate or previously unsubscribed emails will *NOT* be re-subscribed using this method.</strong>"}
+			</div>
+
+			<div class="row">
+				{formlabel label="New Subscribers" for=""}
 				{forminput}
-					{if $gBitUser->hasPermission( 'bit_p_subscribe_email' )}
-						<input type="text" name="email" value="{$email|escape}" />
-					{else}
-						<input type="hidden" name="email" value="{$email|escape}" />
-						{$email|escape}
-					{/if}
-					{formhelp note=""}
+					<textarea cols="50" rows="5" name="new_subscribers" id="new_subscribers"></textarea>
+					{formhelp note="Enter multiple email addresses on separate lines to import into the subscriber list"}
 				{/forminput}
 			</div>
 

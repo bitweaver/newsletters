@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.5 2006/02/16 12:52:41 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.6 2006/02/19 04:38:47 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.13.2.5 2006/02/16 12:52:41 wolff_borg Exp $
+ * $Id: BitNewsletter.php,v 1.13.2.6 2006/02/19 04:38:47 wolff_borg Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.13.2.5 $ $Date: 2006/02/16 12:52:41 $ $Author: wolff_borg $
+ * @version $Revision: 1.13.2.6 $ $Date: 2006/02/19 04:38:47 $ $Author: wolff_borg $
  */
 
 /**
@@ -121,45 +121,53 @@ class BitNewsletter extends LibertyContent {
 		return $ret;
 	}
 
-	function removeSubscription( $email ) {
-		$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?", array($this->mNewsletterId, $email));
-		$this->unsubscribe($sub_code);
-		
+	function removeSubscription( $email, $notify = FALSE, $del_record = FALSE ) {
+		if ($del_record) {
+			$this->mDb->query("DELETE FROM `".BIT_DB_PREFIX."tiki_mail_subscriptions` WHERE `nl_content_id`=? AND `email`=?", array($this->mNewsletterId, $email));
+		} else {
+			$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?", array($this->mNewsletterId, $email));
+			$this->unsubscribe($sub_code, $notify);
+		}
 	}
 
-	function subscribe( $email ) {
+	function subscribe( $email, $notify = FALSE ) {
 		$ret = FALSE;
 		if( $this->isValid() ) {
 			global $gBitSystem;
 			global $gBitSmarty;
 			global $gBitUser;
 
-			$sub_code = md5( BitUser::genPass() );
+			// Check for duplicates
+			$all_subs = $this->getAllSubscribers();
+			$duplicate = FALSE;
+			foreach($all_subs as $sub) {
+				if ($sub['email'] == $email) {
+					$duplicate = TRUE;
+					$sub_code = $sub['sub_code'];
+				}
+			}
+
+			$sub_code = (!$duplicate) ? md5( BitUser::genPass() ) : $sub_code;
 			$now = date("U");
-			if( $this->mInfo['validate_addr'] == 'y' ) {
-				// Generate a code and store it and send an email  with the
-				// URL to confirm the subscription put valid as 'n'
-				$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?";
-				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email ) );
+			// Generate a code and store it and send an email  with the
+			// URL to confirm the subscription put valid as 'n'
+			if (!$duplicate) {
 				$query = "insert into `".BIT_DB_PREFIX."tiki_mail_subscriptions`(`nl_content_id`,`email`,`sub_code`,`is_valid`,`subscribed_date`) values(?,?,?,?,?)";
 				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email, $sub_code, 'n', (int)$now ) );
+			}
+			if( $notify && $this->mInfo['validate_addr'] == 'y' ) {
 				// Now send an email to the address with the confirmation instructions
 				$gBitSmarty->assign( 'sub_code', $sub_code );
 				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/confirm_newsletter_subscription.tpl');
-				@mail($email, tra('Newsletter subscription information at '). $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
+				@mail($email, tra('Newsletter subscription information at') . ' ' . $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
 					"From: " . $gBitSystem->getPreference( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
-			} else {
-				$query = "delete from `".BIT_DB_PREFIX."tiki_mail_subscriptions` where `nl_content_id`=? and `email`=?";
-				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email ) );
-				$query = "insert into `".BIT_DB_PREFIX."tiki_mail_subscriptions`(`nl_content_id`,`email`,`sub_code`,`is_valid`,`subscribed_date`) values(?,?,?,?,?)";
-				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email, $sub_code, 'y', (int)$now ) );
 			}
 			$ret = TRUE;
 		}
 		return $ret;
 	}
 
-	function confirmSubscription($sub_code) {
+	function confirmSubscription($sub_code, $notify = FALSE ) {
 		global $gBitSystem;
 		global $gBitSmarty;
 		global $gBitUser;
@@ -173,14 +181,17 @@ class BitNewsletter extends LibertyContent {
 		$this->load();
 		$query = "update `".BIT_DB_PREFIX."tiki_mail_subscriptions` set `is_valid`=?,`unsubscribe_date`=? where `sub_code`=?";
 		$result = $this->mDb->query($query,array('y',NULL,$sub_code));
-		// Now send a welcome email
-		$gBitSmarty->assign( 'sub_code', $res["sub_code"] );
-		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_welcome.tpl');
-		@mail($res["email"], tra('Welcome to '). $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
-			"From: " . $gBitSystem->getPreference( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
+
+		if ($notify) {
+			// Now send a welcome email
+			$gBitSmarty->assign( 'sub_code', $res["sub_code"] );
+			$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_welcome.tpl');
+			@mail($res["email"], tra('Welcome to') . ' ' . $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
+				"From: " . $gBitSystem->getPreference( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
+		}
 	}
 
-	function unsubscribe($sub_code) {
+	function unsubscribe($sub_code, $notify = TRUE ) {
 		global $gBitSystem;
 		global $gBitSmarty;
 		global $gBitUser;
@@ -195,12 +206,15 @@ class BitNewsletter extends LibertyContent {
 		$this->load();
 		$query = "update `".BIT_DB_PREFIX."tiki_mail_subscriptions` set `unsubscribe_date`=? where `sub_code`=? and `unsubscribe_date` is NULL";
 		$result = $this->mDb->query($query,array($now, $sub_code));
-		// Now send a bye bye email
-/*		$gBitSmarty->assign('sub_code', $res["sub_code"]);
-		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
-		@mail($res["email"], tra('Bye bye from '). $this->mInfo["name"] . tra(' at '). $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
-			"From: " . $gBitSystem->getPreference( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
-*/
+
+		if ($notify) {
+			// Now send a bye bye email
+			$gBitSmarty->assign('sub_code', $res["sub_code"]);
+			$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
+			@mail($res["email"], tra('Thank you from') . ' ' . $gBitSystem->getPreference( "bitmailer_from" ), $mail_data,
+				"From: " . $gBitSystem->getPreference( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
+		}
+
 	}
 
 /*
