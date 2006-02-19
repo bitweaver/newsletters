@@ -10,7 +10,11 @@
 			<input type="hidden" name="nl_id" value="{$nl_id|escape}" />
 
 			<div class="row">
-				{formfeedback warning="<strong>Be sure you have confirmed your 'Validate Email' Newsletter setting, before mass subscribing users.</strong> With Validate Email enabled, a confirmation email will be sent to every subsciber inviting them to the newsletter. With Validate Email disabled, emails will be subscribed but not validated by the users. <strong>Any duplicate or previously unsubscribed emails will *NOT* be re-subscribed using this method.</strong>"}
+				{if $gContent->mInfo.validate_addr eq 'y'}
+					{formfeedback warning="Validate Email is enabled, a confirmation email will be sent to every subsciber inviting them to the newsletter. <strong>Any duplicate or previously unsubscribed emails will *NOT* be re-subscribed using this method.</strong>"}
+				{else}
+					{formfeedback warning="Validate Email is disabled, emails will be subscribed but not validated by the users. <strong>Any duplicate or previously unsubscribed emails will *NOT* be re-subscribed using this method.</strong>"}
+				{/if}
 			</div>
 
 			<div class="row">
