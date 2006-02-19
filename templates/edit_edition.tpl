@@ -85,7 +85,7 @@
 							{include file="bitpackage:quicktags/quicktags_full.tpl"}
 						{/if}
 						<div class="row">
-							{formlabel label="Body" for="body"}
+							{formlabel label="Body" for=$textarea_id}
 							{forminput}
 								<textarea id="{$textarea_id}" name="edit" rows="{$rows|default:20}" cols="{$cols|default:50}">{$pageInfo.data|escape:html}</textarea>
 							{/forminput}

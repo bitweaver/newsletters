@@ -33,9 +33,9 @@
 						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl.nl_id}">{$nl.unsub_count}({$nl.confirmed})</a></td>
 						<td style="text-align:right;">
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?nl_id={$nl.nl_id}">{biticon ipackage=liberty iname=new iexplain="New Edition"}</a>
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletters.php?remove=1&amp;nl_id={$nl.nl_id}">{biticon ipackage=liberty iname=delete iexplain=Remove}</a>
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletters.php?&amp;nl_id={$nl.nl_id}">{biticon ipackage=liberty iname=edit iexplain=Edit}</a>
 							{if $channels[user].individual eq 'y'}({/if}<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$nl.title}&amp;object_type={$smarty.const.BITNEWSLETTER_CONTENT_TYPE_GUID}&amp;permType=newsletters&amp;object_id={$nlId}">{biticon ipackage=liberty iname=permissions iexplain=Permissions}</a>{if $nl.individual eq 'y'}){/if}
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletters.php?remove=1&amp;nl_id={$nl.nl_id}">{biticon ipackage=liberty iname=delete iexplain=Remove}</a>
 						</td>
 					</tr>
 				{foreachelse}
