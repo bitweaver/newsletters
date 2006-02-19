@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.15.2.2 2006/02/13 12:28:56 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.15.2.3 2006/02/19 11:42:27 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.15.2.2 2006/02/13 12:28:56 wolff_borg Exp $
+ * $Id: BitMailer.php,v 1.15.2.3 2006/02/19 11:42:27 wolff_borg Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.15.2.2 $ $Date: 2006/02/13 12:28:56 $ $Author: wolff_borg $
+ * @version $Revision: 1.15.2.3 $ $Date: 2006/02/19 11:42:27 $ $Author: wolff_borg $
  */
 
 /**
@@ -115,11 +115,11 @@ class BitMailer extends phpmailer {
 				print "TO: $pick[email]\t";
 				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
 					print "SENT\n";
+					$updateQuery = "UPDATE `".BIT_DB_PREFIX."tiki_mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
+					$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
 				} else {
 					$this->logError( $pick );
 				}
-				$updateQuery = "UPDATE `".BIT_DB_PREFIX."tiki_mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
-				$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
 				$this->mDb->CompleteTrans();
 				$this->mDb->StartTrans();
 			}
