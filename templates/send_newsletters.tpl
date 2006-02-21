@@ -20,6 +20,7 @@
 				{if $smarty.request.emited eq 'y'}
 					{tr}The newsletter was sent to {$sent} email addresses{/tr}
 				{elseif $smarty.request.preview}
+					<input type="hidden" name="validated" value="{$validated}" />
 					{jstabs}
 						{jstab title="Preview Newsletter"}
 							{legend legend="Preview Newsletter"}
