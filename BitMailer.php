@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.15.2.3 2006/02/19 11:42:27 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.15.2.4 2006/02/21 01:07:14 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.15.2.3 2006/02/19 11:42:27 wolff_borg Exp $
+ * $Id: BitMailer.php,v 1.15.2.4 2006/02/21 01:07:14 wolff_borg Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.15.2.3 $ $Date: 2006/02/19 11:42:27 $ $Author: wolff_borg $
+ * @version $Revision: 1.15.2.4 $ $Date: 2006/02/21 01:07:14 $ $Author: wolff_borg $
  */
 
 /**
@@ -111,6 +111,7 @@ class BitMailer extends phpmailer {
 				$gBitSystem->preDisplay('');
 				$header = $gBitSmarty->fetch( 'bitpackage:themes/header_inc.tpl' );
 				$htmlBody = $header . "<div id='bitmain'><small>". tra("If this newsletter is not displaying correctly, please click here: ") . "<a href='".$content->getDisplayUrl()."'>".$content->getDisplayUrl()."</a></small><br />" . $body[$pick['content_id']]['body'] . $unsub . '<img src="'.NEWSLETTERS_PKG_URI.'track.php?sub='.$pick['url_code'].'" alt="" /></div>';
+				$this->ClearReplyTos();
 				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getPreference( 'bitmailer_from' ) );
 				print "TO: $pick[email]\t";
 				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {

@@ -12,8 +12,5 @@
 	{if $gBitUser->hasPermission( 'bit_p_send_newsletters' )}
 		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php">{tr}Send Newsletters{/tr}</a></li>
 	{/if}
-	{if $gBitUser->hasPermission( 'bit_p_admin_newsletters' )}
-		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php">{tr}Admin Subscriptions{/tr}</a></li>
-	{/if}
 </ul>
 {/strip}

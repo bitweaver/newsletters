@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.6 2006/02/19 04:38:47 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.7 2006/02/21 01:07:14 wolff_borg Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.13.2.6 2006/02/19 04:38:47 wolff_borg Exp $
+ * $Id: BitNewsletter.php,v 1.13.2.7 2006/02/21 01:07:14 wolff_borg Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.13.2.6 $ $Date: 2006/02/19 04:38:47 $ $Author: wolff_borg $
+ * @version $Revision: 1.13.2.7 $ $Date: 2006/02/21 01:07:14 $ $Author: wolff_borg $
  */
 
 /**
@@ -130,7 +130,7 @@ class BitNewsletter extends LibertyContent {
 		}
 	}
 
-	function subscribe( $email, $notify = FALSE ) {
+	function subscribe( $email, $notify = FALSE, $remind = FALSE ) {
 		$ret = FALSE;
 		if( $this->isValid() ) {
 			global $gBitSystem;
@@ -155,7 +155,7 @@ class BitNewsletter extends LibertyContent {
 				$query = "insert into `".BIT_DB_PREFIX."tiki_mail_subscriptions`(`nl_content_id`,`email`,`sub_code`,`is_valid`,`subscribed_date`) values(?,?,?,?,?)";
 				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email, $sub_code, 'n', (int)$now ) );
 			}
-			if( $notify && $this->mInfo['validate_addr'] == 'y' ) {
+			if( ($notify && $this->mInfo['validate_addr'] == 'y') || $remind ) {
 				// Now send an email to the address with the confirmation instructions
 				$gBitSmarty->assign( 'sub_code', $sub_code );
 				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/confirm_newsletter_subscription.tpl');

@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.6 2006/02/19 04:38:47 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16.2.7 2006/02/21 01:07:14 wolff_borg Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -107,7 +107,7 @@ if( isset( $_REQUEST["subscribe"] ) && !empty( $_REQUEST["email"] ) ) {
 	}
 
 	// Now subscribe the email address to the newsletter
-	$gContent->subscribe( $_REQUEST["email"], TRUE );
+	$gContent->subscribe( $_REQUEST["email"], TRUE, TRUE );
 }
 
 $subscribe = false;
