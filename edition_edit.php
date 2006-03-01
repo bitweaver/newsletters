@@ -90,7 +90,7 @@ if (isset($_REQUEST["preview"])) {
 }
 
 // WYSIWYG and Quicktag variable
-$gBitSmarty->assign( 'textarea_id', 'editwiki' );
+$gBitSmarty->assign( 'textarea_id', LIBERTY_TEXT_AREA );
 
 // formInfo might be set due to a error on submit
 if( empty( $formInfo ) ) {
