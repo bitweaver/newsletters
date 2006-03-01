@@ -40,7 +40,7 @@
 		<div class="row">
 			{formlabel label="Permanent Unsubscribe"}
 			{forminput}
-				<input type="checkbox" name="unsubscribe_all" value="y" {if $subInfo.unsubscribe_all}checked="checked"{/if} /> {tr}Remove myself from all lists, and receive no further mailings from{/tr} {$gBitSystem->getPreference('siteTitle','this site')}.</br>
+				<input type="checkbox" name="unsubscribe_all" value="y" {if $subInfo.unsubscribe_all}checked="checked"{/if} /> {tr}Remove myself from all lists, and receive no further mailings from{/tr} {$gBitSystem->getConfig('siteTitle','this site')}.</br>
 			{/forminput}
 		</div>
 		<div class="row submit">

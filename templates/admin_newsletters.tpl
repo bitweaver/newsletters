@@ -2,7 +2,7 @@
 {form legend="Newsletter Features"}
 	<input type="hidden" name="page" value="{$page}" />
 
-	{if !$gBitSystem->getPreference( 'feature_server_name' )}
+	{if !$gBitSystem->getConfig( 'feature_server_name' )}
 		{formfeedback error="Server name is not defined!"}
 		{tr}You must <a href="{$smarty.const.KERNEL_PKG_URL}admin/index.php?page=server">define the server name</a> for proper background operation of the mail script.{/tr}
 	{/if}
@@ -11,7 +11,7 @@
 		<div class="row">
 			{formlabel label=`$output.label` for=$item}
 			{forminput}
-				<input type="text" name="{$item}" value="{$gBitSystem->getPreference($item,$output.default)}" id="{$item}" />
+				<input type="text" name="{$item}" value="{$gBitSystem->getConfig($item,$output.default)}" id="{$item}" />
 				{formhelp note=`$output.note` page=`$output.page`}
 			{/forminput}
 		</div>

@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/track.php,v 1.1 2005/12/29 17:22:47 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/track.php,v 1.2 2006/03/01 20:16:17 spiderr Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -15,7 +15,7 @@ if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
 }
 
 // open the file in a binary mode
-$trackImage = $gBitSystem->getPreference( 'newsletter_tracking_image', NEWSLETTERS_PKG_PATH.'images/track.gif' );
+$trackImage = $gBitSystem->getConfig( 'newsletter_tracking_image', NEWSLETTERS_PKG_PATH.'images/track.gif' );
 
 if( $fp = fopen( $trackImage, 'rb') ) {
 	// send the right headers
