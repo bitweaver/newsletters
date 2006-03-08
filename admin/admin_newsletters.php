@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters.php,v 1.1.2.1 2006/02/19 04:38:47 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters.php,v 1.1.2.2 2006/03/08 11:47:32 wolff_borg Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -22,7 +22,7 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the newsletter '.$gContent->getTitle().'?' ) );
 	} else {
 		if( $gContent->expunge() ) {
-			header( "Location: ".NEWSLETTERS_PKG_URL.'newsletters.php' );
+			header( "Location: ".NEWSLETTERS_PKG_URL.'admin/admin_newsletters.php' );
 			die;
 		}
 	}

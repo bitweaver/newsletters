@@ -34,29 +34,57 @@
 
 		{minifind}
 
-		<table class="data">
-			<caption>{tr}Subscriptions{/tr}</caption>
-			<tr>
-				<th>{smartlink ititle="Email" isort=email offset=$offset idefault=1}</th>
-				<th>{smartlink ititle="Valid" isort=is_valid offset=$offset idefault=1}</th>
-				<th>{smartlink ititle="Subscribed" isort=subscribed_date offset=$offset idefault=1}</th>
-				<th>{smartlink ititle="Unsubscribed" isort=unsubscribe_date offset=$offset idefault=1}</th>
-				<th>{tr}Action{/tr}</th>
-			</tr>
-			{foreach from=$subscribers item=sb}
-				<tr class="{cycle values='odd,even'}">
-					<td>{$sb.email}</td>
-					<td>{$sb.is_valid}</td>
-					<td>{$sb.subscribed_date|bit_short_datetime}</td>
-					<td>{if $sb.unsubscribe_date ne NULL}{$sb.unsubscribe_date|bit_short_datetime}{/if}</td>
-					<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?remove=1&amp;nl_id={$nl_id}&amp;email={$sb.email}">{tr}remove{/tr}</a></td>
+		{form id="list"}
+			<input type="hidden" name="nl_id" value="{$nl_id|escape}" />
+
+			<table class="data">
+				<caption>{tr}Subscriptions{/tr}</caption>
+				<tr>
+					<th>{smartlink ititle="Email" isort=email offset=$offset idefault=1}</th>
+					<th>{smartlink ititle="Valid" isort=is_valid offset=$offset idefault=1}</th>
+					<th>{smartlink ititle="Subscribed" isort=subscribed_date offset=$offset idefault=1}</th>
+					<th>{smartlink ititle="Unsubscribed" isort=unsubscribe_date offset=$offset idefault=1}</th>
+					<th>{tr}Actions{/tr}</th>
 				</tr>
-			{foreachelse}
-				<tr class="norecords">
-					<td colspan="2">{tr}No Records Found{/tr}</td>
-				</tr>
-			{/foreach}
-		</table>
+				{section name=sb loop=$subscribers}
+					<tr class="{cycle values='odd,even'}">
+						<td>{$subscribers[sb].email}</td>
+						<td>{$subscribers[sb].is_valid}</td>
+						<td>{$subscribers[sb].subscribed_date|bit_short_datetime}</td>
+						<td>{if $subscribers[sb].unsubscribe_date ne NULL}{$subscribers[sb].unsubscribe_date|bit_short_datetime}{/if}</td>
+						<td><input type="checkbox" name="checked[]" value="{$subscribers[sb].email}" /></td>
+					</tr>
+				{sectionelse}
+					<tr class="norecords">
+						<td colspan="2">{tr}No Records Found{/tr}</td>
+					</tr>
+				{/section}
+			</table>
+			<div style="text-align:right;">
+				<script type="text/javascript">//<![CDATA[
+					// check / uncheck all.
+					document.write("<label for=\"switcher\">{tr}Select All{/tr}</label> ");
+					document.write("<input name=\"switcher\" id=\"switcher\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form.id,'checked[]','switcher')\" />");
+				//]]></script>
+
+				<br />
+
+				<select name="submit_mult" onchange="this.form.submit();">
+					<option value="" selected="selected">{tr}with checked{/tr}:</option>
+						<option value="remove">{tr}remove{/tr}</option>
+						<option value="unsubscribe">{tr}unsubscribe{/tr}</option>
+						<option value="resubscribe">{tr}resubscribe{/tr}</option>
+				</select>
+
+				<script type="text/javascript">//<![CDATA[
+				// Fake js to allow the use of the <noscript> tag (so non-js-users kenn still submit)
+				//]]></script>
+
+				<noscript>
+					<div><input type="submit" value="{tr}Submit{/tr}" /></div>
+				</noscript>
+			</div>
+		{/form}
 	</div><!-- end .body -->
 </div><!-- end .newsletters -->
 

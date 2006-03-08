@@ -21,7 +21,7 @@
 					<th>{smartlink ititle="Created" isort=last_sent offset=$offset}</th>
 					<th>{smartlink ititle="Last Sent" isort=created offset=$offset}</th>
 					<th>{smartlink ititle="Unsubscribed" isort=users offset=$offset}</th>
-					<th>{tr}Action{/tr}</th>
+					<th>{tr}Actions{/tr}</th>
 				</tr>
 
 				{foreach key=nlId from=$newsletters item=nl}

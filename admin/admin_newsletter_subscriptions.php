@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.3.2.2 2006/02/19 04:38:47 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.3.2.3 2006/03/08 11:47:32 wolff_borg Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -36,16 +36,67 @@ if ($userlib->object_has_one_permission($_REQUEST["nl_id"], 'newsletter')) {
 	}
 }
 */
-
 if( $gContent->isValid() ) {
 	$nl_id = $_REQUEST['nl_id'];
 	$gBitSmarty->assign( 'nl_id', $nl_id );
 
-	if (isset($_REQUEST["remove"])) {
-		$gContent->removeSubscription($_REQUEST["email"], FALSE, TRUE );
-	}
-
-	if (isset($_REQUEST["save"])) {
+	/* mass-remove:
+	   the checkboxes are sent as the array $_REQUEST["checked[]"], values are the wiki-PageNames,
+	   e.g. $_REQUEST["checked"][3]="HomePage"
+	   $_REQUEST["submit_mult"] holds the value of the "with selected do..."-option list
+	   we look if any page's checkbox is on and if remove_pages is selected.
+	   then we check permission to delete pages.
+	   if so, we call BitPage::expunge for all the checked pages.
+	*/
+	if (isset($_REQUEST["submit_mult"]) && isset($_REQUEST["checked"]) && $_REQUEST["submit_mult"] == "remove") {
+		if( !empty( $_REQUEST['cancel'] ) ) {
+			// user cancelled - just continue on, doing nothing
+		} elseif( empty( $_REQUEST['confirm'] ) ) {
+			$formHash['nl_id'] = $nl_id;
+			$formHash['delete'] = TRUE;
+			$formHash['submit_mult'] = 'remove';
+			foreach( $_REQUEST["checked"] as $del ) {
+				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
+			}
+			$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete '.count($_REQUEST["checked"]).' subscriptions?', 'error' => 'This cannot be undone!' ) );
+		} else {
+			foreach ($_REQUEST["checked"] as $delete) {
+				$gContent->removeSubscription($delete, FALSE, TRUE );
+			}
+		}
+	} elseif (isset($_REQUEST["submit_mult"]) && isset($_REQUEST["checked"]) && $_REQUEST["submit_mult"] == "unsubscribe") {
+		if( !empty( $_REQUEST['cancel'] ) ) {
+			// user cancelled - just continue on, doing nothing
+		} elseif( empty( $_REQUEST['confirm'] ) ) {
+			$formHash['nl_id'] = $nl_id;
+			$formHash['delete'] = TRUE;
+			$formHash['submit_mult'] = 'unsubscribe';
+			foreach( $_REQUEST["checked"] as $del ) {
+				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
+			}
+			$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to unsubscribe '.count($_REQUEST["checked"]).' subscriptions?', 'error' => 'This cannot be undone!' ) );
+		} else {
+			foreach ($_REQUEST["checked"] as $delete) {
+				$gContent->removeSubscription($delete, FALSE, FALSE );
+			}
+		}
+	} elseif (isset($_REQUEST["submit_mult"]) && isset($_REQUEST["checked"]) && $_REQUEST["submit_mult"] == "resubscribe") {
+		if( !empty( $_REQUEST['cancel'] ) ) {
+			// user cancelled - just continue on, doing nothing
+		} elseif( empty( $_REQUEST['confirm'] ) ) {
+			$formHash['nl_id'] = $nl_id;
+			$formHash['delete'] = TRUE;
+			$formHash['submit_mult'] = 'resubscribe';
+			foreach( $_REQUEST["checked"] as $del ) {
+				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
+			}
+			$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to resubscribe '.count($_REQUEST["checked"]).' subscriptions?', 'error' => 'This cannot be undone!' ) );
+		} else {
+			foreach ($_REQUEST["checked"] as $delete) {
+				$gContent->subscribe($delete, FALSE, FALSE );
+			}
+		}
+	} elseif (isset($_REQUEST["save"])) {
 		$new_subs = preg_split("/[\s,]+/", $_REQUEST["new_subscribers"]);
 		foreach($new_subs as $sub) {
 			$sub = trim($sub);

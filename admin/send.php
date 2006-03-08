@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.11.2.3 2006/02/21 06:26:36 wolff_borg Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.11.2.4 2006/03/08 11:47:32 wolff_borg Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -29,7 +29,7 @@ if( isset( $_REQUEST["edition_id"] ) ) {
 $gBitSmarty->assign('preview', 'n');
 $gBitSmarty->assign('presend', 'n');
 $gBitSmarty->assign('emited', 'n');
-$validated = (isset($_REQUEST["validated"])) ? TRUE : FALSE;
+$validated = (isset($_REQUEST["validated"]) && !empty($_REQUEST["validated"])) ? TRUE : FALSE;
 
 if( $gContent->isValid() && isset( $_REQUEST['preview'] ) && isset( $_REQUEST['send_group'] ) ) {
 	$recipients = $gContent->getRecipients( $_REQUEST['send_group'], $validated );
