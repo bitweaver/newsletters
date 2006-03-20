@@ -57,6 +57,22 @@ array( 'DATADICT' => array(
 )),
 	)
 )
+
+	'BWR1' => array(
+		'BWR2' => array(
+// de-tikify tables
+array( 'DATADICT' => array(
+	array( 'RENAMETABLE' => array(
+		'tiki_newsletters'          => 'newsletters',
+		'tiki_newsletters_editions' => 'newsletters_editions',
+		'tiki_mail_subscriptions'   => 'mail_subscriptions',
+		'tiki_mail_errors'          => 'mail_errors',
+		'tiki_mail_mailings'        => 'mail_mailings',
+		'tiki_mail_queue'           => 'mail_queue',
+	)),
+)),
+		)
+	),
 );
 
 if( isset( $upgrades[$gUpgradeFrom][$gUpgradeTo] ) ) {
