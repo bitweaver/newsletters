@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.11 2005/12/29 21:55:55 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.12 2006/03/23 16:40:40 squareing Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -53,11 +53,6 @@ if( $gContent->isValid() ) {
 	$editions = $gContent->getList( $listHash );
 	$gBitSmarty->assign_by_ref( 'editionList', $editions );
 	$gBitSmarty->assign( 'listInfo', $listHash );
-
-	if( $gBitSystem->isFeatureActive( 'tiki_p_use_content_templates' ) ) {
-		$templates = $tikilib->list_templates('newsletters', 0, -1, 'name_asc', '');
-		$gBitSmarty->assign_by_ref('templates', $templates["data"]);
-	}
 }
 
 $gBitSmarty->assign_by_ref( 'feedback', $feedback );

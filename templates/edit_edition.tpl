@@ -34,21 +34,6 @@
 							{/forminput}
 						</div>
 
-						{if $gBitUser->hasPermission( 'bit_p_use_content_templates' ) && $templates}
-							<div class="row">
-								{formlabel label="Template" for=""}
-								{forminput}
-									<select name="template_id" onchange="javascript:document.getElementById('editpageform').submit();">
-										<option value="0">{tr}none{/tr}</option>
-										{section name=ix loop=$templates}
-											<option value="{$templates[ix].template_id|escape}">{$templates[ix].name}</option>
-										{/section}
-									</select>
-									{formhelp note=""}
-								{/forminput}
-							</div>
-						{/if}
-
 						{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_mini_tpl}
 
 						<div class="row">
