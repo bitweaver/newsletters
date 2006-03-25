@@ -15,7 +15,7 @@
 <em>
 			{formlabel label="In Response To"}
 			{forminput}
-				{tr}{$subInfo.content_description}{/tr}: {$subInfo.title}
+				{tr}{$subInfo.content_description}{/tr}: {$subInfo.title|escape}
 			{/forminput}
 </em>
 		</div>
@@ -31,7 +31,7 @@
 			{formlabel label="Subscriptions"}
 			{forminput}
 				{foreach from=$newsletters key=nlId item=nl}
-					{if $nl.allow_user_sub}<input type="checkbox" name="nl_content_id[]" value="{$nlId}" {if !$unsubs.$nlId && !$subInfo.unsubscribe_all}checked="checked"{/if}/>{/if} <a href="{$nl.display_url}"/>{$nl.title}</a> <br/>
+					{if $nl.allow_user_sub}<input type="checkbox" name="nl_content_id[]" value="{$nlId}" {if !$unsubs.$nlId && !$subInfo.unsubscribe_all}checked="checked"{/if}/>{/if} <a href="{$nl.display_url}"/>{$nl.title|escape}</a> <br/>
 				{foreachelse}
 					{tr}No newsletters were found{/tr}
 				{/foreach}

@@ -7,7 +7,7 @@
 			   {/if}
 			</div>
 
-			<h2><a href="{$ed.display_url}">{$ed.title}</a></h2>
+			<h2><a href="{$ed.display_url}">{$ed.title|escape}</a></h2>
 			<p>
 				{$ed.data|truncate:200:'...'}
 				<br />

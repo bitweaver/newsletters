@@ -1,6 +1,6 @@
 {tr}Somebody or you tried to subscribe this email address at our site:{/tr} {$server_name}
 
-{tr}To the newsletter:{/tr} {$info.title}
+{tr}To the newsletter:{/tr} {$info.title|escape}
 
 {tr}Description:{/tr}
 {$info.description}
