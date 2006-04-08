@@ -72,7 +72,7 @@
 						<div class="row">
 							{formlabel label="Body" for="body"}
 							{forminput}
-								<textarea id="{$textarea_id}" name="edit" rows="{$rows|default:20}" cols="{$cols|default:50}">{$pageInfo.data|escape:html}</textarea>
+								<textarea {spellchecker} id="{$textarea_id}" name="edit" rows="{$rows|default:20}" cols="{$cols|default:50}">{$pageInfo.data|escape:html}</textarea>
 							{/forminput}
 						</div>
 					{/legend}
