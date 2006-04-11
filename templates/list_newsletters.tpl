@@ -45,7 +45,7 @@
 				{/foreach}
 			</table>
 
-			{if $gBitUser->hasPermission('bit_p_create_newsletters')}
+			{if $gBitUser->hasPermission('p_newsletters_create')}
 				<a href="{$smarty.server.php_self}?new=1">Create new newsletter</a>
 			{/if}
 

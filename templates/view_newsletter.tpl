@@ -2,12 +2,12 @@
 	<div class="floaticon">
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon'}
 
-		{if $gContent->isOwner() || $gBitUser->hasPermission( 'bit_p_admin_newsletters' )}
+		{if $gContent->isOwner() || $gBitUser->hasPermission( 'p_newsletters_admin' )}
 			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}">{biticon ipackage=liberty iname="edit" iexplain="edit"}</a>
 			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}&amp;remove=1">{biticon ipackage=liberty iname="delete" iexplain="delete"}</a>
 		{/if}
 
-		{if $gBitUser->hasPermission( 'bit_p_print' )}
+		{if $gBitUser->hasPermission( 'p_liberty_print' )}
 			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}print_blog_post.php?post_id={$post_id}">{biticon ipackage=liberty iname="print" iexplain="print"}</a>
 		{/if}
 		<a href="{$smarty.const.NEWSLETTERS_PKG_URL}send_newsletter.php?post_id={$post_id}">{biticon ipackage=liberty iname="mail_send" iexplain="email this post"}</a>

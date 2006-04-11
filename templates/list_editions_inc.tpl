@@ -2,7 +2,7 @@
 	{foreach from=$editionList key=editionId item=ed}
 		<li class="item {cycle values='odd,even'} {$ed.content_type_guid}">
 			<div class="floaticon">
-				{if $gBitUser->hasPermission('bit_p_admin_newsletters')}
+				{if $gBitUser->hasPermission('p_newsletters_admin')}
 					<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?edition_id={$ed.edition_id}">{biticon ipackage=liberty iname="mail_send" iexplain="Send"}</a>
 			   {/if}
 			</div>

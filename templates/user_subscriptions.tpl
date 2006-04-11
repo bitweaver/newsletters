@@ -1,4 +1,4 @@
-{if $subInfo || $gBitUser->hasPermission('bit_p_subscribe_newsletters')}
+{if $subInfo || $gBitUser->hasPermission('p_newsletters_subscribe')}
 {strip}
 <div class="display newsletters">
 	<div class="header">

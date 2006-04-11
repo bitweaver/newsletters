@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.16 2006/01/22 20:21:56 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.17 2006/04/11 13:06:51 squareing Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -11,7 +11,7 @@ include_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
 
-if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'bit_p_subscribe_newsletters' ) && empty( $_REQUEST["sub"] ) ) {
+if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'p_newsletters_subscribe' ) && empty( $_REQUEST["sub"] ) ) {
 	$gBitSystem->fatalError( tra("You must be logged in to subscribe to newsletters"));
 }
 
@@ -80,7 +80,7 @@ $user_email = $gBitUser->isRegistered() ? $gBitUser->mInfo['email'] : '';
 $gBitSmarty->assign('email', $user_email);
 
 if( isset( $_REQUEST["subscribe"] ) ) {
-	$gBitSystem->verifyPermission( 'bit_p_subscribe_newsletters' );
+	$gBitSystem->verifyPermission( 'p_newsletters_subscribe' );
 	$feedback['success'] = tra( "Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed." );
 
 	if( !$gBitUser->hasPermission( 'tiki_p_subscribe_email' ) ) {

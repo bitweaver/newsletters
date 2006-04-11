@@ -13,7 +13,7 @@
 // Initialization
 require_once( '../bit_setup_inc.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
-$gBitSystem->verifyPermission( 'bit_p_create_editions' );
+$gBitSystem->verifyPermission( 'p_newsletters_create_editions' );
 
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_edition_inc.php' );
 

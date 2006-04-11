@@ -25,13 +25,13 @@
 						{/forminput}
 					</div>
 
-				{if ($gContent->mInfo.allow_user_sub eq 'y') or $gBitUser->hasPermission( 'bit_p_subscribe_newsletters' )}
+				{if ($gContent->mInfo.allow_user_sub eq 'y') or $gBitUser->hasPermission( 'p_newsletters_subscribe' )}
 					{form}
 						<input type="hidden" name="nl_id" value="{$gContent->mNewsletterId}" />
 						<div class="row">
 							{formlabel label="Email" for=""}
 							{forminput}
-							{if $gBitUser->hasPermission( 'bit_p_subscribe_email' )}
+							{if $gBitUser->hasPermission( 'p_newsletters_subscribe_email' )}
 								<input type="text" name="email" value="{$email|escape}" />
 							{else}
 								<input type="hidden" name="email" value="{$email|escape}" />
@@ -93,8 +93,8 @@
   <td>{tr}Description{/tr}:</td>
   <td>{$nl_info.description}</td>
 </tr>
-{if ($nl_info.allow_user_sub eq 'y') or ($bit_p_admin_newsletters eq 'y')}
-{if $bit_p_subscribe_email eq 'y'}
+{if ($nl_info.allow_user_sub eq 'y') or ($p_newsletters_admin eq 'y')}
+{if $p_newsletters_subscribe_email eq 'y'}
 <tr>
   <td>{tr}Email:{/tr}</td>
   <td><input type="text" name="email" value="{$email|escape}" /></td>

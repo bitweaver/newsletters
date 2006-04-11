@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.5 2006/01/22 20:21:56 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.6 2006/04/11 13:06:51 squareing Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -9,7 +9,7 @@
 // Initialization
 require_once( '../bit_setup_inc.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
-$gBitSystem->verifyPermission( 'bit_p_create_newsletters' );
+$gBitSystem->verifyPermission( 'p_newsletters_create' );
 
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
 
