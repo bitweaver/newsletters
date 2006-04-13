@@ -58,17 +58,7 @@ if (isset($_REQUEST["preview"])) {
 	$gBitSmarty->assign( 'title',!empty( $_REQUEST["title"] ) ? $_REQUEST["title"]:$gContent->mPageName );
 
 	$parsed = $gContent->parseData( $formInfo['data'],( !empty( $_REQUEST['format_guid'] ) ? $_REQUEST['format_guid'] :
-( isset( $gContent->mInfo['format_guid'] ) ? $gContent->mInfo['format_guid'] : 'tikiwiki' ) ) );
-	/* SPELLCHECKING INITIAL ATTEMPT */
-	//This nice function does all the job!
-	if( $gBitSystem->isFeatureActive( 'wiki_spellcheck' )) {
-		if( isset( $_REQUEST["spellcheck"] ) && $_REQUEST["spellcheck"] == 'on' ) {
-			$parsed = $gBitSystem->spellcheckreplace( $edit_data, $parsed, $gBitLanguage->mLanguage, 'editwiki' );
-			$gBitSmarty->assign( 'spellcheck', 'y' );
-		} else {
-			$gBitSmarty->assign( 'spellcheck', 'n' );
-		}
-	}
+		( isset( $gContent->mInfo['format_guid'] ) ? $gContent->mInfo['format_guid'] : 'tikiwiki' ) ) );
 	$gBitSmarty->assign_by_ref( 'parsed', $parsed );
 
 	$gContent->invokeServices( 'content_preview_function' );
