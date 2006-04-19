@@ -93,7 +93,7 @@
 {if $next_offset >= 0}
 &nbsp;[<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}next{/tr}</a>]
 {/if}
-{if $direct_pagination eq 'y'}
+{if $site_direct_pagination eq 'y'}
 <br />
 {section loop=$cant_pages name=foo}
 {assign var=selector_offset value=$smarty.section.foo.index|times:$maxRecords}

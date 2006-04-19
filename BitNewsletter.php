@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.16 2006/02/08 23:24:28 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.17 2006/04/19 13:48:38 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.16 2006/02/08 23:24:28 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.17 2006/04/19 13:48:38 squareing Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.16 $ $Date: 2006/02/08 23:24:28 $ $Author: spiderr $
+ * @version $Revision: 1.17 $ $Date: 2006/04/19 13:48:38 $ $Author: squareing $
  */
 
 /**
@@ -136,7 +136,7 @@ class BitNewsletter extends LibertyContent {
 				$gBitSmarty->assign( 'code', $code );
 				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/confirm_newsletter_subscription.tpl');
 				@mail($email, tra('Newsletter subscription information at '). $_SERVER["SERVER_NAME"], $mail_data,
-					"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
+					"From: $site_sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
 			} else {
 				$query = "delete from `".BIT_DB_PREFIX."mail_subscriptions` where `nl_id`=? and `email`=?";
 				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email ) );
@@ -152,7 +152,7 @@ class BitNewsletter extends LibertyContent {
 	function confirmSubscription($code) {
 		global $gBitSmarty;
 		global $gBitUser;
-		global $sender_email;
+		global $site_sender_email;
 		$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` where `code`=?";
 		$result = $this->mDb->query($query,array($code));
 
@@ -167,7 +167,7 @@ class BitNewsletter extends LibertyContent {
 		$gBitSmarty->assign('code', $res["code"]);
 		$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_welcome.tpl');
 		@mail($res["email"], tra('Welcome to '). $info["name"] . tra(' at '). $_SERVER["SERVER_NAME"], $mail_data,
-			"From: $sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
+			"From: $site_sender_email\r\nContent-type: text/plain;charset=utf-8\r\n");
 		return $this->get_newsletter($res["nl_id"]);
 	}
 /*

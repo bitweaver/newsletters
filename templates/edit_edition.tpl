@@ -55,7 +55,7 @@
 						<div class="row">
 							{formlabel label="Reply-To" for="replyto"}
 							{forminput}
-								<input type="text" maxlength="250" size="40" name="reply_to" id="replyto" value="{$pageInfo.reply_to|default:$gBitSystem->getConfig('sender_email',$smarty.server.SERVER_ADMIN)|escape:html}" />
+								<input type="text" maxlength="250" size="40" name="reply_to" id="replyto" value="{$pageInfo.reply_to|default:$gBitSystem->getConfig('site_sender_email',$smarty.server.SERVER_ADMIN)|escape:html}" />
 								{formhelp note="This is the email address to which any replies will be sent."}
 							{/forminput}
 						</div>

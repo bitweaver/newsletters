@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.18 2006/03/01 20:16:17 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.19 2006/04/19 13:48:38 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.18 2006/03/01 20:16:17 spiderr Exp $
+ * $Id: BitMailer.php,v 1.19 2006/04/19 13:48:38 squareing Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.18 $ $Date: 2006/03/01 20:16:17 $ $Author: spiderr $
+ * @version $Revision: 1.19 $ $Date: 2006/04/19 13:48:38 $ $Author: squareing $
  */
 
 /**
@@ -34,7 +34,7 @@ class BitMailer extends phpmailer {
 	function BitMailer () {
 		global $gBitDb, $gBitSystem, $gBitLanguage;
 		$this->mDb = $gBitDb;
-		$this->From     = $gBitSystem->getConfig( 'bitmailer_sender_email', $gBitSystem->getConfig( 'sender_email', $_SERVER['SERVER_ADMIN'] ) );
+		$this->From     = $gBitSystem->getConfig( 'bitmailer_sender_email', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
 		$this->FromName = $gBitSystem->getConfig( 'bitmailer_from', $gBitSystem->getConfig( 'siteTitle' ) );
 		$this->Host     = $gBitSystem->getConfig( 'bitmailer_servers', $gBitSystem->getConfig( 'feature_server_name', '127.0.0.1' ) );
 		$this->Mailer   = $gBitSystem->getConfig( 'bitmailer_protocol', 'smtp' ); // Alternative to IsSMTP()
@@ -94,7 +94,7 @@ class BitMailer extends phpmailer {
 				if( $content->load() ) {
 					$body[$pick['content_id']]['body'] = $content->render();
 					$body[$pick['content_id']]['subject'] = $content->getTitle();
-					$body[$pick['content_id']]['reply_to'] = $content->getField( 'reply_to', $gBitSystem->getConfig( 'sender_email', $_SERVER['SERVER_ADMIN'] ) );
+					$body[$pick['content_id']]['reply_to'] = $content->getField( 'reply_to', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
 					$body[$pick['content_id']]['object'] = $content;
 				}
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
