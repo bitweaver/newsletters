@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.17 2006/04/11 13:06:51 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.18 2006/04/20 16:24:47 squareing Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -83,7 +83,7 @@ if( isset( $_REQUEST["subscribe"] ) ) {
 	$gBitSystem->verifyPermission( 'p_newsletters_subscribe' );
 	$feedback['success'] = tra( "Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed." );
 
-	if( !$gBitUser->hasPermission( 'tiki_p_subscribe_email' ) ) {
+	if( !$gBitUser->hasPermission( 'p_subscribe_email' ) ) {
 		$_REQUEST["email"] = $gBitUser->mInfo['email'];
 	}
 
@@ -102,15 +102,15 @@ if( $gContent->isValid() ) {
 		if ($userlib->object_has_one_permission($newsletters["data"][$i]["nl_id"], 'newsletters')) {
 			$newsletters["data"][$i]["individual"] = 'y';
 
-			if ($userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_subscribe_newsletters')) {
-				$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
+			if ($userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'p_subscribe_newsletters')) {
+				$newsletters["data"][$i]["individual_p_subscribe_newsletters"] = 'y';
 			} else {
-				$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'n';
+				$newsletters["data"][$i]["individual_p_subscribe_newsletters"] = 'n';
 			}
 
-			if ($tiki_p_admin == 'y'
-				|| $userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'tiki_p_admin_newsletters')) {
-				$newsletters["data"][$i]["individual_tiki_p_subscribe_newsletters"] = 'y';
+			if ($p_admin == 'y'
+				|| $userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'p_admin_newsletters')) {
+				$newsletters["data"][$i]["individual_p_subscribe_newsletters"] = 'y';
 			}
 		} else {
 			$newsletters["data"][$i]["individual"] = 'n';

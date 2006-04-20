@@ -65,10 +65,10 @@ if (isset($_REQUEST["preview"])) {
 } elseif (isset($_REQUEST["save"])) {
 	if( $gContent->store( $_REQUEST ) ) {
 		// Add the content to the search index
-		if( $gBitSystem->isPackageActive( 'search' ) and $gBitSystem->isFeatureActive("search_index_on_submit")) {
-			require_once( SEARCH_PKG_PATH.'refresh_functions.php');
-			refresh_index_tiki_content($gContent->mContentId);
-		}
+//		if( $gBitSystem->isPackageActive( 'search' ) and $gBitSystem->isFeatureActive("search_index_on_submit")) {
+//			require_once( SEARCH_PKG_PATH.'refresh_functions.php');
+//			refresh_index_tiki_content($gContent->mContentId);
+//		}
 		header( 'Location: '.$gContent->getDisplayUrl() );
 		die;
 	} else {

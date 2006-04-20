@@ -75,7 +75,7 @@
 <tr class="{cycle}">
 <td>{$channels[user].email}</td>
 <td>{$channels[user].valid}</td>
-<td>{$channels[user].subscribed|tiki_short_datetime}</td>
+<td>{$channels[user].subscribed|bit_short_datetime}</td>
 <td>
    <a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl_id}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].nl_id}&amp;email={$channels[user].email}">{tr}remove{/tr}</a>
 </td>

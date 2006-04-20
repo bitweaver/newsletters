@@ -11,7 +11,7 @@ $tables = array(
   unsub_msg C(1) default 'y',
   validate_addr C(1) default 'y',
   frequency I8
-  CONSTRAINT ', CONSTRAINT `tiki_nl_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
+  CONSTRAINT ', CONSTRAINT `nl_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
 ",
 
 'newsletters_editions' => "
@@ -20,8 +20,8 @@ $tables = array(
   is_draft C(1),
   reply_to C(160),
   content_id I4 NOTNULL
-  CONSTRAINT ', CONSTRAINT `tiki_nl_ed_nl_con_ref` FOREIGN KEY (`nl_content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )
-  			   , CONSTRAINT `tiki_nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
+  CONSTRAINT ', CONSTRAINT `nl_ed_nl_con_ref` FOREIGN KEY (`nl_content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )
+  			   , CONSTRAINT `nl_ed_con_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
 ",
 
 'mail_subscriptions' => "
