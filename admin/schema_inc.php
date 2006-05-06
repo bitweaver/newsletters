@@ -78,9 +78,6 @@ foreach( array_keys( $tables ) AS $tableName ) {
 $gBitInstaller->registerPackageInfo( NEWSLETTERS_PKG_NAME, array(
 	'description' => "Newsletters is for emailing users updates about your site.",
 	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
-	'version' => '1.0',
-	'state' => 'R1',
-	'dependencies' => '',
 ) );
 
 // ### Indexes
