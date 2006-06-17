@@ -91,9 +91,9 @@ $gBitInstaller->registerPackageInfo( NEWSLETTERS_PKG_NAME, array(
 
 // ### Indexes
 $indices = array (
-	'tiki_nl_sub_nl_idx' => array( 'table' => 'tiki_newsletter_subscriptions', 'cols' => 'nl_id', 'opts' => NULL ),
-	'tiki_nl_sub_group_idx' => array( 'table' => 'tiki_newsletter_subscriptions', 'cols' => 'group_id', 'opts' => NULL ),
-	'tiki_nl_sub_email_idx' => array( 'table' => 'tiki_newsletter_subscriptions', 'cols' => 'email', 'opts' => NULL ),
+	//'tiki_nl_sub_nl_idx' => array( 'table' => 'tiki_mail_subscriptions', 'cols' => 'nl_id', 'opts' => NULL ),
+	//'tiki_nl_sub_group_idx' => array( 'table' => 'tiki_mail_subscriptions', 'cols' => 'group_id', 'opts' => NULL ),
+	//'tiki_nl_sub_email_idx' => array( 'table' => 'tiki_mail_subscriptions', 'cols' => 'email', 'opts' => NULL ),
 	'tiki_nl_ed_nl_idx' => array( 'table' => 'tiki_newsletters_editions', 'cols' => 'nl_id', 'opts' => NULL ),
 	'tiki_nl_group_nl_idx' => array( 'table' => 'tiki_newsletter_groups', 'cols' => 'nl_id', 'opts' => NULL ),
 	'tiki_mq_email_idx' => array( 'table' => 'tiki_mail_queue', 'cols' => 'email', 'opts' => NULL ),
