@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.19 2006/04/19 13:48:38 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.20 2006/06/19 02:35:19 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.19 2006/04/19 13:48:38 squareing Exp $
+ * $Id: BitMailer.php,v 1.20 2006/06/19 02:35:19 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.19 $ $Date: 2006/04/19 13:48:38 $ $Author: squareing $
+ * @version $Revision: 1.20 $ $Date: 2006/06/19 02:35:19 $ $Author: spiderr $
  */
 
 /**
@@ -36,7 +36,7 @@ class BitMailer extends phpmailer {
 		$this->mDb = $gBitDb;
 		$this->From     = $gBitSystem->getConfig( 'bitmailer_sender_email', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
 		$this->FromName = $gBitSystem->getConfig( 'bitmailer_from', $gBitSystem->getConfig( 'siteTitle' ) );
-		$this->Host     = $gBitSystem->getConfig( 'bitmailer_servers', $gBitSystem->getConfig( 'feature_server_name', '127.0.0.1' ) );
+		$this->Host     = $gBitSystem->getConfig( 'bitmailer_servers', $gBitSystem->getConfig( 'kernel_server_name', '127.0.0.1' ) );
 		$this->Mailer   = $gBitSystem->getConfig( 'bitmailer_protocol', 'smtp' ); // Alternative to IsSMTP()
 		$this->WordWrap = $gBitSystem->getConfig( 'bitmailer_word_wrap', 75 );
 		if( !$this->SetLanguage( $gBitLanguage->getLanguage(), UTIL_PKG_PATH.'phpmailer/language/' ) ) {
@@ -89,6 +89,7 @@ class BitMailer extends phpmailer {
 				$pick['full_name'] = NULL;
 			}
 			if( !isset( $body[$pick['content_id']] ) ) {
+				$gBitSmarty->assign( 'sending', TRUE );
 				// We only support sending of newsletters currently
 				$content = new BitNewsletterEdition( NULL, $pick['content_id'] );
 				if( $content->load() ) {
@@ -107,17 +108,19 @@ class BitMailer extends phpmailer {
 					$gBitSmarty->assign( 'sending', TRUE );
 					$unsub = $gBitSmarty->fetch( 'bitpackage:newsletters/unsubscribe_inc.tpl' );
 				}
-				$htmlBody = $unsub . $body[$pick['content_id']]['body'] . $unsub . '<img src="'.NEWSLETTERS_PKG_URI.'track.php?sub='.$pick['url_code'].'" alt="" />';
-
+				$gBitSystem->preDisplay('');
+				$header = $gBitSmarty->fetch( 'bitpackage:themes/header_inc.tpl' );
+				$htmlBody = $header . "<div id='bitmain'><small>". tra("If this newsletter is not displaying correctly, please click here: ") . "<a href='".$content->getDisplayUrl()."'>".$content->getDisplayUrl()."</a></small><br />" . $body[$pick['content_id']]['body'] . $unsub . '<img src="'.NEWSLETTERS_PKG_URI.'track.php?sub='.$pick['url_code'].'" alt="" /></div>';
+				$this->ClearReplyTos();
 				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
 				print "TO: $pick[email]\t";
 				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
 					print "SENT\n";
+					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
+					$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
 				} else {
 					$this->logError( $pick );
 				}
-				$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
-				$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
 				$this->mDb->CompleteTrans();
 				$this->mDb->StartTrans();
 			}

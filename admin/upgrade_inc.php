@@ -19,6 +19,9 @@ array( 'DATADICT' => array(
 		'tiki_newsletters' => array( '`validateAddr`' => "`validate_addr` C(1) default 'y'" ),
 		'tiki_newsletters' => array( '`lastSent`' => '`last_sent` I8' ),
 		'tiki_newsletters_editions' => array( '`editionId`' => '`edition_id` I4 AUTO' ),
+		'tiki_newsletter_subscriptions' => array( '`code`' => "`sub_code` C(36)" ),
+		'tiki_newsletter_subscriptions' => array( '`valid`' => "`is_valid` C(1)" ),
+		'tiki_newsletter_subscriptions' => array( '`subscribed`' => "`subscribed_date` I8" ),
 	)),
 	// ALTER
 	array( 'ALTER' => array(
@@ -52,7 +55,6 @@ array( 'QUERY' =>
 array( 'DATADICT' => array(
 	array( 'DROPCOLUMN' => array(
 		'tiki_newsletters' => array( '`name`', '`description`', '`created`', '`users`', '`editions`' ),
-		'tiki_newsletter_subscriptions' => array( '`code`', '`valid`', '`subscribed`' ),
 	)),
 )),
 	)

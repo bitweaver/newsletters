@@ -20,6 +20,7 @@
 				{if $smarty.request.emited eq 'y'}
 					{tr}The newsletter was sent to {$sent} email addresses{/tr}
 				{elseif $smarty.request.preview}
+					<input type="hidden" name="validated" value="{$validated}" />
 					{jstabs}
 						{jstab title="Preview Newsletter"}
 							{legend legend="Preview Newsletter"}
@@ -38,7 +39,7 @@
 									{forminput}
 										<ol>
 											{foreach from=$recipientList item=recipient key=email}
-												<li>{$recipient.login} &nbsp; <small>&lt;{$email}&gt;</small></li>
+												<li>{$recipient.login} &nbsp; &lt;{$email}&gt;</li>
 											{/foreach}
 										</ol>
 									{/forminput}
@@ -60,6 +61,13 @@
 									<label><input type="checkbox" name="send_group[]" value="{$groupId}" /> {$group.group_name}</label><br />
 								{/foreach}
 								{formhelp note="This newsletter will be sent to members of the checked groups."}
+							{/forminput}
+						</div>
+
+						<div class="row">
+							{formlabel label="Only send to validated emails"}
+							{forminput}
+								<input type="checkbox" name="validated" "checked" />
 							{/forminput}
 						</div>
 

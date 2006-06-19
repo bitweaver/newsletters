@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.20 2006/02/08 23:24:28 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.21 2006/06/19 02:35:19 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.20 2006/02/08 23:24:28 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.21 2006/06/19 02:35:19 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.20 $ $Date: 2006/02/08 23:24:28 $ $Author: spiderr $
+ * @version $Revision: 1.21 $ $Date: 2006/06/19 02:35:19 $ $Author: spiderr $
  */
 
 /**
@@ -31,10 +31,10 @@ class BitNewsletterEdition extends LibertyAttachable {
 		parent::LibertyContent();
 		$this->registerContentType( BITNEWSLETTEREDITION_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => BITNEWSLETTEREDITION_CONTENT_TYPE_GUID,
-			'content_description' => 'Newsletter',
-			'handler_class' => 'BitNewsletter',
+			'content_description' => 'Edition',
+			'handler_class' => 'BitNewsletterEdition',
 			'handler_package' => 'newsletters',
-			'handler_file' => 'BitNewsletter.php',
+			'handler_file' => 'BitNewsletterEdition.php',
 			'maintainer_url' => 'http://www.bitweaver.org'
 		) );
 		$this->mEditionId = $pEditionId;
@@ -95,6 +95,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 				$this->mInfo = $result->fetchRow();
 				$this->mEditionId = $this->mInfo['edition_id'];
 				$this->mContentId = $this->mInfo['content_id'];
+				LibertyAttachable::load();
 				$this->mNewsletter = new BitNewsletter( NULL, $this->mInfo['nl_content_id'] );
 				$this->mNewsletter->load();
 			} else {
@@ -122,12 +123,12 @@ class BitNewsletterEdition extends LibertyAttachable {
 		global $gBitSystem;
 		if( $this->verifyId( $pEditionId ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = NEWSLETTERS_PKG_URL.'edition/'.$pEditionId;
+				$ret = NEWSLETTERS_PKG_URI.'edition/'.$pEditionId;
 			} else {
-				$ret = NEWSLETTERS_PKG_URL.'edition.php?edition_id='.$pEditionId;
+				$ret = NEWSLETTERS_PKG_URI.'edition.php?edition_id='.$pEditionId;
 			}
 		} else {
-			$ret = NEWSLETTERS_PKG_URL.'edition.php';
+			$ret = NEWSLETTERS_PKG_URI.'edition.php';
 		}
 		return $ret;
 	}
@@ -161,6 +162,9 @@ class BitNewsletterEdition extends LibertyAttachable {
 		$ret = $gBitDb->getAssoc( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 		foreach( array_keys( $ret ) as $k ) {
 			$ret[$k]['display_url'] = BitNewsletterEdition::getDisplayUrl( $k );
+			// remove formating tags
+			$data = preg_replace( '/{[^{}]*}/', '', $ret[$k]['data'] );
+			$ret[$k]['parsed'] = BitNewsletterEdition::parseData( $data, $ret[$k]['format_guid'] );
 		}
         $pListHash['total_records'] = $gBitDb->getOne( $query_cant, $bindVars );
 		$pListHash['block_pages'] = 5;
@@ -190,7 +194,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 		return( $this->getField( 'is_draft' ) );
 	}
 
-	function getRecipients( $pGroupArray ) {
+	function getRecipients( $pGroupArray, $validated = TRUE ) {
 		global $gBitUser;
 		$ret = array();
 		if( is_array( $pGroupArray ) ) {
@@ -198,11 +202,22 @@ class BitNewsletterEdition extends LibertyAttachable {
 				$ret = array_merge( $ret, $gBitUser->getGroupUserData( $groupId, array( 'email', 'uu.user_id', 'login', 'real_name' ) ) );
 			}
 
-			$query = "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions`
-					  WHERE (`nl_content_id`=? AND `unsubscribe_date` IS NOT NULL) OR `unsubscribe_all` IS NOT NULL";
-			if( $unsubs = $this->mDb->getArray( $query, array( $this->mNewsletter->mContentId ) ) ) {
-				$ret = array_diff_assoc( $ret, $unsubs );
+			if ( array_search( 'send_subs', $pGroupArray ) !== false ) {
+				$valid = "";
+				$bindvars = array( $this->mNewsletter->mNewsletterId );
+				if ($validated) {
+					$valid = " AND `is_valid`=?";
+					$bindvars[] = 'y';
+				}
+				$query = "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions`
+					  WHERE `nl_content_id`=? AND `unsubscribe_date` IS NULL AND `unsubscribe_all` IS NULL".$valid;
+				$subs = $this->mDb->getArray( $query, $bindvars );
+				foreach( $subs as $sub) {
+					if (!isset($ret[$sub['email']]))
+						$ret[$sub['email']] = $sub;
+				}
 			}
+
 			$query = "SELECT `email`, `user_id` FROM `".BIT_DB_PREFIX."mail_queue` WHERE `content_id`=?";
 			if( $dupes = $this->mDb->getAssoc( $query, array( $this->mContentId ) ) ) {
 				$ret = array_diff_keys( $ret, $dupes );

@@ -1,10 +1,9 @@
-{tr}Somebody or you tried to subscribe this email address at our site:{/tr} {$server_name}
+{tr}A request has been made to subscribe this email address to the newsletter:{/tr} {$gContent->getTitle()}
 
-{tr}To the newsletter:{/tr} {$info.title|escape}
+{$gContent->getField('data')}
 
-{tr}Description:{/tr}
-{$info.description}
+{tr}You can read{/tr} {$gContent->getTitle()} {tr}online by visiting:{/tr}
+{$smarty.const.NEWSLETTERS_PKG_URI}edition.php?nl_id={$gContent->mNewsletterId}
 
-{tr}In order to confirm your subscription you must access the following URL:{/tr}
-
-{$url_subscribe}?confirm_subscription={$code}
+{tr}To confirm your subscription, please visit the following URL:{/tr}
+{$smarty.const.NEWSLETTERS_PKG_URI}?sub={$sub_code}

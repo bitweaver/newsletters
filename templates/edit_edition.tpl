@@ -34,6 +34,21 @@
 							{/forminput}
 						</div>
 
+						{if $gBitUser->hasPermission('p_use_content_templates') && $templates}
+							<div class="row">
+								{formlabel label="Template" for=""}
+								{forminput}
+									<select name="template_id" onchange="javascript:document.getElementById('editpageform').submit();">
+										<option value="0">{tr}none{/tr}</option>
+										{section name=ix loop=$templates}
+											<option value="{$templates[ix].template_id|escape}">{$templates[ix].name}</option>
+										{/section}
+									</select>
+									{formhelp note=""}
+								{/forminput}
+							</div>
+						{/if}
+
 						{include file="bitpackage:liberty/edit_services_inc.tpl serviceFile=content_edit_mini_tpl}
 
 						<div class="row">
@@ -70,7 +85,7 @@
 							{include file="bitpackage:quicktags/quicktags_full.tpl"}
 						{/if}
 						<div class="row">
-							{formlabel label="Body" for="body"}
+							{formlabel label="Body" for=$textarea_id}
 							{forminput}
 								<textarea {spellchecker} id="{$textarea_id}" name="edit" rows="{$rows|default:20}" cols="{$cols|default:50}">{$pageInfo.data|escape:html}</textarea>
 							{/forminput}

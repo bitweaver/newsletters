@@ -37,16 +37,18 @@ if (isset($_REQUEST["remove"] ) && $gContent->isValid() ) {
 }
 
 if( $gContent->isValid() ) {
+	$title = $gContent->mInfo['title'];
 	$mid = 'bitpackage:newsletters/view_edition.tpl';
 } else {
 	$listHash = array();
 	$editions = $gContent->getList( $listHash );
 	$gBitSmarty->assign_by_ref( 'editionList', $editions );
 	$gBitSmarty->assign( 'listInfo', $listHash );
+	$title = tra("List Editions");
 	$mid = 'bitpackage:newsletters/list_editions.tpl';
 }
 
 // Display the template
-$gBitSystem->display( $mid );
+$gBitSystem->display( $mid, $title );
 
 ?>

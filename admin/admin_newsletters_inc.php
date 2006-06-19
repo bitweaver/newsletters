@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters_inc.php,v 1.4 2006/04/19 13:48:39 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters_inc.php,v 1.5 2006/06/19 02:35:19 spiderr Exp $
 
 $formNewsletterFeatures = array(
 	"bitmailer_sender_email" => array(
@@ -15,7 +15,7 @@ $formNewsletterFeatures = array(
 	"bitmailer_servers" => array(
 		'label' => 'Mail Servers',
 		'note' => '',
-		'default' => $gBitSystem->getConfig( 'feature_server_name', '127.0.0.1' ),
+		'default' => $gBitSystem->getConfig( 'kernel_server_name', '127.0.0.1' ),
 	),
 	"bitmailer_protocol" => array(
 		'label' => 'Protocol',

@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.18 2006/04/20 16:24:47 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.19 2006/06/19 02:35:19 spiderr Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -23,9 +23,31 @@ $feedback = array();
 $listHash = array();
 if( !empty( $_REQUEST['nl_id'] ) ) {
 	$listHash['nl_id'] = $_REQUEST['nl_id'];
+	if (isset($_REQUEST['info'])) {
+		$subscribe = true;
+		$gBitSmarty->assign('subscribe', 'y');
+	}
 }
 $newsletters = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref('newsletters', $newsletters );
+
+$foo = parse_url($_SERVER["REQUEST_URI"]);
+$gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
+
+if (isset($_REQUEST["sub"])) {
+	$gContent->confirmSubscription($_REQUEST["sub"], TRUE );
+	$gBitSmarty->assign('confirm', 'y');
+}
+
+if (isset($_REQUEST["unsubscribe"])) {
+	if (!empty( $_REQUEST["email"] )) {
+		$gContent->removeSubscription($_REQUEST["email"], TRUE );
+	} elseif (!empty( $_REQUEST["unsubscribe"] )) {
+	        $gContent->unsubscribe($_REQUEST["unsubscribe"], TRUE );
+	}
+	$feedback['success'] = tra( "Your email address was removed from the list of subscriptors." );
+}
+
 if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
 	if( isset( $_REQUEST["sub"] ) && strlen( $_REQUEST["sub"] ) == 32 && ($subInfo = BitMailer::lookupSubscription( array( 'url_code' => $_REQUEST["sub"] ) )) ) {
 		$lookup['email'] = $subInfo['email'];
@@ -79,7 +101,7 @@ $user_email = $gBitUser->isRegistered() ? $gBitUser->mInfo['email'] : '';
 
 $gBitSmarty->assign('email', $user_email);
 
-if( isset( $_REQUEST["subscribe"] ) ) {
+if( isset( $_REQUEST["subscribe"] ) && !empty( $_REQUEST["email"] ) ) {
 	$gBitSystem->verifyPermission( 'p_newsletters_subscribe' );
 	$feedback['success'] = tra( "Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed." );
 
@@ -88,12 +110,15 @@ if( isset( $_REQUEST["subscribe"] ) ) {
 	}
 
 	// Now subscribe the email address to the newsletter
-	$gContent->subscribe( $_REQUEST["email"] );
+	$gContent->subscribe( $_REQUEST["email"], TRUE, TRUE );
 }
 
-if( $gContent->isValid() ) {
+$subscribe = false;
+
+/*if( !$subscribe && $gContent->isValid() ) {
 	$mid = 'bitpackage:newsletters/view_newsletter.tpl';
-} elseif( empty( $mid ) ) {
+	$title = "View Newsletter";
+} else*/ {
 	/* List newsletters */
 	$listHash = array();
 	$newsletters = $gContent->getList( $listHash );
@@ -118,11 +143,12 @@ if( $gContent->isValid() ) {
 	}
 	*/
 	$mid = 'bitpackage:newsletters/newsletters.tpl';
+	$title = "List Newsletters";
 }
 
 $gBitSmarty->assign( 'feedback', $feedback );
 
 // Display the template
-$gBitSystem->display( $mid );
+$gBitSystem->display( $mid, $title );
 
 ?>

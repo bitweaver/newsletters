@@ -28,6 +28,9 @@ $tables = array(
   email C(160),
   user_id I4,
   nl_content_id I4,
+  sub_code C(36),
+  is_valid C(1),
+  subscribed_date I8,
   response_content_id I4,
   unsubscribe_all C(1),
   unsubscribe_date I8
@@ -64,12 +67,15 @@ $tables = array(
   sent_date I8,
   last_read_date I8,
   reads I2 NOTNULL DEFAULT '0'
-  CONSTRAINT ', CONSTRAINT `mailq_content_ref` FOREIGN KEY (`nl_content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )'
+  CONSTRAINT ', CONSTRAINT `mailq_content_ref` FOREIGN KEY (`nl_content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )
+			  , CONSTRAINT `mailq_user_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
 "
 
 );
 
 global $gBitInstaller;
+
+$gBitInstaller->makePackageHomeable(NEWSLETTERS_PKG_NAME);
 
 foreach( array_keys( $tables ) AS $tableName ) {
 	$gBitInstaller->registerSchemaTable( NEWSLETTERS_PKG_DIR, $tableName, $tables[$tableName] );
@@ -78,6 +84,9 @@ foreach( array_keys( $tables ) AS $tableName ) {
 $gBitInstaller->registerPackageInfo( NEWSLETTERS_PKG_NAME, array(
 	'description' => "Newsletters is for emailing users updates about your site.",
 	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
+	'version' => '1.0',
+	'state' => 'R2',
+	'dependencies' => '',
 ) );
 
 // ### Indexes

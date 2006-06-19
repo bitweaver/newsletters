@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.4 2006/04/20 16:24:47 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.5 2006/06/19 02:35:19 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -36,22 +36,79 @@ if ($userlib->object_has_one_permission($_REQUEST["nl_id"], 'newsletter')) {
 	}
 }
 */
+if( $gContent->isValid() ) {
+	$nl_id = $_REQUEST['nl_id'];
+	$gBitSmarty->assign( 'nl_id', $nl_id );
 
-if (isset($_REQUEST["remove"])) {
-	check_ticket('admin-nl-subsriptions');
-	$nllib->remove_newsletter_subscription($_REQUEST["remove"], $_REQUEST["email"]);
+	/* mass-remove:
+	   the checkboxes are sent as the array $_REQUEST["checked[]"], values are the wiki-PageNames,
+	   e.g. $_REQUEST["checked"][3]="HomePage"
+	   $_REQUEST["submit_mult"] holds the value of the "with selected do..."-option list
+	   we look if any page's checkbox is on and if remove_pages is selected.
+	   then we check permission to delete pages.
+	   if so, we call BitPage::expunge for all the checked pages.
+	*/
+	if (isset($_REQUEST["submit_mult"]) && isset($_REQUEST["checked"]) && $_REQUEST["submit_mult"] == "remove") {
+		if( !empty( $_REQUEST['cancel'] ) ) {
+			// user cancelled - just continue on, doing nothing
+		} elseif( empty( $_REQUEST['confirm'] ) ) {
+			$formHash['nl_id'] = $nl_id;
+			$formHash['delete'] = TRUE;
+			$formHash['submit_mult'] = 'remove';
+			foreach( $_REQUEST["checked"] as $del ) {
+				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
+			}
+			$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete '.count($_REQUEST["checked"]).' subscriptions?', 'error' => 'This cannot be undone!' ) );
+		} else {
+			foreach ($_REQUEST["checked"] as $delete) {
+				$gContent->removeSubscription($delete, FALSE, TRUE );
+			}
+		}
+	} elseif (isset($_REQUEST["submit_mult"]) && isset($_REQUEST["checked"]) && $_REQUEST["submit_mult"] == "unsubscribe") {
+		if( !empty( $_REQUEST['cancel'] ) ) {
+			// user cancelled - just continue on, doing nothing
+		} elseif( empty( $_REQUEST['confirm'] ) ) {
+			$formHash['nl_id'] = $nl_id;
+			$formHash['delete'] = TRUE;
+			$formHash['submit_mult'] = 'unsubscribe';
+			foreach( $_REQUEST["checked"] as $del ) {
+				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
+			}
+			$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to unsubscribe '.count($_REQUEST["checked"]).' subscriptions?', 'error' => 'This cannot be undone!' ) );
+		} else {
+			foreach ($_REQUEST["checked"] as $delete) {
+				$gContent->removeSubscription($delete, FALSE, FALSE );
+			}
+		}
+	} elseif (isset($_REQUEST["submit_mult"]) && isset($_REQUEST["checked"]) && $_REQUEST["submit_mult"] == "resubscribe") {
+		if( !empty( $_REQUEST['cancel'] ) ) {
+			// user cancelled - just continue on, doing nothing
+		} elseif( empty( $_REQUEST['confirm'] ) ) {
+			$formHash['nl_id'] = $nl_id;
+			$formHash['delete'] = TRUE;
+			$formHash['submit_mult'] = 'resubscribe';
+			foreach( $_REQUEST["checked"] as $del ) {
+				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
+			}
+			$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to resubscribe '.count($_REQUEST["checked"]).' subscriptions?', 'error' => 'This cannot be undone!' ) );
+		} else {
+			foreach ($_REQUEST["checked"] as $delete) {
+				$gContent->subscribe($delete, FALSE, FALSE );
+			}
+		}
+	} elseif (isset($_REQUEST["save"])) {
+		$new_subs = preg_split("/[\s,]+/", $_REQUEST["new_subscribers"]);
+		foreach($new_subs as $sub) {
+			$sub = trim($sub);
+			if (empty($sub))
+				continue;
+			$gContent->subscribe($sub, TRUE );
+		}
+	}
+
+	$subscribers = $gContent->getAllSubscribers($nl_id);
+	$gBitSmarty->assign( 'subscribers', $subscribers );
 }
-
-if (isset($_REQUEST["add_all"])) {
-	check_ticket('admin-nl-subsriptions');
-	$nllib->add_all_users($_REQUEST["nl_id"]);
-}
-
-if (isset($_REQUEST["save"])) {
-	check_ticket('admin-nl-subsriptions');
-	$sid = $nllib->newsletter_subscribe($_REQUEST["nl_id"], $_REQUEST["email"]);
-}
-
 /*
 $cat_type='newsletter';
 $cat_objid = $_REQUEST["nl_id"];
