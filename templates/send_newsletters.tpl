@@ -83,6 +83,6 @@
 			{include file="bitpackage:newsletters/list_editions_inc.tpl"}
 			{pagination}
 		{/if}
-	</div>
+	</div><!-- end .body -->
 </div>
 {/strip}
