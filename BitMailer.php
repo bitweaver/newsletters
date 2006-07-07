@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.21 2006/06/30 14:16:09 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.22 2006/07/07 00:04:30 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.21 2006/06/30 14:16:09 spiderr Exp $
+ * $Id: BitMailer.php,v 1.22 2006/07/07 00:04:30 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.21 $ $Date: 2006/06/30 14:16:09 $ $Author: spiderr $
+ * @version $Revision: 1.22 $ $Date: 2006/07/07 00:04:30 $ $Author: spiderr $
  */
 
 /**
@@ -190,10 +190,10 @@ class BitMailer extends phpmailer {
 		if( is_array( $pMixed ) ) {
 			$col = key( $pMixed );
 			$bindVars[] = current( $pMixed );
-			$query = "SELECT ms.`nl_content_id` AS `hash_key`, ms.*, uu.*, lc.title
+			$query = "SELECT ms.`content_id` AS `hash_key`, ms.*, uu.*, lc.title
 					  FROM `".BIT_DB_PREFIX."mail_subscriptions` ms
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( ms.`user_id`=uu.`user_id` )
-						LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( ms.`nl_content_id`=lc.`content_id` )
+						LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( ms.`content_id`=lc.`content_id` )
 					  WHERE ms.`$col`=? ";
 			$ret = $gBitDb->getAssoc( $query, $bindVars );
 		}

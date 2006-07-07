@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.18 2006/06/19 02:35:19 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.19 2006/07/07 00:04:30 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.18 2006/06/19 02:35:19 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.19 2006/07/07 00:04:30 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.18 $ $Date: 2006/06/19 02:35:19 $ $Author: spiderr $
+ * @version $Revision: 1.19 $ $Date: 2006/07/07 00:04:30 $ $Author: spiderr $
  */
 
 /**
@@ -43,7 +43,7 @@ class BitNewsletter extends LibertyContent {
 		$this->mContentTypeGuid = BITNEWSLETTER_CONTENT_TYPE_GUID;
 	}
 
-	function load() {
+	function load( $pUserId = NULL ) {
 		if( $this->verifyId( $this->mNewsletterId ) || $this->verifyId( $this->mContentId ) ) {
 			global $gBitSystem;
 
@@ -54,6 +54,10 @@ class BitNewsletter extends LibertyContent {
 			array_push( $bindVars, $lookupId );
 
 			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
+
+			if( $pUserId ) {
+				$whereSql
+			}
 
 			$query = "SELECT *
 					  FROM `".BIT_DB_PREFIX."newsletters` n
@@ -99,22 +103,12 @@ class BitNewsletter extends LibertyContent {
 		return( count( $this->mErrors ) == 0 );
 	}
 
-	function getSubscribers($nl_id) {
+	function getSubscribers( $pAll=FALSE) {
 		$ret = array();
 		if( $this->isValid() ) {
-			$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` where `unsubscribe_date` is NULL and `nl_content_id`=?";
-			if( $res = $this->mDb->query( $query, array( $this->mNewsletterId ) ) ) {
-				$ret = $res->GetRows();
-			}
-		}
-		return $ret;
-	}
-
-	function getAllSubscribers() {
-		$ret = array();
-		if( $this->isValid() ) {
-			$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` where `nl_content_id`=?";
-			if( $res = $this->mDb->query( $query, array( $this->mNewsletterId ) ) ) {
+			$whereSql = $pAll ? '' : '  `unsubscribe_date` is NULL AND ';
+			$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` WHERE $whereSql `content_id`=?";
+			if( $res = $this->mDb->query( $query, array( $this->mContentId ) ) ) {
 				$ret = $res->GetRows();
 			}
 		}
@@ -123,14 +117,14 @@ class BitNewsletter extends LibertyContent {
 
 	function removeSubscription( $email, $notify = FALSE, $del_record = FALSE ) {
 		if ($del_record) {
-			$this->mDb->query("DELETE FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `nl_content_id`=? AND `email`=?", array($this->mNewsletterId, $email));
+			$this->mDb->query("DELETE FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `content_id`=? AND `email`=?", array($this->mContentId, $email));
 		} else {
-			$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."mail_subscriptions` where `nl_content_id`=? and `email`=?", array($this->mNewsletterId, $email));
+			$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."mail_subscriptions` where `content_id`=? and `email`=?", array($this->mContentId, $email));
 			$this->unsubscribe($sub_code, $notify);
 		}
 	}
 
-	function subscribe( $email, $notify = FALSE, $remind = FALSE ) {
+	function subscribe( $pSubscribeHash ) { // $notify = FALSE, $remind = FALSE ) {
 		$ret = FALSE;
 		if( $this->isValid() ) {
 			global $gBitSystem;
@@ -138,12 +132,13 @@ class BitNewsletter extends LibertyContent {
 			global $gBitUser;
 
 			// Check for duplicates
-			$all_subs = $this->getAllSubscribers();
+			$all_subs = $this->getSubscribers( TRUE );
 			$duplicate = FALSE;
 			foreach($all_subs as $sub) {
-				if ($sub['email'] == $email) {
+				if( $sub['email'] == $pSubscribeHash['email'] ) {
 					$duplicate = TRUE;
 					$sub_code = $sub['sub_code'];
+				} elseif( !empty( $pSubscribeHash['user_id'] ) && $sub['user_id'] == $pSubscribeHash['user_id'] ) {
 				}
 			}
 
@@ -152,10 +147,19 @@ class BitNewsletter extends LibertyContent {
 			// Generate a code and store it and send an email  with the
 			// URL to confirm the subscription put valid as 'n'
 			if (!$duplicate) {
-				$query = "insert into `".BIT_DB_PREFIX."mail_subscriptions`(`nl_content_id`,`email`,`sub_code`,`is_valid`,`subscribed_date`) values(?,?,?,?,?)";
-				$result = $this->mDb->query( $query, array( $this->mNewsletterId, $email, $sub_code, 'n', (int)$now ) );
+				if( @BitBase::verifyId( $pSubscribeHash['user_id'] ) ) {
+					// we have user_id subscribing, use the id, NULL the email
+					$subUserId = $pSubscribeHash['user_id'];
+					$subEmail = NULL;
+				} else {
+					// we have user_id subscribing, use the id, NULL the email
+					$subUserId = NULL;
+					$subEmail = $pSubscribeHash['email'];
+				}
+				$query = "insert into `".BIT_DB_PREFIX."mail_subscriptions` (`content_id`, `user_id`, `email`,`sub_code`,`is_valid`,`subscribed_date`) VALUES (?,?,?,?,?,?)";
+				$result = $this->mDb->query( $query, array( $this->mContentId, $subUserId, $subEmail, $sub_code, 'n', (int)$now ) );
 			}
-			if( ($notify && $this->mInfo['validate_addr'] == 'y') || $remind ) {
+			if( ( !empty( $pSubscribeHash['notify'] ) && $this->getField( 'validate_addr' ) == 'y') || !empty( $pSubscribeHash['remind'] ) ) {
 				// Generate a code and store it and send an email  with the
 				$gBitSmarty->assign( 'sub_code', $sub_code );
 				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/confirm_newsletter_subscription.tpl');
@@ -177,7 +181,7 @@ class BitNewsletter extends LibertyContent {
 		if (!$result->numRows()) return false;
 
 		$res = $result->fetchRow();
-		$this->mNewsletterId = $res['nl_content_id'];
+		$this->mContentId = $res['content_id'];
 		$this->load();
 		$query = "update `".BIT_DB_PREFIX."mail_subscriptions` set `is_valid`=?,`unsubscribe_date`=? where `sub_code`=?";
 		$result = $this->mDb->query($query,array('y',NULL,$sub_code));
@@ -202,7 +206,7 @@ class BitNewsletter extends LibertyContent {
 		if (!$result->numRows()) return false;
 
 		$res = $result->fetchRow();
-		$this->mNewsletterId = $res['nl_content_id'];
+		$this->mContentId = $res['content_id'];
 		$this->load();
 		$query = "update `".BIT_DB_PREFIX."mail_subscriptions` set `unsubscribe_date`=? where `sub_code`=? and `unsubscribe_date` is NULL";
 		$result = $this->mDb->query($query,array($now, $sub_code));
@@ -269,8 +273,8 @@ class BitNewsletter extends LibertyContent {
 		$ret = array();
 		while( $res = $result->fetchRow() ) {
 			$res['display_url'] = $this->getDisplayUrl( $res['nl_id'] );
-			$res["confirmed"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `unsubscribe_date` IS NULL and `nl_content_id`=?",array( (int)$res["nl_id"] ) );
-			$res["unsub_count"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `nl_content_id`=?",array( (int)$res["nl_id"] ) );
+			$res["confirmed"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `unsubscribe_date` IS NULL and `content_id`=?",array( (int)$res['content_id'] ) );
+			$res["unsub_count"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `content_id`=?",array( (int)$res['content_id'] ) );
 			$ret[$res['content_id']] = $res;
 		}
 
@@ -309,7 +313,7 @@ class BitNewsletter extends LibertyContent {
 
 		$foo = str_replace('send_newsletters', 'newsletters', $foo);
 		$url_subscribe = httpPrefix(). $foo["path"];
-		$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."mail_subscriptions` where `nl_content_id`=? and `email`=?",array((int)$nl_id,$email));
+		$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."mail_subscriptions` where `content_id`=? and `email`=?",array((int)$nl_id,$email));
 		$url_unsub = $url_subscribe . '?unsubscribe=' . $sub_code;
 		$msg = '<br/><br/>' . tra( 'You can unsubscribe from this newsletter following this link'). ": <a href='$url_unsub'>$url_unsub</a>";
 		return $msg;
@@ -322,9 +326,9 @@ class BitNewsletter extends LibertyContent {
 			$query = "DELETE FROM `".BIT_DB_PREFIX."newsletters` where `nl_id`=?";
 			$result = $this->mDb->query( $query, array( $this->mNewsletterId ) );
 			// Clear out all individual subscriptions/unsubscriptions, but preserve the unsubscribe_all's
-			$query = "DELETE FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `nl_content_id`=? AND `unsubscribe_all` IS NOT NULL";
+			$query = "DELETE FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `content_id`=? AND `unsubscribe_all` IS NOT NULL";
 			$result = $this->mDb->query( $query, array( $this->mContentId ) );
-			$query = "UPDATE `".BIT_DB_PREFIX."mail_subscriptions` SET `nl_content_id`=NULL WHERE `nl_content_id`=? AND `unsubscribe_all` IS NOT NULL";
+			$query = "UPDATE `".BIT_DB_PREFIX."mail_subscriptions` SET `content_id`=NULL WHERE `content_id`=? AND `unsubscribe_all` IS NOT NULL";
 			$result = $this->mDb->query( $query, array( $this->mContentId ) );
 			if( parent::expunge() ) {
 				$ret = TRUE;
@@ -374,6 +378,15 @@ class BitNewsletter extends LibertyContent {
 		}
 		return $ret;
 	}
+	
+	function getUserSubscriptions( $pUserId, $pEmail ) {
+		global $gBitDb;
+		$query = "SELECT `content_id` AS hash_key, * FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `user_id`=? OR `email`=?";
+		$ret = $gBitDb->getAssoc( $query, array( $pUserId, $pEmail ) );
+		return $ret;
+	}
+
+
 }
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.5 2006/06/19 02:35:19 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.6 2006/07/07 00:04:30 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -106,7 +106,7 @@ if( $gContent->isValid() ) {
 		}
 	}
 
-	$subscribers = $gContent->getAllSubscribers($nl_id);
+	$subscribers = $gContent->getSubscribers( TRUE );
 	$gBitSmarty->assign( 'subscribers', $subscribers );
 }
 /*

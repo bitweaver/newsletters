@@ -40,17 +40,22 @@
 					</div>
 					<div class="row submit">
 						{forminput}
-							<input type="submit" name="subscribe" value="{tr}Subscribe{/tr}" />
-							<input type="submit" name="unsubscribe" value="{tr}Unsubscribe{/tr}" />
+							<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
+							{if $gContent->getField( 'subscribed_date' )}
+								<input type="submit" name="unsubscribe" value="{tr}Unsubscribe{/tr}" />
+							{else}
+								<input type="submit" name="subscribe" value="{tr}Subscribe{/tr}" />
+							{/if}
 						{/forminput}
 					</div>
 				{/form}
 			{/if}
-		{/if}
+		{else}
 
 		{minifind}
 
-		<table class="data">
+		<ul class="data">
+{*
 			<caption>{tr}Newsletters{/tr}</caption>
 			<tr>
 				<th>{smartlink ititle="Name" isort=name offset=$offset idefault=1}</th>
@@ -58,24 +63,33 @@
 				<th>{tr}Subscribe{/tr}</th>
 				<th>{tr}Editions{/tr}</th>
 			</tr>
-			{foreach from=$newsletters item=nl}
+*}
+			{foreach from=$newsletters item=nl key=nlId}
 				{if $newsletters.individual ne 'y' or $newsletters.individual_bit_p_subscribe_newsletters eq 'y'}
-					<tr class="{cycle values='odd,even'}">
-						<td>{$nl.title|escape}</td>
-						<td>{$nl.data}</td>
-						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{tr}Subscribe{/tr}</a></td>
-						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php?nl_id={$nl.nl_id}">{tr}Editions{/tr}</a></td>
-					</tr>
+					<li class="item {cycle values='odd,even'}">
+						<div class="floaticon">
+						{if $subs.$nlId}
+							<strong>{biticon ipackage=liberty iname=success}{tr}Subscribed{/tr}: {$subs.$nlId.subscribed_date|bit_short_date}</strong><br/>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{tr}Unsubscribe{/tr}</a>
+						{else}
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{tr}Subscribe{/tr}</a>
+						{/if}
+						</div>
+						<h1>{$nl.title|escape}</h1>
+						{$nl.data}
+						<div><a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php?nl_id={$nl.nl_id}">{tr}Editions{/tr}</a></div>
+					</li>
 				{/if}
 			{foreachelse}
-				<tr class="norecords">
-					<td colspan="2">{tr}No Records Found{/tr}</td>
-				</tr>
+				<li class="norecords">
+					{tr}No Records Found{/tr}
+				</li>
 			{/foreach}
-		</table>
+		</ul>
 
 		{* haven't dealt with pagination yet *}
 		{pagination}
+		{/if}
 	</div><!-- end .body -->
 </div><!-- end .newsletters -->
 {/strip}

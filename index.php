@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.19 2006/06/19 02:35:19 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.20 2006/07/07 00:04:30 spiderr Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -29,6 +29,7 @@ if( !empty( $_REQUEST['nl_id'] ) ) {
 	}
 }
 $newsletters = $gContent->getList( $listHash );
+$gBitSmarty->assign_by_ref( 'subs', BitNewsletter::getUserSubscriptions( $gBitUser->getField( 'user_id' ), $gBitUser->getField( 'email' ) ) );
 $gBitSmarty->assign_by_ref('newsletters', $newsletters );
 
 $foo = parse_url($_SERVER["REQUEST_URI"]);
@@ -37,13 +38,11 @@ $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
 if (isset($_REQUEST["sub"])) {
 	$gContent->confirmSubscription($_REQUEST["sub"], TRUE );
 	$gBitSmarty->assign('confirm', 'y');
-}
-
-if (isset($_REQUEST["unsubscribe"])) {
+} elseif( isset( $_REQUEST["unsubscribe"] ) ) {
 	if (!empty( $_REQUEST["email"] )) {
 		$gContent->removeSubscription($_REQUEST["email"], TRUE );
 	} elseif (!empty( $_REQUEST["unsubscribe"] )) {
-	        $gContent->unsubscribe($_REQUEST["unsubscribe"], TRUE );
+	    $gContent->unsubscribe($_REQUEST["unsubscribe"], TRUE );
 	}
 	$feedback['success'] = tra( "Your email address was removed from the list of subscriptors." );
 }
