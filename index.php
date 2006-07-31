@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.20 2006/07/07 00:04:30 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.21 2006/07/31 02:17:00 spiderr Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -26,6 +26,9 @@ if( !empty( $_REQUEST['nl_id'] ) ) {
 	if (isset($_REQUEST['info'])) {
 		$subscribe = true;
 		$gBitSmarty->assign('subscribe', 'y');
+		$infoHash = array( 'user_id' => $gBitUser->mUserId, 'email' => $gBitUser->getField('email') );
+		$info = $gContent->getSubscriberInfo( $infoHash );
+		vd( $info );
 	}
 }
 $newsletters = $gContent->getList( $listHash );

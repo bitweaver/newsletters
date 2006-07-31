@@ -33,7 +33,6 @@
 						{if $gBitUser->hasPermission( 'p_newsletters_subscribe_email' )}
 							<input type="text" name="email" value="{$email|escape}" />
 						{else}
-							<input type="hidden" name="email" value="{$email|escape}" />
 							{$email|escape}
 						{/if}
 						{/forminput}

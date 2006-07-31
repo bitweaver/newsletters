@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.20 2006/07/07 02:35:17 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.21 2006/07/31 02:17:00 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.20 2006/07/07 02:35:17 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.21 2006/07/31 02:17:00 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.20 $ $Date: 2006/07/07 02:35:17 $ $Author: spiderr $
+ * @version $Revision: 1.21 $ $Date: 2006/07/31 02:17:00 $ $Author: spiderr $
  */
 
 /**
@@ -103,6 +103,28 @@ vd( 'not done yet' );
 		$pParamHash['newsletter_store']["unsub_msg"] = (isset($pParamHash["unsub_msg"]) && $pParamHash["unsub_msg"] == 'on') ? 'y' : 'n';
 		$pParamHash['newsletter_store']["validate_addr"] = (isset($pParamHash["validate_addr"]) && $pParamHash["validate_addr"] == 'on') ? 'y' : 'n';
 		return( count( $this->mErrors ) == 0 );
+	}
+
+	function getSubscriberInfo( $pLookup ) {
+		$ret = array();
+		if( $this->isValid() ) {
+			$bindVars = array();
+			$whereSql = '';
+			if( !empty( $pLookup['email'] ) ) {
+				$whereSql .= ' AND `email`=? ` ';
+				$bindVars[] = $pLookup['email'];
+			}
+			if( !empty( $pLookup['user_id'] ) ) {
+				$whereSql .= ' AND `user_id`=? ` ';
+				$bindVars[] = $pLookup['user_id'];
+			}
+			$whereSql = preg_replace( '/^[\s]AND/', '', $whereSql );
+			$query = "SELECT * from `".BIT_DB_PREFIX."mail_subscriptions` WHERE $whereSql ";
+			if( $res = $this->mDb->query( $query, $bindVars ) ) {
+				$ret = $res->GetRows();
+			}
+		}
+		return $ret;
 	}
 
 	function getSubscribers( $pAll=FALSE) {
