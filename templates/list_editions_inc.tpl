@@ -3,7 +3,7 @@
 		<li class="item {cycle values='odd,even'} {$ed.content_type_guid}">
 			<div class="floaticon">
 				{if $gBitUser->hasPermission('p_newsletters_admin')}
-					<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?edition_id={$ed.edition_id}">{biticon ipackage=liberty iname="mail_send" iexplain="Send"}</a>
+					<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?edition_id={$ed.edition_id}">{biticon ipackage="icons" iname="mail-forward" iexplain="Send"}</a>
 			   {/if}
 			</div>
 

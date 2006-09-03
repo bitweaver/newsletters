@@ -68,7 +68,7 @@
 					<li class="item {cycle values='odd,even'}">
 						<div class="floaticon">
 						{if $subs.$nlId}
-							<strong>{biticon ipackage=liberty iname=success iexplain="Success"}{tr}Subscribed{/tr}: {$subs.$nlId.subscribed_date|bit_short_date}</strong><br/>
+							<strong>{biticon ipackage="icons" iname="dialog-ok" iexplain="Success"}{tr}Subscribed{/tr}: {$subs.$nlId.subscribed_date|bit_short_date}</strong><br/>
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{tr}Unsubscribe{/tr}</a>
 						{else}
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{tr}Subscribe{/tr}</a>
