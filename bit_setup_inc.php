@@ -4,6 +4,7 @@ global $gBitSystem;
 $registerHash = array(
 	'package_name' => 'newsletters',
 	'package_path' => dirname( __FILE__ ).'/',
+	'homeable' => TRUE,
 );
 $gBitSystem->registerPackage( $registerHash );
 
