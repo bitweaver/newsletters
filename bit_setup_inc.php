@@ -9,6 +9,11 @@ $registerHash = array(
 $gBitSystem->registerPackage( $registerHash );
 
 if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
-	$gBitSystem->registerAppMenu( NEWSLETTERS_PKG_DIR, ucfirst( NEWSLETTERS_PKG_DIR ), NEWSLETTERS_PKG_URL.'index.php', 'bitpackage:newsletters/menu_newsletters.tpl', NEWSLETTERS_PKG_NAME );
+	$menuHash = array(
+		'package_name'  => NEWSLETTERS_PKG_NAME,
+		'index_url'     => NEWSLETTERS_PKG_URL.'index.php',
+		'menu_template' => 'bitpackage:newsletters/menu_newsletters.tpl',
+	);
+	$gBitSystem->registerAppMenu( $menuHash );
 }
 ?>
