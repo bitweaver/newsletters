@@ -57,7 +57,7 @@ $tables = array(
 ",
 
 'mail_queue' => "
-  mail_queue_id PRIMARY,
+  mail_queue_id I8 PRIMARY,
   content_id I4 NOTNULL,
   email C(160) NOTNULL,
   nl_content_id I4 NOTNULL,
@@ -90,7 +90,7 @@ $gBitInstaller->registerPackageInfo( NEWSLETTERS_PKG_NAME, array(
 
 // ### Indexes
 $indices = array (
-	'mail_sub_nl_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'nl_content_id', 'opts' => NULL ),
+	'mail_sub_nl_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'content_id', 'opts' => NULL ),
 	'mail_sub_user_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'user_id', 'opts' => NULL ),
 	'mail_sub_email_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'email', 'opts' => NULL ),
 	'nl_ed_nl_idx' => array( 'table' => 'newsletters_editions', 'cols' => 'nl_content_id', 'opts' => NULL ),
