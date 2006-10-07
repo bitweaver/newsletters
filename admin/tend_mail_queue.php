@@ -8,6 +8,7 @@
 	$_SERVER['SERVER_NAME'] = '';
 	$_SERVER['SERVER_ADMIN'] = '';
 	$_SERVER['SERVER_SOFTWARE'] = 'command line';
+	$_REQUEST['uri_mode'] = TRUE;
 
 /**
  * required setup

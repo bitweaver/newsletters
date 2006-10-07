@@ -27,7 +27,7 @@ $tables = array(
 'mail_subscriptions' => "
   email C(160),
   user_id I4,
-  nl_content_id I4,
+  content_id I4,
   sub_code C(36),
   is_valid C(1),
   subscribed_date I8,
@@ -57,8 +57,9 @@ $tables = array(
 ",
 
 'mail_queue' => "
-  content_id I4 PRIMARY,
-  email C(160) PRIMARY,
+  mail_queue_id PRIMARY,
+  content_id I4 NOTNULL,
+  email C(160) NOTNULL,
   nl_content_id I4 NOTNULL,
   user_id I4,
   url_code C(32),
@@ -97,6 +98,7 @@ $indices = array (
 	'mailq_email_idx' => array( 'table' => 'mail_queue', 'cols' => 'email', 'opts' => NULL ),
 	'mailq_user_idx' => array( 'table' => 'mail_queue', 'cols' => 'user_id', 'opts' => NULL ),
 	'mailq_content_idx' => array( 'table' => 'mail_queue', 'cols' => 'content_id', 'opts' => NULL ),
+	'mailq_user_content_idx' => array( 'table' => 'mail_queue', 'cols' => 'content_id', 'opts' => array( 'UNIQUE' ) ),
 	'mailq_sent_idx' => array( 'table' => 'mail_queue', 'cols' => 'sent_date', 'opts' => NULL ),
 );
 $gBitInstaller->registerSchemaIndexes( NEWSLETTERS_PKG_NAME, $indices );

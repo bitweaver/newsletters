@@ -11,6 +11,8 @@
 			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php?edition_id={$gContent->mEditionId}&amp;remove=1">{biticon ipackage="icons" iname="edit-delete" iexplain="delete"}</a>
 		{/if}
 	</div>
+	{else}
+		<div><small>{tr}This newsletter can be viewed on the web at{/tr} <a href="{$gContent->getDisplayUrl()}">{$gContent->getDisplayUrl()}</a></small><div>
 	{/if}
 
 	<div class="header">
@@ -27,4 +29,10 @@
 			{$gContent->parseData()}
 		</div> <!-- end .content -->
 	</div> <!-- end .body -->
+
+	{if $sending} tcode {$trackCode}
+		{include file="bitpackage:newsletters/unsubscribe_inc.tpl"}
+		<img src="{$smarty.const.NEWSLETTERS_PKG_URI}track.php?sub={$trackCode}" alt="" />
+	{/if}
+
 </div><!-- end .newsletters -->

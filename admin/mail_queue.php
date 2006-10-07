@@ -9,13 +9,18 @@ require_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
 global $gBitMailer;
 $gBitMailer = new BitMailer();
 
-if( !empty( $_REQUEST['tend_queue'] ) ) {
-	$gBitMailer->tendQueue();
-} else {
-	$listHash = array();
-	$queue = $gBitMailer->getQueue( $listHash );
-	$gBitSmarty->assign_by_ref( 'queue', $queue );
+if( !empty( $_REQUEST['batch_command'] ) && !empty( $_REQUEST['queue_id'] ) ) {
+	if( $_REQUEST['batch_command'] == 'delete' ) {
+		foreach( $_REQUEST['queue_id'] as $qId ) { 
+			$gBitMailer->expungeQueueRow( $qId  );
+		}
+	} elseif( $_REQUEST['batch_command'] == 'send' ) {
+	}
 }
+
+$listHash = array();
+$queue = $gBitMailer->getQueue( $listHash );
+$gBitSmarty->assign_by_ref( 'queue', $queue );
 
 $gBitSystem->display( 'bitpackage:newsletters/mail_queue.tpl' );
 

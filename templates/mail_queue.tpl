@@ -17,7 +17,7 @@
 			<td><a href="{$smarty.const.BIT_ROOT_URL}?content_id={$q.content_id}">{$q.title}</a></td>
 			<td><a href="{$smarty.const.BIT_ROOT_URL}?content_id={$q.nl_content_id}">{$q.newsletter_title}</a></td>
 			<td>{$q.queue_date|bit_short_datetime}</a></td>
-			<td>{$q.sent_date}</td>
+			<td>{if $q.sent_date}{$q.sent_date|bit_short_datetime}{/if}</td>
 			<td><input type="checkbox" name="queue_id[]" value="{$qId}" /></td>
 		</tr>
 	{/foreach}
@@ -27,10 +27,10 @@
 <div style="float:right">
 <div class="row">
 	With checked: 
-	<select>
+	<select name="batch_command">
 		<option></option>
-		<option>{tr}Delete{/tr}</option>
-		<option>{tr}Send Immediately{/tr}</option>
+		<option value="delete">{tr}Delete{/tr}</option>
+		<option value="send">{tr}Send Immediately{/tr}</option>
 	</select>
 </div>
 
