@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.21 2006/07/31 02:17:00 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/index.php,v 1.22 2006/10/07 20:01:02 spiderr Exp $
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -26,9 +26,10 @@ if( !empty( $_REQUEST['nl_id'] ) ) {
 	if (isset($_REQUEST['info'])) {
 		$subscribe = true;
 		$gBitSmarty->assign('subscribe', 'y');
-		$infoHash = array( 'user_id' => $gBitUser->mUserId, 'email' => $gBitUser->getField('email') );
-		$info = $gContent->getSubscriberInfo( $infoHash );
-		vd( $info );
+		if( $gBitUser->isRegistered() ) {
+			$infoHash = array( 'user_id' => $gBitUser->mUserId );
+		}
+		$gBitSmarty->assign( 'subInfo', $gContent->getSubscriberInfo( $infoHash ) );
 	}
 }
 $newsletters = $gContent->getList( $listHash );
@@ -41,7 +42,7 @@ $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
 if (isset($_REQUEST["sub"])) {
 	$gContent->confirmSubscription($_REQUEST["sub"], TRUE );
 	$gBitSmarty->assign('confirm', 'y');
-} elseif( isset( $_REQUEST["unsubscribe"] ) ) {
+} elseif( isset( $_REQUEST["unsub"] ) ) {
 	if (!empty( $_REQUEST["email"] )) {
 		$gContent->removeSubscription($_REQUEST["email"], TRUE );
 	} elseif (!empty( $_REQUEST["unsubscribe"] )) {
@@ -50,7 +51,7 @@ if (isset($_REQUEST["sub"])) {
 	$feedback['success'] = tra( "Your email address was removed from the list of subscriptors." );
 }
 
-if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
+if( isset( $_REQUEST["sub"] ) ) {
 	if( isset( $_REQUEST["sub"] ) && strlen( $_REQUEST["sub"] ) == 32 && ($subInfo = BitMailer::lookupSubscription( array( 'url_code' => $_REQUEST["sub"] ) )) ) {
 		$lookup['email'] = $subInfo['email'];
 		$unsubs = BitMailer::getUnsubscriptions( $lookup );
@@ -94,7 +95,7 @@ if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
 	$gBitSmarty->assign( 'subInfo', $subInfo );
 	$gBitSmarty->assign( 'unsubs', $unsubs );
 	$mid = 'bitpackage:newsletters/user_subscriptions.tpl';
-}
+} else {
 
 $foo = parse_url($_SERVER["REQUEST_URI"]);
 $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
@@ -146,6 +147,7 @@ $subscribe = false;
 	*/
 	$mid = 'bitpackage:newsletters/newsletters.tpl';
 	$title = "List Newsletters";
+}
 }
 
 $gBitSmarty->assign( 'feedback', $feedback );

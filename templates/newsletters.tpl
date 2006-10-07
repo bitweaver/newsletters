@@ -51,7 +51,9 @@
 			{/if}
 		{else}
 
-		{minifind}
+		{if count($newsletters) > $gBitSystem->getConfig('max_records',10)}
+			{minifind}
+		{/if}
 
 		<ul class="data">
 {*
@@ -63,15 +65,19 @@
 				<th>{tr}Editions{/tr}</th>
 			</tr>
 *}
+
 			{foreach from=$newsletters item=nl key=nlId}
 				{if $newsletters.individual ne 'y' or $newsletters.individual_bit_p_subscribe_newsletters eq 'y'}
 					<li class="item {cycle values='odd,even'}">
 						<div class="floaticon">
-						{if $subs.$nlId}
-							<strong>{biticon ipackage="icons" iname="dialog-ok" iexplain="Success"}{tr}Subscribed{/tr}: {$subs.$nlId.subscribed_date|bit_short_date}</strong><br/>
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{tr}Unsubscribe{/tr}</a>
+						{if $subs.$nlId.unsubscribe_all || $subs.$nlId.unsubscribe_date}
+							<strong>{biticon ipackage="icons" iname="dialog-cancel" iexplain="Success" iforce="icon"}{tr}Unsubscribed{/tr}: {$subs.$nlId.unsubscribe_date|bit_short_date}</strong><br/>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
+						{elseif $subs.$nlId}
+							<strong>{biticon ipackage="icons" iname="dialog-ok" iexplain="Success" iforce="icon"}{tr}Subscribed{/tr}: {$subs.$nlId.subscribed_date|bit_short_date}</strong><br/>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;unsub=1">{tr}Unsubscribe{/tr}</a>
 						{else}
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;info=1">{tr}Subscribe{/tr}</a>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
 						{/if}
 						</div>
 						<h1>{$nl.title|escape}</h1>

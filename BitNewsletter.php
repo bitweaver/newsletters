@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.21 2006/07/31 02:17:00 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.22 2006/10/07 20:01:02 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.21 2006/07/31 02:17:00 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.22 2006/10/07 20:01:02 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.21 $ $Date: 2006/07/31 02:17:00 $ $Author: spiderr $
+ * @version $Revision: 1.22 $ $Date: 2006/10/07 20:01:02 $ $Author: spiderr $
  */
 
 /**
@@ -119,9 +119,9 @@ vd( 'not done yet' );
 				$bindVars[] = $pLookup['user_id'];
 			}
 			$whereSql = preg_replace( '/^[\s]AND/', '', $whereSql );
-			$query = "SELECT * from `".BIT_DB_PREFIX."mail_subscriptions` WHERE $whereSql ";
+			$query = "SELECT `content_id` AS `hash_key`, * from `".BIT_DB_PREFIX."mail_subscriptions` WHERE $whereSql ";
 			if( $res = $this->mDb->query( $query, $bindVars ) ) {
-				$ret = $res->GetRows();
+				$ret = $res->GetAssoc();
 			}
 		}
 		return $ret;
@@ -143,8 +143,8 @@ vd( 'not done yet' );
 		if ($del_record) {
 			$this->mDb->query("DELETE FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `content_id`=? AND `email`=?", array($this->mContentId, $email));
 		} else {
-			$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."mail_subscriptions` where `content_id`=? and `email`=?", array($this->mContentId, $email));
-			$this->unsubscribe($sub_code, $notify);
+			$urlCode = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."mail_subscriptions` where `content_id`=? and `email`=?", array($this->mContentId, $email));
+			$this->unsubscribe($urlCode, $notify);
 		}
 	}
 
@@ -161,12 +161,12 @@ vd( 'not done yet' );
 			foreach($all_subs as $sub) {
 				if( $sub['email'] == $pSubscribeHash['email'] ) {
 					$duplicate = TRUE;
-					$sub_code = $sub['sub_code'];
+					$urlCode = $sub['sub_code'];
 				} elseif( !empty( $pSubscribeHash['user_id'] ) && $sub['user_id'] == $pSubscribeHash['user_id'] ) {
 				}
 			}
 
-			$sub_code = (!$duplicate) ? md5( BitUser::genPass() ) : $sub_code;
+			$urlCode = (!$duplicate) ? md5( BitUser::genPass() ) : $urlCode;
 			$now = date("U");
 			// Generate a code and store it and send an email  with the
 			// URL to confirm the subscription put valid as 'n'
@@ -181,11 +181,11 @@ vd( 'not done yet' );
 					$subEmail = $pSubscribeHash['email'];
 				}
 				$query = "insert into `".BIT_DB_PREFIX."mail_subscriptions` (`content_id`, `user_id`, `email`,`sub_code`,`is_valid`,`subscribed_date`) VALUES (?,?,?,?,?,?)";
-				$result = $this->mDb->query( $query, array( $this->mContentId, $subUserId, $subEmail, $sub_code, 'n', (int)$now ) );
+				$result = $this->mDb->query( $query, array( $this->mContentId, $subUserId, $subEmail, $urlCode, 'n', (int)$now ) );
 			}
 			if( ( !empty( $pSubscribeHash['notify'] ) && $this->getField( 'validate_addr' ) == 'y') || !empty( $pSubscribeHash['remind'] ) ) {
 				// Generate a code and store it and send an email  with the
-				$gBitSmarty->assign( 'sub_code', $sub_code );
+				$gBitSmarty->assign( 'sub_code', $urlCode );
 				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/confirm_newsletter_subscription.tpl');
 				@mail($email, tra('Newsletter subscription information at') . ' ' . $gBitSystem->getConfig( "bitmailer_from" ), $mail_data,
 					"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
@@ -195,12 +195,12 @@ vd( 'not done yet' );
 		return $ret;
 	}
 
-	function confirmSubscription($sub_code, $notify = FALSE ) {
+	function confirmSubscription($pUrlCode, $notify = FALSE ) {
 		global $gBitSystem;
 		global $gBitSmarty;
 		global $gBitUser;
-		$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` where `sub_code`=?";
-		$result = $this->mDb->query($query,array($sub_code));
+		$query = "select * from `".BIT_DB_PREFIX."mail_queue` where `url_code`=?";
+		$result = $this->mDb->query($query,array($pUrlCode));
 
 		if (!$result->numRows()) return false;
 
@@ -208,41 +208,58 @@ vd( 'not done yet' );
 		$this->mContentId = $res['content_id'];
 		$this->load();
 		$query = "update `".BIT_DB_PREFIX."mail_subscriptions` set `is_valid`=?,`unsubscribe_date`=? where `sub_code`=?";
-		$result = $this->mDb->query($query,array('y',NULL,$sub_code));
+		$result = $this->mDb->query($query,array('y',NULL,$pUrlCode));
 
 		if ($notify) {
 			// Now send a welcome email
-			$gBitSmarty->assign( 'sub_code', $res["sub_code"] );
+			$gBitSmarty->assign( 'sub_code', $res["url_code"] );
 			$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_welcome.tpl');
 			@mail($res["email"], tra('Welcome to') . ' ' . $gBitSystem->getConfig( "bitmailer_from" ), $mail_data,
 				"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
 		}
 	}
 
-	function unsubscribe($sub_code, $notify = TRUE ) {
+	function unsubscribe( $pMixed, $notify = TRUE ) {
 		global $gBitSystem;
 		global $gBitSmarty;
 		global $gBitUser;
+
+		$ret = FALSE;
 		$now = date("U");
-		$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` where `sub_code`=?";
-		$result = $this->mDb->query($query,array($sub_code));
 
-		if (!$result->numRows()) return false;
-
-		$res = $result->fetchRow();
-		$this->mContentId = $res['content_id'];
-		$this->load();
-		$query = "update `".BIT_DB_PREFIX."mail_subscriptions` set `unsubscribe_date`=? where `sub_code`=? and `unsubscribe_date` is NULL";
-		$result = $this->mDb->query($query,array($now, $sub_code));
-
-		if ($notify) {
-			// Now send a bye bye email
-			$gBitSmarty->assign('sub_code', $res["sub_code"]);
-			$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
-			@mail($res["email"], tra('Thank you from') . ' ' . $gBitSystem->getConfig( "bitmailer_from" ), $mail_data,
-				"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
+		if( is_numeric( $pMixed ) ) {
+			$query = "SELECT `content_id` FROM `".BIT_DB_PREFIX."newsleteres` WHERE `nl_id`=?";
+			if( $subRow['content_id'] = $this->mDb->getOne( $query, array( $pMixed ) ) ) {
+				$subRow['col_name'] = 'user_id';
+				$subRow['col_val'] = $gBitUser->mUserId;
+			}
+		} elseif( $pUrlCode ) {
+			$query = "SELECT * FROM `".BIT_DB_PREFIX."mail_queue` WHERE `url_code`=?";
+			if( $subRow = $this->mDb->getRow( $query, array( $pUrlCode ) ) ) {
+				$subRow['col_name'] = !empty( $subRow['user_id'] ) ? 'user_id' : 'email';
+				$subRow['col_val'] = !empty( $subRow['user_id'] ) ? $subRow['user_id'] : $subRow['email'];
+			}
 		}
 
+		if( !empty( $subRow ) ) {
+			$this->mContentId = $res['content_id'];
+			$this->load();
+			if( $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `$subRow[col_name]`=?", array( $subRow['col_val'] ) ) ) {
+				$query = "UPDATE `".BIT_DB_PREFIX."mail_subscriptions` SET `unsubscribe_date`=?, `content_id`=? WHERE `$subRow[col_name]`=? AND `unsubscribe_date` IS NULL";
+			} else {
+				$query = "INSERT INTO `".BIT_DB_PREFIX."mail_subscriptions` (`unsubscribe_date`,`content_id`,`$subRow[col_name]`) VALUES(?,?,?)";
+			}
+			$result = $this->mDb->query( $query, array( $now, $subRow['content_id'], $subRow['col_val'] ) );
+			if( $notify ) {
+				// Now send a bye bye email
+				$gBitSmarty->assign('sub_code', $res["sub_code"]);
+				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
+				@mail($res["email"], tra('Thank you from') . ' ' . $gBitSystem->getConfig( "bitmailer_from" ), $mail_data,
+					"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
+			}
+			$ret = TRUE;
+		}
+		return $ret;
 	}
 
 /*
@@ -337,8 +354,8 @@ vd( 'not done yet' );
 
 		$foo = str_replace('send_newsletters', 'newsletters', $foo);
 		$url_subscribe = httpPrefix(). $foo["path"];
-		$sub_code = $this->mDb->getOne("select `sub_code` from `".BIT_DB_PREFIX."mail_subscriptions` where `content_id`=? and `email`=?",array((int)$nl_id,$email));
-		$url_unsub = $url_subscribe . '?unsubscribe=' . $sub_code;
+		$urlCode = $this->mDb->getOne("select `url_code` from `".BIT_DB_PREFIX."mail_queue` where `content_id`=? and `email`=?",array((int)$nl_id,$email));
+		$url_unsub = $url_subscribe . '?unsubscribe=' . $urlCode;
 		$msg = '<br/><br/>' . tra( 'You can unsubscribe from this newsletter following this link'). ": <a href='$url_unsub'>$url_unsub</a>";
 		return $msg;
 	}
