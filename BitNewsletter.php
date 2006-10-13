@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.22 2006/10/07 20:01:02 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.23 2006/10/13 09:22:47 lsces Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.22 2006/10/07 20:01:02 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.23 2006/10/13 09:22:47 lsces Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.22 $ $Date: 2006/10/07 20:01:02 $ $Author: spiderr $
+ * @version $Revision: 1.23 $ $Date: 2006/10/13 09:22:47 $ $Author: lsces $
  */
 
 /**
@@ -27,6 +27,9 @@ require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterEdition.php' );
 
 define( 'BITNEWSLETTER_CONTENT_TYPE_GUID', 'bitnewsletter' );
 
+/**
+ * @package newsletters
+ */
 class BitNewsletter extends LibertyContent {
 	function BitNewsletter( $pNlId=NULL, $pContentId=NULL ) {
 		parent::LibertyContent();

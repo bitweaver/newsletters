@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.21 2006/06/19 02:35:19 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.22 2006/10/13 09:22:47 lsces Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.21 2006/06/19 02:35:19 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.22 2006/10/13 09:22:47 lsces Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.21 $ $Date: 2006/06/19 02:35:19 $ $Author: spiderr $
+ * @version $Revision: 1.22 $ $Date: 2006/10/13 09:22:47 $ $Author: lsces $
  */
 
 /**
@@ -26,6 +26,9 @@ require_once( LIBERTY_PKG_PATH.'LibertyAttachable.php' );
 
 define( 'BITNEWSLETTEREDITION_CONTENT_TYPE_GUID', 'bitnewsletteredn' );
 
+/**
+ * @package newsletters
+ */
 class BitNewsletterEdition extends LibertyAttachable {
 	function BitNewsletterEdition( $pEditionId=NULL, $pContentId=NULL, $pNlId=NULL ) {
 		parent::LibertyContent();

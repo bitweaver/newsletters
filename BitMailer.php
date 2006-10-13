@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.24 2006/10/07 20:01:02 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.25 2006/10/13 09:22:47 lsces Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.24 2006/10/07 20:01:02 spiderr Exp $
+ * $Id: BitMailer.php,v 1.25 2006/10/13 09:22:47 lsces Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.24 $ $Date: 2006/10/07 20:01:02 $ $Author: spiderr $
+ * @version $Revision: 1.25 $ $Date: 2006/10/13 09:22:47 $ $Author: lsces $
  */
 
 /**
@@ -24,6 +24,9 @@
 require_once( NEWSLETTERS_PKG_PATH.'BitNewsletter.php' );
 require_once( UTIL_PKG_PATH.'phpmailer/class.phpmailer.php' );
 
+/**
+ * @package newsletters
+ */
 class BitMailer extends phpmailer {
     // Set default variables for all new objects
     var $From;
