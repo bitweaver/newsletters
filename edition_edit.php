@@ -7,10 +7,13 @@
  *
  * created 2005/12/10
  *
+ * @package newsletters
  * @author spider <spider@steelsun.com>
  */
 
-// Initialization
+/** 
+ * Initialization
+ */
 require_once( '../bit_setup_inc.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
 $gBitSystem->verifyPermission( 'p_newsletters_create_editions' );

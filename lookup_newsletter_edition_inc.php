@@ -1,6 +1,19 @@
 <?php
+/**
+ * Copyright (c) 2005 bitweaver.org
+ * All Rights Reserved. See copyright.txt for details and a complete list of authors.
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
+ *
+ * created 2005/12/10
+ *
+ * @package newsletters
+ * @author spider <spider@steelsun.com>
+ */
 
-require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterEdition.php' );
+/** 
+ * Initialization
+ */
+ require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterEdition.php' );
 
 if( empty( $gContent ) || !is_object( $gContent ) || !$gContent->isValid() ) {
 	$editionId = !empty( $_REQUEST['edition_id'] ) ? $_REQUEST['edition_id'] : NULL;
