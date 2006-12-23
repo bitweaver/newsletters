@@ -99,7 +99,7 @@ if( $gBitSystem->isPackageActive( 'quicktags' ) ) {
 }
 
 // load the ajax library for this page
-$gBitSmarty->assign( 'loadAjax', TRUE );
+$gBitSmarty->assign( 'loadAjax', 'prototype' );
 // Display the template
 $gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) );
 
