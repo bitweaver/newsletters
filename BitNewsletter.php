@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.7 2006/02/21 01:07:14 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.13.2.8 2007/01/04 23:41:56 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.13.2.7 2006/02/21 01:07:14 wolff_borg Exp $
+ * $Id: BitNewsletter.php,v 1.13.2.8 2007/01/04 23:41:56 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.13.2.7 $ $Date: 2006/02/21 01:07:14 $ $Author: wolff_borg $
+ * @version $Revision: 1.13.2.8 $ $Date: 2007/01/04 23:41:56 $ $Author: spiderr $
  */
 
 /**
@@ -253,7 +253,7 @@ class BitNewsletter extends LibertyContent {
 
 		if( !empty( $pListHash['find'] ) ) {
 			$findesc = '%' . $pListHash['find'] . '%';
-			$mid .= " AND (`name` like ? or `description` like ?)";
+			$mid .= " AND (`title` like ? or `data` like ?)";
 			$bindVars[] = $findesc;
 			$bindVars[] = $findesc;
 		}

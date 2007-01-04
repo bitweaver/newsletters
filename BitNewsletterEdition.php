@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.15.2.8 2006/03/08 11:47:29 wolff_borg Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.15.2.9 2007/01/04 23:41:56 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.15.2.8 2006/03/08 11:47:29 wolff_borg Exp $
+ * $Id: BitNewsletterEdition.php,v 1.15.2.9 2007/01/04 23:41:56 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.15.2.8 $ $Date: 2006/03/08 11:47:29 $ $Author: wolff_borg $
+ * @version $Revision: 1.15.2.9 $ $Date: 2007/01/04 23:41:56 $ $Author: spiderr $
  */
 
 /**
@@ -157,7 +157,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 				  	INNER JOIN `".BIT_DB_PREFIX."tiki_newsletters` tn ON( tne.`nl_content_id`=tn.`content_id` )
 				  	LEFT OUTER JOIN `".BIT_DB_PREFIX."tiki_content` tc2 ON( tn.`content_id`=tc2.`content_id` )
 				  $mid ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] );
-		$query_cant = "select count(*) from `".BIT_DB_PREFIX."tiki_newsletters` tn INNER JOIN `".BIT_DB_PREFIX."tiki_newsletters_editions` tne ON(tn.`content_id`=tne.`nl_content_id`) $mid";
+		$query_cant = "select count(*) from `".BIT_DB_PREFIX."tiki_newsletters` tn INNER JOIN `".BIT_DB_PREFIX."tiki_newsletters_editions` tne ON(tn.`content_id`=tne.`nl_content_id`) INNER JOIN `".BIT_DB_PREFIX."tiki_content` tc ON( tc.`content_id`=tne.`content_id` ) $mid";
 		$ret = $gBitDb->getAssoc( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 		foreach( array_keys( $ret ) as $k ) {
 			$ret[$k]['display_url'] = BitNewsletterEdition::getDisplayUrl( $k );
