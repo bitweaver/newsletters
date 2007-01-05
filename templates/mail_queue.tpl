@@ -14,8 +14,8 @@
 	{foreach from=$queue item=q key=qId}
 		<tr class="item">
 			<td>{$q.email}</td>
-			<td><a href="{$smarty.const.BIT_ROOT_URL}?content_id={$q.content_id}">{$q.title}</a></td>
-			<td><a href="{$smarty.const.BIT_ROOT_URL}?content_id={$q.nl_content_id}">{$q.newsletter_title}</a></td>
+			<td><a href="{$smarty.const.BIT_ROOT_URL}?content_id={$q.content_id}">{$q.title|escape}</a></td>
+			<td><a href="{$smarty.const.BIT_ROOT_URL}?content_id={$q.nl_content_id}">{$q.newsletter_title|escape}</a></td>
 			<td>{$q.queue_date|bit_short_datetime}</a></td>
 			<td>{if $q.sent_date}{$q.sent_date|bit_short_datetime}{/if}</td>
 			<td><input type="checkbox" name="queue_id[]" value="{$qId}" /></td>
