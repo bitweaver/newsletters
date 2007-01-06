@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.23 2007/01/06 06:22:12 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.24 2007/01/06 09:46:19 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.23 2007/01/06 06:22:12 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.24 2007/01/06 09:46:19 squareing Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.23 $ $Date: 2007/01/06 06:22:12 $ $Author: spiderr $
+ * @version $Revision: 1.24 $ $Date: 2007/01/06 09:46:19 $ $Author: squareing $
  */
 
 /**
@@ -161,7 +161,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 				  	INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( lc.`content_id`=ne.`content_id` )
 				  	INNER JOIN `".BIT_DB_PREFIX."newsletters` n ON( ne.`nl_content_id`=n.`content_id` )
 				  	LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` lc2 ON( n.`content_id`=lc2.`content_id` )
-				  $mid ORDER BY ".$gBitDb->convert_sortmode( $pListHash['sort_mode'] );
+				  $mid ORDER BY ".$gBitDb->convertSortmode( $pListHash['sort_mode'] );
 		$query_cant = "select count(*) from `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."newsletters_editions` ne ON(n.`content_id`=ne.`nl_content_id`) $mid";
 		$ret = $gBitDb->getAssoc( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 		foreach( array_keys( $ret ) as $k ) {

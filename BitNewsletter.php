@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.24 2007/01/06 06:22:12 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.25 2007/01/06 09:46:18 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.24 2007/01/06 06:22:12 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.25 2007/01/06 09:46:18 squareing Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.24 $ $Date: 2007/01/06 06:22:12 $ $Author: spiderr $
+ * @version $Revision: 1.25 $ $Date: 2007/01/06 09:46:18 $ $Author: squareing $
  */
 
 /**
@@ -315,7 +315,7 @@ vd( 'not done yet' );
 		$query = "SELECT *
 				  FROM `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( n.`content_id`=lc.`content_id`)
 				  WHERE n.`content_id`=lc.`content_id` $mid
-				  ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] );
+				  ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] );
 		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
 		$query_cant = "select count(*) from `".BIT_DB_PREFIX."newsletters` $mid";
@@ -342,7 +342,7 @@ vd( 'not done yet' );
 			$mid = " where `nl_id`=? ";
 		}
 
-		$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` $mid order by ".$this->mDb->convert_sortmode("$sort_mode");
+		$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` $mid order by ".$this->mDb->convertSortmode("$sort_mode");
 		$query_cant = "select count(*) from mail_subscriptions $mid";
 		$result = $this->mDb->query($query,$bindVars,$maxRecords,$offset);
 		$cant = $this->mDb->getOne($query_cant,$bindVars);
