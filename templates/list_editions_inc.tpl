@@ -8,11 +8,6 @@
 			</div>
 
 			<h2><a href="{$ed.display_url}">{$ed.title|escape}</a></h2>
-			<p>
-				{$ed.parsed|truncate:200:'...'}
-				<br />
-				{tr}in{/tr} <a href="{$smarty.const.NEWSLETTERS_PKG_URL}?nl_content_id={$ed.nl_content_id}">{$ed.newsletter_title}</a>
-			</p>
 		</li>
 	{foreachelse}
 		<li class="item norecords">
@@ -20,4 +15,3 @@
 		</li>
 	{/foreach}
 </ul>
-

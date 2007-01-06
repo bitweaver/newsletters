@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.7 2006/10/13 12:45:48 lsces Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.8 2007/01/06 06:22:12 spiderr Exp $
  * 
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -38,6 +38,8 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 	$sid = $gContent->store( $_REQUEST );
 	header( "Location: ".$_SERVER['PHP_SELF'] );
 	die;
+} elseif( !empty( $_REQUEST['cancel'] ) ) {
+	bit_redirect( NEWSLETTERS_PKG_URL );
 }
 
 $gContent->invokeServices( 'content_edit_function' );

@@ -1,7 +1,9 @@
 {strip}
 <div class="display newsletters">
 	<div class="header">
-		<h1>{tr}Newsletters{/tr}</h1>
+		{if count($newsletters) > 1}
+			<h1>{tr}Newsletters{/tr}</h1>
+		{/if}
 	</div>
 
 	<div class="body">
@@ -72,17 +74,29 @@
 						<div class="floaticon">
 						{if $subs.$nlId.unsubscribe_all || $subs.$nlId.unsubscribe_date}
 							<strong>{biticon ipackage="icons" iname="dialog-cancel" iexplain="Success" iforce="icon"}{tr}Unsubscribed{/tr}: {$subs.$nlId.unsubscribe_date|bit_short_date}</strong><br/>
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}sub.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
 						{elseif $subs.$nlId}
 							<strong>{biticon ipackage="icons" iname="dialog-ok" iexplain="Success" iforce="icon"}{tr}Subscribed{/tr}: {$subs.$nlId.subscribed_date|bit_short_date}</strong><br/>
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;unsub=1">{tr}Unsubscribe{/tr}</a>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}sub.php?nl_id={$nl.nl_id}&amp;unsub=1">{tr}Unsubscribe{/tr}</a>
 						{else}
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}sub.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
+						{/if}
+						{if $gBitUser->hasPermission('p_newsletters_create')}
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="document-new" iexplain="New Edition"}</a>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?&amp;nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="accessories-text-editor" iexplain=Edit}</a>
+							{if $channels[user].individual eq 'y'}({/if}<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$nl.title|escape}&amp;object_type={$smarty.const.BITNEWSLETTER_CONTENT_TYPE_GUID}&amp;permType=newsletters&amp;object_id={$nlId}">{biticon ipackage="icons" iname="emblem-shared" iexplain=Permissions}</a>{if $nl.individual eq 'y'}){/if}
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?remove=1&amp;nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="edit-delete" iexplain=Remove}</a>
 						{/if}
 						</div>
 						<h1>{$nl.title|escape}</h1>
 						{$nl.data}
-						<div><a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php?nl_id={$nl.nl_id}">{tr}Editions{/tr}</a></div>
+						<ul class="data">
+						{foreach from=$nl.editions item=ed key=edId}
+							<li class="item"><h2><a href="{$ed.display_url}">{$ed.title}</a></h2><span class="date">{$ed.event_time|bit_short_date}</span></li>
+						{foreachelse}
+							<li class="norecords">{tr}No editions.{/tr}</li>
+						{/foreach}
+						</ul>
 					</li>
 				{/if}
 			{foreachelse}

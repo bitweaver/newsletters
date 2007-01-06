@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.22 2006/10/13 09:22:47 lsces Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.23 2007/01/06 06:22:12 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.22 2006/10/13 09:22:47 lsces Exp $
+ * $Id: BitNewsletterEdition.php,v 1.23 2007/01/06 06:22:12 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.22 $ $Date: 2006/10/13 09:22:47 $ $Author: lsces $
+ * @version $Revision: 1.23 $ $Date: 2007/01/06 06:22:12 $ $Author: spiderr $
  */
 
 /**
@@ -120,18 +120,18 @@ class BitNewsletterEdition extends LibertyAttachable {
 	 */
 	function getDisplayUrl( $pEditionId=NULL ) {
 		$ret = NULL;
-		if( !$this->verifyId( $pEditionId ) ) {
+		if( !empty( $this ) && !$this->verifyId( $pEditionId ) ) {
 			$pEditionId = $this->mEditionId;
 		}
 		global $gBitSystem;
-		if( $this->verifyId( $pEditionId ) ) {
+		if( BitBase::verifyId( $pEditionId ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = NEWSLETTERS_PKG_URI.'edition/'.$pEditionId;
+				$ret = NEWSLETTERS_PKG_URL.'edition/'.$pEditionId;
 			} else {
-				$ret = NEWSLETTERS_PKG_URI.'edition.php?edition_id='.$pEditionId;
+				$ret = NEWSLETTERS_PKG_URL.'edition.php?edition_id='.$pEditionId;
 			}
 		} else {
-			$ret = NEWSLETTERS_PKG_URI.'edition.php';
+			$ret = NEWSLETTERS_PKG_URL.'edition.php';
 		}
 		return $ret;
 	}
@@ -144,7 +144,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 		BitBase::prepGetList( $pListHash );
 		$mid = '';
 
-		if( @$this->verifyId( $pListHash['nl_id'] ) ) {
+		if( @BitBase::verifyId( $pListHash['nl_id'] ) ) {
 			$mid .= (empty( $mid ) ? 'WHERE' : 'AND').' n.nl_id=? ';
 			$bindVars[] = $pListHash['nl_id'];
 		}
@@ -155,12 +155,13 @@ class BitNewsletterEdition extends LibertyAttachable {
 			$bindVars[] = $findesc;
 			$bindVars[] = $findesc;
 		}
+
 		$query = "SELECT `edition_id` AS `hash_key`, ne.*, lc.*, lc2.`title` AS `newsletter_title`
 				  FROM `".BIT_DB_PREFIX."newsletters_editions` ne
 				  	INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( lc.`content_id`=ne.`content_id` )
 				  	INNER JOIN `".BIT_DB_PREFIX."newsletters` n ON( ne.`nl_content_id`=n.`content_id` )
 				  	LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` lc2 ON( n.`content_id`=lc2.`content_id` )
-				  $mid ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] );
+				  $mid ORDER BY ".$gBitDb->convert_sortmode( $pListHash['sort_mode'] );
 		$query_cant = "select count(*) from `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."newsletters_editions` ne ON(n.`content_id`=ne.`nl_content_id`) $mid";
 		$ret = $gBitDb->getAssoc( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 		foreach( array_keys( $ret ) as $k ) {

@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.23 2006/10/13 09:22:47 lsces Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.24 2007/01/06 06:22:12 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.23 2006/10/13 09:22:47 lsces Exp $
+ * $Id: BitNewsletter.php,v 1.24 2007/01/06 06:22:12 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.23 $ $Date: 2006/10/13 09:22:47 $ $Author: lsces $
+ * @version $Revision: 1.24 $ $Date: 2007/01/06 06:22:12 $ $Author: spiderr $
  */
 
 /**
@@ -76,6 +76,12 @@ vd( 'not done yet' );
 			}
 		}
 		return( count( $this->mInfo ) );
+	}
+
+	function loadEditions() {
+		if( $this->isValid() ) {
+			$this->mEditions = $this->getEditions();
+		}
 	}
 
 	function store( &$pParamHash ) { //$nl_id, $name, $description, $allow_user_sub, $allow_any_sub, $unsub_msg, $validate_addr) {
@@ -414,10 +420,15 @@ vd( 'not done yet' );
 	}
 
 
-	function getEditions() {
+	function getEditions( $pNewsletterId = NULL ) {
 		$ret = array();
-		if( $this->isValid() ) {
-			$listHash = array( 'nl_id' => $this->mNewsletterId  );
+		if( empty( $pNewsletterId ) ) {
+			$nlId = $this->mNewsletterId;
+		} elseif( BitBase::verifyId( $pNewsletterId ) ) {
+			$nlId = $pNewsletterId;
+		}
+		if( !empty( $nlId ) ) {
+			$listHash = array( 'nl_id' => $nlId  );
 			$ret = BitNewsletterEdition::getList( $listHash );
 		}
 		return $ret;

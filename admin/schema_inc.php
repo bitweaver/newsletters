@@ -98,7 +98,7 @@ $indices = array (
 	'mailq_email_idx' => array( 'table' => 'mail_queue', 'cols' => 'email', 'opts' => NULL ),
 	'mailq_user_idx' => array( 'table' => 'mail_queue', 'cols' => 'user_id', 'opts' => NULL ),
 	'mailq_content_idx' => array( 'table' => 'mail_queue', 'cols' => 'content_id', 'opts' => NULL ),
-	'mailq_user_content_idx' => array( 'table' => 'mail_queue', 'cols' => 'content_id', 'opts' => array( 'UNIQUE' ) ),
+	'mailq_user_content_idx' => array( 'table' => 'mail_queue', 'cols' => array('content_id','user_id'), 'opts' => array( 'UNIQUE' ) ),
 	'mailq_sent_idx' => array( 'table' => 'mail_queue', 'cols' => 'sent_date', 'opts' => NULL ),
 );
 $gBitInstaller->registerSchemaIndexes( NEWSLETTERS_PKG_NAME, $indices );
