@@ -18,7 +18,7 @@
 	<div class="header">
 		<h1>{$gContent->getTitle()}</h1>
 		{if $gContent->mNewsletter}
-			<h2>{$gContent->mNewsletter->getTitle()}</h2>
+			<p>{$gContent->mNewsletter->getTitle()}</p>
 		{/if}
 	</div>
 

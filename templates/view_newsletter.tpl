@@ -16,7 +16,7 @@
 	<div class="header">
 		<h1>{$gContent->getTitle()}</h1>
 		{if $gContent->getField('description')}
-			<h2>{$gContent->getField('description')}</h2>
+			<p>{$gContent->getField('description')}</p>
 		{/if}
 	</div>
 
