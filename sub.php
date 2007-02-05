@@ -1,11 +1,19 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.1 2007/01/06 06:22:12 spiderr Exp $
+/**
+ * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.2 2007/02/05 11:14:32 lsces Exp $
+ * Copyright (c) 2005 bitweaver.org
+ * All Rights Reserved. See copyright.txt for details and a complete list of authors.
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
+ *
+ * created 2005/12/10
+ *
+ * @package newsletters
+ * @author spider <spider@steelsun.com>
+ */
 
-// Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-
-// Initialization
+/** 
+ * Initialization
+ */
 require_once( '../bit_setup_inc.php' );
 include_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
 
