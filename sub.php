@@ -1,6 +1,6 @@
 <?php
 /**
- * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.2 2007/02/05 11:14:32 lsces Exp $
+ * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.3 2007/03/20 17:35:38 spiderr Exp $
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
@@ -133,26 +133,6 @@ $subscribe = false;
 	/* List newsletters */
 	$listHash = array();
 	$newsletters = $gContent->getList( $listHash );
-	/*
-	for( $i = 0; $i < count( $newsletters ); $i++ ) {
-		if ($userlib->object_has_one_permission($newsletters["data"][$i]["nl_id"], 'newsletters')) {
-			$newsletters["data"][$i]["individual"] = 'y';
-
-			if ($userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'p_subscribe_newsletters')) {
-				$newsletters["data"][$i]["individual_p_subscribe_newsletters"] = 'y';
-			} else {
-				$newsletters["data"][$i]["individual_p_subscribe_newsletters"] = 'n';
-			}
-
-			if ($p_admin == 'y'
-				|| $userlib->object_has_permission($user, $newsletters["data"][$i]["nl_id"], 'newsletter', 'p_admin_newsletters')) {
-				$newsletters["data"][$i]["individual_p_subscribe_newsletters"] = 'y';
-			}
-		} else {
-			$newsletters["data"][$i]["individual"] = 'n';
-		}
-	}
-	*/
 	$mid = 'bitpackage:newsletters/newsletters.tpl';
 	$title = "List Newsletters";
 }

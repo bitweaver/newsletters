@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.6 2006/07/07 00:04:30 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.7 2007/03/20 17:35:39 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -13,29 +13,6 @@ $gBitSystem->verifyPermission( 'p_admin_newsletters' );
 
 require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
 
-/*
-if ($userlib->object_has_one_permission($_REQUEST["nl_id"], 'newsletter')) {
-	$smarty->assign('individual', 'y');
-
-	if ($bitweaver.orgi_p_admin != 'y') {
-		$perms = $userlib->get_permissions(0, -1, 'perm_name_desc', '', 'newsletters');
-
-		foreach ($perms["data"] as $perm) {
-			$perm_name = $perm["perm_name"];
-
-			if ($userlib->object_has_permission($user, $_REQUEST["nl_id"], 'newsletter', $perm_name)) {
-				$$perm_name = 'y';
-
-				$smarty->assign("$perm_name", 'y');
-			} else {
-				$$perm_name = 'n';
-
-				$smarty->assign("$perm_name", 'n');
-			}
-		}
-	}
-}
-*/
 if( $gContent->isValid() ) {
 	$nl_id = $_REQUEST['nl_id'];
 	$gBitSmarty->assign( 'nl_id', $nl_id );
