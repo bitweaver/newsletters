@@ -67,7 +67,7 @@ $tables = array(
   begin_date I8,
   sent_date I8,
   last_read_date I8,
-  reads I2 NOTNULL DEFAULT '0'
+  `reads` I2 NOTNULL DEFAULT '0'
   CONSTRAINT ', CONSTRAINT `mailq_content_ref` FOREIGN KEY (`nl_content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )
 			  , CONSTRAINT `mailq_user_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
 "
