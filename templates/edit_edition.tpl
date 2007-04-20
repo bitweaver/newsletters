@@ -74,22 +74,7 @@
 								{formhelp note="This is the email address to which any replies will be sent."}
 							{/forminput}
 						</div>
-
-						{include file="bitpackage:liberty/edit_format.tpl"}
-
-						{if $gBitSystem->isPackageActive( 'smileys' )}
-							{include file="bitpackage:smileys/smileys_full.tpl"}
-						{/if}
-
-						{if $gBitSystem->isPackageActive( 'quicktags' )}
-							{include file="bitpackage:quicktags/quicktags_full.tpl"}
-						{/if}
-						<div class="row">
-							{formlabel label="Body" for=$textarea_id}
-							{forminput}
-								<textarea {spellchecker} id="{$textarea_id}" name="edit" rows="{$rows|default:20}" cols="{$cols|default:50}">{$pageInfo.data|escape:html}</textarea>
-							{/forminput}
-						</div>
+					{textarea}{$pageInfo.data}{/textarea}
 					{/legend}
 				{/jstab}
 
