@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters.php,v 1.3 2006/10/28 00:37:33 windblown Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters.php,v 1.4 2007/04/20 13:52:36 nickpalmer Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -33,11 +33,6 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 }
 
 $gContent->invokeServices( 'content_edit_function' );
-
-// Configure quicktags list
-if ($gBitSystem->isPackageActive( 'quicktags' ) ) {
-	include_once( QUICKTAGS_PKG_PATH.'quicktags_inc.php' );
-}
 
 $newsletters = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'newsletters', $newsletters );

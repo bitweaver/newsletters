@@ -93,11 +93,6 @@ if( empty( $formInfo ) ) {
 $gBitSmarty->assign_by_ref( 'pageInfo', $formInfo );
 $gBitSmarty->assign( 'errors', $gContent->mErrors );
 
-// Configure quicktags list
-if( $gBitSystem->isPackageActive( 'quicktags' ) ) {
-	include_once( QUICKTAGS_PKG_PATH.'quicktags_inc.php' );
-}
-
 // load the ajax library for this page
 $gBitSmarty->assign( 'loadAjax', 'prototype' );
 // Display the template

@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.8 2007/01/06 06:22:12 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.9 2007/04/20 13:52:35 nickpalmer Exp $
  * 
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -43,11 +43,6 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 }
 
 $gContent->invokeServices( 'content_edit_function' );
-
-// Configure quicktags list
-if ($gBitSystem->isPackageActive( 'quicktags' ) ) {
-	include_once( QUICKTAGS_PKG_PATH.'quicktags_inc.php' );
-}
 
 $newsletters = $gContent->getList( $listHash );
 $gBitSmarty->assign_by_ref( 'newsletters', $newsletters );
