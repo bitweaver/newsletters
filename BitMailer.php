@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.26 2007/04/25 20:59:11 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.27 2007/04/25 21:45:25 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.26 2007/04/25 20:59:11 spiderr Exp $
+ * $Id: BitMailer.php,v 1.27 2007/04/25 21:45:25 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.26 $ $Date: 2007/04/25 20:59:11 $ $Author: spiderr $
+ * @version $Revision: 1.27 $ $Date: 2007/04/25 21:45:25 $ $Author: spiderr $
  */
 
 /**
@@ -127,7 +127,7 @@ class BitMailer extends phpmailer {
 				}
 				$gBitSystem->preDisplay('');
 				$gBitSmarty->assign( 'mid', 'bitpackage:newsletters/view_edition.tpl' );
-				$htmlBody = $gBitSmarty->fetch( 'bitpackage:kernel/bitweaver.tpl' );
+				$htmlBody = $gBitSmarty->fetch( 'bitpackage:newsletters/mail_edition_body.tpl' );
 				$gBitSmarty->assign( 'unsubMessage', $unsub );
 				$gBitSmarty->assign( 'trackCode', $pick['url_code'] );
 				$this->ClearReplyTos();

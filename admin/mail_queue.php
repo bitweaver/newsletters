@@ -1,5 +1,9 @@
 <?php
 
+if( $_REQUEST['batch_command'] == 'send' && !empty( $_REQUEST['queue_id'] ) ) {
+	$_REQUEST['uri_mode'] = TRUE;
+}
+
 require_once( '../../bit_setup_inc.php' );
 
 $gBitSystem->verifyPermission( 'p_mail_admin' );

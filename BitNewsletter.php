@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.25 2007/01/06 09:46:18 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.26 2007/04/25 21:45:25 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.25 2007/01/06 09:46:18 squareing Exp $
+ * $Id: BitNewsletter.php,v 1.26 2007/04/25 21:45:25 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.25 $ $Date: 2007/01/06 09:46:18 $ $Author: squareing $
+ * @version $Revision: 1.26 $ $Date: 2007/04/25 21:45:25 $ $Author: spiderr $
  */
 
 /**
@@ -358,16 +358,6 @@ vd( 'not done yet' );
 	}
 
 */
-	function get_unsub_msg($nl_id, $email) {
-		$foo = parse_url($_SERVER["REQUEST_URI"]);
-
-		$foo = str_replace('send_newsletters', 'newsletters', $foo);
-		$url_subscribe = httpPrefix(). $foo["path"];
-		$urlCode = $this->mDb->getOne("select `url_code` from `".BIT_DB_PREFIX."mail_queue` where `content_id`=? and `email`=?",array((int)$nl_id,$email));
-		$url_unsub = $url_subscribe . '?unsubscribe=' . $urlCode;
-		$msg = '<br/><br/>' . tra( 'You can unsubscribe from this newsletter following this link'). ": <a href='$url_unsub'>$url_unsub</a>";
-		return $msg;
-	}
 
 	function expunge() {
 		$ret = FALSE;

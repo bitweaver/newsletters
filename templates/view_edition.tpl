@@ -33,6 +33,7 @@
 	{if $sending}
 		<div class="subscriptioninfo">
 		{include file="bitpackage:newsletters/unsubscribe_inc.tpl"}
+tcode {$trackCode}
 		{if $trackCode}
 			<img src="{$smarty.const.NEWSLETTERS_PKG_URI}track.php?sub={$trackCode}" alt="" />
 		{/if}
