@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.27 2007/04/25 21:45:25 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.28 2007/04/25 22:07:29 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.27 2007/04/25 21:45:25 spiderr Exp $
+ * $Id: BitMailer.php,v 1.28 2007/04/25 22:07:29 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.27 $ $Date: 2007/04/25 21:45:25 $ $Author: spiderr $
+ * @version $Revision: 1.28 $ $Date: 2007/04/25 22:07:29 $ $Author: spiderr $
  */
 
 /**
@@ -85,6 +85,8 @@ class BitMailer extends phpmailer {
 		if( $rs = $this->mDb->query( $query, NULL ) ) {
 			while( $pick = $rs->fetchRow() ) {
 				$this->sendQueue( $pick );
+				$this->mDb->CompleteTrans();
+				$this->mDb->StartTrans();
 			}
 		}
 		$this->mDb->CompleteTrans();
@@ -126,10 +128,10 @@ class BitMailer extends phpmailer {
 					$gBitSmarty->assign( 'sending', TRUE );
 				}
 				$gBitSystem->preDisplay('');
-				$gBitSmarty->assign( 'mid', 'bitpackage:newsletters/view_edition.tpl' );
-				$htmlBody = $gBitSmarty->fetch( 'bitpackage:newsletters/mail_edition_body.tpl' );
 				$gBitSmarty->assign( 'unsubMessage', $unsub );
 				$gBitSmarty->assign( 'trackCode', $pick['url_code'] );
+				$gBitSmarty->assign( 'mid', 'bitpackage:newsletters/view_edition.tpl' );
+				$htmlBody = $gBitSmarty->fetch( 'bitpackage:newsletters/mail_edition_body.tpl' );
 				$this->ClearReplyTos();
 				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
 				print "TO: $pick[email]\t";
@@ -140,8 +142,6 @@ class BitMailer extends phpmailer {
 				} else {
 					$this->logError( $pick );
 				}
-				$this->mDb->CompleteTrans();
-				$this->mDb->StartTrans();
 			}
 		}
 	}
