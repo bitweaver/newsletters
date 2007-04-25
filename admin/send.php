@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.14 2006/06/19 02:35:19 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.15 2007/04/25 20:59:12 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -66,7 +66,7 @@ if( $gContent->isValid() ) {
 
 $gBitSmarty->assign_by_ref( 'feedback', $feedback );
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/send_newsletters.tpl' , "Send Newsletters");
+$gBitSystem->display( 'bitpackage:newsletters/send_newsletters.tpl' , tra( "Send Newsletter" ).': '.$gContent->getTitle() );
 
 ?>
 

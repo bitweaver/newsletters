@@ -12,7 +12,7 @@
 		{/if}
 	</div>
 	{else}
-		<div><small>{tr}This newsletter can be viewed on the web at{/tr} <a href="{$gContent->getDisplayUrl()}">{$gContent->getDisplayUrl()}</a></small><div>
+		<div><small>{tr}This newsletter can be viewed on the web at{/tr} <a href="{$gContent->getDisplayUrl()}">{$gContent->getDisplayUrl()}</a></small></div>
 	{/if}
 
 	<div class="header">
@@ -30,9 +30,13 @@
 		</div> <!-- end .content -->
 	</div> <!-- end .body -->
 
-	{if $sending} tcode {$trackCode}
+	{if $sending}
+		<div class="subscriptioninfo">
 		{include file="bitpackage:newsletters/unsubscribe_inc.tpl"}
-		<img src="{$smarty.const.NEWSLETTERS_PKG_URI}track.php?sub={$trackCode}" alt="" />
+		{if $trackCode}
+			<img src="{$smarty.const.NEWSLETTERS_PKG_URI}track.php?sub={$trackCode}" alt="" />
+		{/if}
+		</div>
 	{/if}
 
 </div><!-- end .newsletters -->

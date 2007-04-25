@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.25 2006/10/13 09:22:47 lsces Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.26 2007/04/25 20:59:11 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.25 2006/10/13 09:22:47 lsces Exp $
+ * $Id: BitMailer.php,v 1.26 2007/04/25 20:59:11 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.25 $ $Date: 2006/10/13 09:22:47 $ $Author: lsces $
+ * @version $Revision: 1.26 $ $Date: 2007/04/25 20:59:11 $ $Author: spiderr $
  */
 
 /**
@@ -78,62 +78,73 @@ class BitMailer extends phpmailer {
 	}
 
 	function tendQueue() {
-		global $gBitSmarty, $gBitSystem;
-		$body = array();
 		$this->mDb->StartTrans();
 		$query = "SELECT *
 				  FROM `".BIT_DB_PREFIX."mail_queue` mq
 				  WHERE `sent_date` IS NULL ".$this->mDb->SQLForUpdate();
 		if( $rs = $this->mDb->query( $query, NULL ) ) {
 			while( $pick = $rs->fetchRow() ) {
-				if( !empty( $pick['user_id'] ) ) {
-					$userHash = $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."users_users` WHERE `user_id`=?", array( $pick['user_id'] ) );
-					$pick['full_name'] = BitUser::getDisplayName( FALSE, $userHash );
-				} else {
-					$pick['full_name'] = NULL;
-				}
-				if( !isset( $body[$pick['content_id']] ) ) {
-					$gBitSmarty->assign( 'sending', TRUE );
-					// We only support sending of newsletters currently
-					$content = new BitNewsletterEdition( NULL, $pick['content_id'] );
-					if( $content->load() ) {
-						$body[$pick['content_id']]['body'] = $content->render();
-						$body[$pick['content_id']]['subject'] = $content->getTitle();
-						$body[$pick['content_id']]['reply_to'] = $content->getField( 'reply_to', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
-						$body[$pick['content_id']]['object'] = $content;
-					}
-	//				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
-				}
-				if( !empty( $body[$pick['content_id']] ) ) {
-					$pick['url_code'] = md5( $pick['content_id'].$pick['email'].$pick['queue_date'] );
-					$unsub = '';
-					if( $body[$pick['content_id']]['object']->mNewsletter->getField('unsub_msg') ) {
-						$gBitSmarty->assign( 'url_code', $pick['url_code'] );
-						$gBitSmarty->assign( 'sending', TRUE );
-					}
-					$gBitSystem->preDisplay('');
-					$gBitSmarty->assign( 'mid', 'bitpackage:newsletters/view_edition.tpl' );
-					$htmlBody = $gBitSmarty->fetch( 'bitpackage:kernel/bitweaver.tpl' );
-					$gBitSmarty->assign( 'unsubMessage', $unsub );
-					$gBitSmarty->assign( 'trackCode', $pick['url_code'] );
-					$this->ClearReplyTos();
-					$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
-					print "TO: $pick[email]\t";
-					if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
-						print "SENT\n";
-						$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
-						$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
-					} else {
-						$this->logError( $pick );
-					}
-					$this->mDb->CompleteTrans();
-					$this->mDb->StartTrans();
-				}
+				$this->sendQueue( $pick );
 			}
 		}
 		$this->mDb->CompleteTrans();
 	}
 
+	function sendQueue( $pQueueMixed ) {
+		global $gBitSmarty, $gBitSystem;
+		if( is_array( $pQueueMixed ) ) {
+			$pick = $pQueueMixed;
+		} elseif( is_numeric( $pQueueMixed ) ) {
+			$pick = $this->mDb->GetRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_queue` mq WHERE `mail_queue_id` = ? ".$this->mDb->SQLForUpdate(), array( $pQueueMixed ) );
+		}
+
+		if( !empty( $pick ) ) {	
+			$body = array();
+			if( !empty( $pick['user_id'] ) ) {
+				$userHash = $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."users_users` WHERE `user_id`=?", array( $pick['user_id'] ) );
+				$pick['full_name'] = BitUser::getDisplayName( FALSE, $userHash );
+			} else {
+				$pick['full_name'] = NULL;
+			}
+			if( !isset( $body[$pick['content_id']] ) ) {
+				$gBitSmarty->assign( 'sending', TRUE );
+				// We only support sending of newsletters currently
+				$content = new BitNewsletterEdition( NULL, $pick['content_id'] );
+				if( $content->load() ) {
+					$body[$pick['content_id']]['body'] = $content->render();
+					$body[$pick['content_id']]['subject'] = $content->getTitle();
+					$body[$pick['content_id']]['reply_to'] = $content->getField( 'reply_to', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
+					$body[$pick['content_id']]['object'] = $content;
+				}
+//				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
+			}
+			if( !empty( $body[$pick['content_id']] ) ) {
+				$pick['url_code'] = md5( $pick['content_id'].$pick['email'].$pick['queue_date'] );
+				$unsub = '';
+				if( $body[$pick['content_id']]['object']->mNewsletter->getField('unsub_msg') ) {
+					$gBitSmarty->assign( 'url_code', $pick['url_code'] );
+					$gBitSmarty->assign( 'sending', TRUE );
+				}
+				$gBitSystem->preDisplay('');
+				$gBitSmarty->assign( 'mid', 'bitpackage:newsletters/view_edition.tpl' );
+				$htmlBody = $gBitSmarty->fetch( 'bitpackage:kernel/bitweaver.tpl' );
+				$gBitSmarty->assign( 'unsubMessage', $unsub );
+				$gBitSmarty->assign( 'trackCode', $pick['url_code'] );
+				$this->ClearReplyTos();
+				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
+				print "TO: $pick[email]\t";
+				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
+					print "SENT\n";
+					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
+					$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
+				} else {
+					$this->logError( $pick );
+				}
+				$this->mDb->CompleteTrans();
+				$this->mDb->StartTrans();
+			}
+		}
+	}
 
 	function sendMail( $pRecipient, $pSubject, $pHtmlBody ) {
 		$ret = TRUE;

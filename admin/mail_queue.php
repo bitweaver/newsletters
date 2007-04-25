@@ -14,7 +14,10 @@ if( !empty( $_REQUEST['batch_command'] ) && !empty( $_REQUEST['queue_id'] ) ) {
 		foreach( $_REQUEST['queue_id'] as $qId ) { 
 			$gBitMailer->expungeQueueRow( $qId  );
 		}
-	} elseif( $_REQUEST['batch_command'] == 'send' ) {
+	} elseif( $_REQUEST['batch_command'] == 'send' && !empty( $_REQUEST['queue_id'] ) ) {
+		foreach( $_REQUEST['queue_id'] as $queueId ) {
+			$gBitMailer->sendQueue( $queueId );
+		}
 	}
 }
 
