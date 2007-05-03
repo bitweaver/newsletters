@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.28 2007/04/25 22:07:29 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.29 2007/05/03 21:37:44 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.28 2007/04/25 22:07:29 spiderr Exp $
+ * $Id: BitMailer.php,v 1.29 2007/05/03 21:37:44 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.28 $ $Date: 2007/04/25 22:07:29 $ $Author: spiderr $
+ * @version $Revision: 1.29 $ $Date: 2007/05/03 21:37:44 $ $Author: spiderr $
  */
 
 /**
@@ -57,21 +57,44 @@ class BitMailer extends phpmailer {
         exit;
     }
 
-	function queueRecipients( $pContentId, $pNewsletterContentId, $pRecipients ) {
+	function isRecipientQueued( $pRecipientMixed, $pContentId ) {
+		if( BitBase::verifyId( $pRecipientMixed ) ) {
+			$lookupCol = 'user_id';
+		} else {
+			$lookupCol = 'email';
+		}
+		return( $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_queue` WHERE `content_id`=? AND `$lookupCol`=?", array( $pContentId, $pRecipientMixed ) ) );
+	}
+
+	function queueRecipients( $pContentId, $pNewsletterContentId, $pRecipients, $pRequeue=FALSE ) {
 		$ret = 0;
 		if( !empty( $pRecipients ) && BitBase::verifyId( $pContentId ) ) {
 			$queueTime = time();
 			foreach( array_keys( $pRecipients ) AS $email ) {
-				$insertHash['mail_queue_id'] = $this->mDb->GenID( 'mail_queue_id' );
-				$insertHash['email'] = $email;
-				if( !empty( $pRecipients[$email]['user_id'] ) ) {
-					$insertHash['user_id'] = $pRecipients[$email]['user_id'];
+				$lookup = !empty( $pRecipients[$email]['user_id'] ) ? $pRecipients[$email]['user_id'] : $email;
+				if( !$this->isRecipientQueued( $lookup, $pContentId ) ) {
+					$insertHash['mail_queue_id'] = $this->mDb->GenID( 'mail_queue_id' );
+					$insertHash['email'] = $email;
+					if( !empty( $pRecipients[$email]['user_id'] ) ) {
+						$insertHash['user_id'] = $pRecipients[$email]['user_id'];
+					}
+					$insertHash['content_id'] = $pContentId;
+					$insertHash['nl_content_id'] = $pNewsletterContentId;
+					$insertHash['queue_date'] = $queueTime;
+					$this->mDb->associateInsert( BIT_DB_PREFIX.'mail_queue', $insertHash );
+					$ret++;
+				} elseif( $pRequeue ) {
+					$bindVars = array( $queueTime, $pContentId );
+					if( !empty( $pRecipients[$email]['user_id'] ) ) {
+						$lookupCol = 'user_id';
+						$bindVars[] = $pRecipients[$email]['user_id'];
+					} else {
+						$lookupCol = 'email';
+						$bindVars[]  = $email;
+					}
+					$rs = $this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `queue_time`=?, `begin_date`=NULL, `sent_date`=NULL, `last_read_date`=NULL, `reads`=0 WHERE `content_id`=? AND `$lookupCol`=?", array( $bindVars ) );
+					$ret++;
 				}
-				$insertHash['content_id'] = $pContentId;
-				$insertHash['nl_content_id'] = $pNewsletterContentId;
-				$insertHash['queue_date'] = $queueTime;
-				$this->mDb->associateInsert( BIT_DB_PREFIX.'mail_queue', $insertHash );
-				$ret++;
 			}
 		}
 		return $ret;
@@ -131,7 +154,7 @@ class BitMailer extends phpmailer {
 				$gBitSmarty->assign( 'unsubMessage', $unsub );
 				$gBitSmarty->assign( 'trackCode', $pick['url_code'] );
 				$gBitSmarty->assign( 'mid', 'bitpackage:newsletters/view_edition.tpl' );
-				$htmlBody = $gBitSmarty->fetch( 'bitpackage:newsletters/mail_edition_body.tpl' );
+				$htmlBody = $gBitSmarty->fetch( 'bitpackage:newsletters/mail_edition.tpl' );
 				$this->ClearReplyTos();
 				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
 				print "TO: $pick[email]\t";
