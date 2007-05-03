@@ -16,27 +16,20 @@
 	{/if}
 
 	<div class="header">
-		<h1>{$gContent->getTitle()}</h1>
 		{if $gContent->mNewsletter}
 			<p>{$gContent->mNewsletter->getTitle()}</p>
 		{/if}
+		<h1>{$gContent->getTitle()}</h1>
 	</div>
 
-	{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='nav'}
+	{if !$sending}
+		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='nav'}
+	{/if}
 
 	<div class="body">
 		<div class="content">
 			{$gContent->parseData()}
 		</div> <!-- end .content -->
 	</div> <!-- end .body -->
-
-	{if $sending}
-		<div class="subscriptioninfo">
-		{include file="bitpackage:newsletters/unsubscribe_inc.tpl"}
-		{if $url_code}
-			<img src="{$smarty.const.NEWSLETTERS_PKG_URI}track.php?sub={$url_code}" alt="" />
-		{/if}
-		</div>
-	{/if}
 
 </div><!-- end .newsletters -->
