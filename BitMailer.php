@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.36 2007/05/04 17:53:38 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.37 2007/05/04 21:38:31 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.36 2007/05/04 17:53:38 spiderr Exp $
+ * $Id: BitMailer.php,v 1.37 2007/05/04 21:38:31 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.36 $ $Date: 2007/05/04 17:53:38 $ $Author: spiderr $
+ * @version $Revision: 1.37 $ $Date: 2007/05/04 21:38:31 $ $Author: spiderr $
  */
 
 /**
@@ -27,7 +27,7 @@ require_once( UTIL_PKG_PATH.'phpmailer/class.phpmailer.php' );
 /**
  * @package newsletters
  */
-class BitMailer extends phpmailer {
+class BitMailer {
     // Set default variables for all new objects
     var $From;
     var $FromName;
@@ -37,14 +37,6 @@ class BitMailer extends phpmailer {
 	function BitMailer () {
 		global $gBitDb, $gBitSystem, $gBitLanguage;
 		$this->mDb = $gBitDb;
-		$this->From     = $gBitSystem->getConfig( 'bitmailer_sender_email', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
-		$this->FromName = $gBitSystem->getConfig( 'bitmailer_from', $gBitSystem->getConfig( 'siteTitle' ) );
-		$this->Host     = $gBitSystem->getConfig( 'bitmailer_servers', $gBitSystem->getConfig( 'kernel_server_name', '127.0.0.1' ) );
-		$this->Mailer   = $gBitSystem->getConfig( 'bitmailer_protocol', 'smtp' ); // Alternative to IsSMTP()
-		$this->WordWrap = $gBitSystem->getConfig( 'bitmailer_word_wrap', 75 );
-		if( !$this->SetLanguage( $gBitLanguage->getLanguage(), UTIL_PKG_PATH.'phpmailer/language/' ) ) {
-			$this->SetLanguage( 'en' );
-		}
 	}
 
     // Replace the default error_handler
@@ -93,7 +85,7 @@ class BitMailer extends phpmailer {
 						$lookupCol = 'email';
 						$bindVars[]  = $email;
 					}
-					$rs = $this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `queue_date`=?, `begin_date`=NULL, `sent_date`=NULL, `last_read_date`=NULL, `reads`=0 WHERE `content_id`=? AND `$lookupCol`=?", array( $bindVars ) );
+					$rs = $this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `queue_date`=?, `begin_date`=NULL, `sent_date`=NULL, `last_read_date`=NULL, `mail_error`=NULL, `reads`=0 WHERE `content_id`=? AND `$lookupCol`=?", array( $bindVars ) );
 					$ret++;
 				}
 			}
@@ -106,8 +98,8 @@ class BitMailer extends phpmailer {
 		$this->mDb->StartTrans();
 		$query = "SELECT *
 				  FROM `".BIT_DB_PREFIX."mail_queue` mq
-				  WHERE `sent_date` IS NULL 
-				  ORDER BY `queue_date` ".$this->mDb->SQLForUpdate();
+				  WHERE `sent_date` IS NULL AND `mail_error` IS NULL
+				  ORDER BY `queue_date`,`user_id`,`email` ".$this->mDb->SQLForUpdate();
 		if( $rs = $this->mDb->query( $query, NULL ) ) {
 			while( $pick = $rs->fetchRow() ) {
 				$this->sendQueue( $pick );
@@ -119,7 +111,7 @@ class BitMailer extends phpmailer {
 	}
 
 	function sendQueue( $pQueueMixed ) {
-		global $gBitSmarty, $gBitSystem;
+		global $gBitSmarty, $gBitSystem, $gBitLanguage;
 		static $body = array();
 		if( is_array( $pQueueMixed ) ) {
 			$pick = $pQueueMixed;
@@ -148,7 +140,7 @@ class BitMailer extends phpmailer {
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
 			}
 
-			print "TO: $pick[email]\t";
+			print "[ $pick[mail_queue_id] ] TO: $pick[email]\t";
 			$unsub = $this->getUnsubscription( $pick['email'], $pick['content_id'] );
 			if( !empty( $unsub ) ) {
 				print " SKIPPED (unsubscribed) <br/>\n";
@@ -166,34 +158,34 @@ class BitMailer extends phpmailer {
 				$gBitSmarty->assign( 'mid', 'bitpackage:newsletters/view_edition.tpl' );
 				$htmlBody = $gBitSmarty->fetch( 'bitpackage:newsletters/mail_edition.tpl' );
 				$htmlBody = bit_add_clickthrough( $htmlBody, $pick['url_code'] );
-				$this->ClearReplyTos();
-				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
-				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
+
+				$mailer = new PHPMailer();
+				$mailer->From     = $gBitSystem->getConfig( 'bitmailer_sender_email', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
+				$mailer->FromName = $gBitSystem->getConfig( 'bitmailer_from', $gBitSystem->getConfig( 'site_title' ) );
+				$mailer->Host     = $gBitSystem->getConfig( 'bitmailer_servers', $gBitSystem->getConfig( 'kernel_server_name', '127.0.0.1' ) );
+				$mailer->Mailer   = $gBitSystem->getConfig( 'bitmailer_protocol', 'smtp' ); // Alternative to IsSMTP()
+				$mailer->WordWrap = $gBitSystem->getConfig( 'bitmailer_word_wrap', 75 );
+				if( !$mailer->SetLanguage( $gBitLanguage->getLanguage(), UTIL_PKG_PATH.'phpmailer/language/' ) ) {
+					$mailer->SetLanguage( 'en' );
+				}
+				$mailer->ClearReplyTos();
+				$mailer->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
+				$mailer->Body    = $htmlBody;
+				$mailer->Subject = $body[$pick['content_id']]['subject'];
+				$mailer->IsHTML( TRUE );
+				$mailer->AltBody = '';
+				$mailer->AddAddress( $pick['email'], $pick["full_name"] );
+				if( $mailer->Send() ) {
 					print "SENT <br/>\n"; flush();
 					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
 					$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
 				} else {
+					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `mail_error`=?,`sent_date`=?  WHERE `content_id`=? AND `email`=?";
+					$this->mDb->query( $updateQuery, array( $mailer->ErrorInfo, time(), $pick['content_id'], $pick['email'] ) );
 					$this->logError( $pick );
 				}
 			}
 		}
-	}
-
-	function sendMail( $pRecipient, $pSubject, $pHtmlBody ) {
-		$ret = TRUE;
-		$this->Body    = $pHtmlBody;
-		$this->Subject = $pSubject;
-		$this->IsHTML( TRUE );
-		$this->AltBody = '';
-		$this->AddAddress( $pRecipient['email'], $pRecipient["full_name"] );
-		if(!$this->Send()) {
-			$ret = FALSE;
-		}
-
-		// Clear all addresses and attachments for next loop
-		$this->ClearAddresses();
-		$this->ClearAttachments();
-		return $ret;
 	}
 
 	function trackMail( $pUrlCode ) {
