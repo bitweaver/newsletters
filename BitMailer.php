@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.35 2007/05/04 17:51:39 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.36 2007/05/04 17:53:38 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.35 2007/05/04 17:51:39 spiderr Exp $
+ * $Id: BitMailer.php,v 1.36 2007/05/04 17:53:38 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.35 $ $Date: 2007/05/04 17:51:39 $ $Author: spiderr $
+ * @version $Revision: 1.36 $ $Date: 2007/05/04 17:53:38 $ $Author: spiderr $
  */
 
 /**
@@ -149,7 +149,7 @@ class BitMailer extends phpmailer {
 			}
 
 			print "TO: $pick[email]\t";
-			$unsub = $this->getUnsubcription( $pick['email'], $pick['content_id'] );
+			$unsub = $this->getUnsubscription( $pick['email'], $pick['content_id'] );
 			if( !empty( $unsub ) ) {
 				print " SKIPPED (unsubscribed) <br/>\n";
 				$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", array( $pick['mail_queue_id'] ) );
