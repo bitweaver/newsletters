@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.33 2007/05/04 16:40:18 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.34 2007/05/04 17:24:15 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.33 2007/05/04 16:40:18 spiderr Exp $
+ * $Id: BitMailer.php,v 1.34 2007/05/04 17:24:15 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.33 $ $Date: 2007/05/04 16:40:18 $ $Author: spiderr $
+ * @version $Revision: 1.34 $ $Date: 2007/05/04 17:24:15 $ $Author: spiderr $
  */
 
 /**
@@ -146,7 +146,13 @@ class BitMailer extends phpmailer {
 				}
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
 			}
-			if( !empty( $body[$pick['content_id']] ) ) {
+
+			print "TO: $pick[email]\t";
+			$unsub = $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` ms LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id`=ms.`user_id`) WHERE (ms.`content_id`=? OR `unsubscribe_all`='y') AND (ms.`email`=? OR uu.`email`=?)", array( $pick['content_id'], $pick['email'], $pick['email'] ) );
+			if( !empty( $unsub ) ) {
+				print " SKIPPED (unsubscribed) <br/>\n";
+				$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", array( $pick['mail_queue_id'] ) );
+			} elseif( !empty( $body[$pick['content_id']] ) ) {
 				$pick['url_code'] = md5( $pick['content_id'].$pick['email'].$pick['queue_date'] );
 				$unsub = '';
 				if( $body[$pick['content_id']]['object']->mNewsletter->getField('unsub_msg') ) {
@@ -161,7 +167,6 @@ class BitMailer extends phpmailer {
 				$htmlBody = bit_add_clickthrough( $htmlBody, $pick['url_code'] );
 				$this->ClearReplyTos();
 				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
-				print "TO: $pick[email]\t";
 				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
 					print "SENT <br/>\n"; flush();
 					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
