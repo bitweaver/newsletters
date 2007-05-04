@@ -82,6 +82,11 @@ array( 'DATADICT' => array(
 						  CONSTRAINT `mail_clickthrough_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content` (`content_id`)'
 		"
 	)),
+	array( 'ALTER' => array(
+		'mail_queue' => array(
+			'last_read_ip' => array( '`last_read_ip`', 'VARCHAR(40)' ),
+		),
+	)),
 )),
 		)
 	),
