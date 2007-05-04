@@ -1,13 +1,6 @@
 <?php
-
-	global $gBitSystem, $_SERVER;
-
-	$_SERVER['SCRIPT_URL'] = '';
-	$_SERVER['HTTP_HOST'] = '';
-	$_SERVER['HTTP_USER_AGENT'] = '';
-	$_SERVER['SERVER_NAME'] = '';
-	$_SERVER['SERVER_ADMIN'] = '';
-	$_SERVER['SERVER_SOFTWARE'] = 'command line';
+	global $gShellScript;
+	$gShellScript = TRUE;
 	$_REQUEST['uri_mode'] = TRUE;
 
 /**
@@ -24,7 +17,6 @@
 		require_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
 		global $gBitMailer;
 		$gBitMailer = new BitMailer();
-
 		$gBitMailer->tendQueue();
 	}
 

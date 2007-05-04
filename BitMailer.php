@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.32 2007/05/04 14:54:37 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.33 2007/05/04 16:40:18 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.32 2007/05/04 14:54:37 spiderr Exp $
+ * $Id: BitMailer.php,v 1.33 2007/05/04 16:40:18 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.32 $ $Date: 2007/05/04 14:54:37 $ $Author: spiderr $
+ * @version $Revision: 1.33 $ $Date: 2007/05/04 16:40:18 $ $Author: spiderr $
  */
 
 /**
@@ -92,7 +92,7 @@ class BitMailer extends phpmailer {
 						$lookupCol = 'email';
 						$bindVars[]  = $email;
 					}
-					$rs = $this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `queue_time`=?, `begin_date`=NULL, `sent_date`=NULL, `last_read_date`=NULL, `reads`=0 WHERE `content_id`=? AND `$lookupCol`=?", array( $bindVars ) );
+					$rs = $this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `queue_date`=?, `begin_date`=NULL, `sent_date`=NULL, `last_read_date`=NULL, `reads`=0 WHERE `content_id`=? AND `$lookupCol`=?", array( $bindVars ) );
 					$ret++;
 				}
 			}
@@ -105,7 +105,8 @@ class BitMailer extends phpmailer {
 		$this->mDb->StartTrans();
 		$query = "SELECT *
 				  FROM `".BIT_DB_PREFIX."mail_queue` mq
-				  WHERE `sent_date` IS NULL ".$this->mDb->SQLForUpdate();
+				  WHERE `sent_date` IS NULL 
+				  ORDER BY `queue_date` ".$this->mDb->SQLForUpdate();
 		if( $rs = $this->mDb->query( $query, NULL ) ) {
 			while( $pick = $rs->fetchRow() ) {
 				$this->sendQueue( $pick );
@@ -118,6 +119,7 @@ class BitMailer extends phpmailer {
 
 	function sendQueue( $pQueueMixed ) {
 		global $gBitSmarty, $gBitSystem;
+		static $body = array();
 		if( is_array( $pQueueMixed ) ) {
 			$pick = $pQueueMixed;
 		} elseif( is_numeric( $pQueueMixed ) ) {
@@ -125,7 +127,6 @@ class BitMailer extends phpmailer {
 		}
 
 		if( !empty( $pick ) ) {	
-			$body = array();
 			$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `begin_date`=? WHERE `mail_queue_id` = ? ", array( time(), $pick['mail_queue_id'] ) );
 			if( !empty( $pick['user_id'] ) ) {
 				$userHash = $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."users_users` WHERE `user_id`=?", array( $pick['user_id'] ) );
@@ -150,9 +151,9 @@ class BitMailer extends phpmailer {
 				$unsub = '';
 				if( $body[$pick['content_id']]['object']->mNewsletter->getField('unsub_msg') ) {
 					$gBitSmarty->assign( 'url_code', $pick['url_code'] );
-					$gBitSmarty->assign( 'sending', TRUE );
 				}
 				$gBitSystem->preDisplay('');
+				$gBitSmarty->assign( 'sending', TRUE );
 				$gBitSmarty->assign( 'unsubMessage', $unsub );
 				$gBitSmarty->assign( 'trackCode', $pick['url_code'] );
 				$gBitSmarty->assign( 'mid', 'bitpackage:newsletters/view_edition.tpl' );
@@ -162,7 +163,7 @@ class BitMailer extends phpmailer {
 				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
 				print "TO: $pick[email]\t";
 				if( $this->sendMail( $pick, $body[$pick['content_id']]['subject'], $htmlBody ) ) {
-					print "SENT\n";
+					print "SENT <br/>\n"; flush();
 					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
 					$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
 				} else {

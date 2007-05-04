@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.24 2007/01/06 09:46:19 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.25 2007/05/04 16:40:18 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.24 2007/01/06 09:46:19 squareing Exp $
+ * $Id: BitNewsletterEdition.php,v 1.25 2007/05/04 16:40:18 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.24 $ $Date: 2007/01/06 09:46:19 $ $Author: squareing $
+ * @version $Revision: 1.25 $ $Date: 2007/05/04 16:40:18 $ $Author: spiderr $
  */
 
 /**
@@ -198,7 +198,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 		return( $this->getField( 'is_draft' ) );
 	}
 
-	function getRecipients( $pGroupArray, $validated = TRUE ) {
+	function getRecipients( $pGroupArray, $validated = TRUE, $pRequeue = FALSE ) {
 		global $gBitUser;
 		$ret = array();
 		if( is_array( $pGroupArray ) ) {
@@ -221,10 +221,11 @@ class BitNewsletterEdition extends LibertyAttachable {
 						$ret[$sub['email']] = $sub;
 				}
 			}
-
-			$query = "SELECT `email`, `user_id` FROM `".BIT_DB_PREFIX."mail_queue` WHERE `content_id`=?";
-			if( $dupes = $this->mDb->getAssoc( $query, array( $this->mContentId ) ) ) {
-				$ret = array_diff_keys( $ret, $dupes );
+			if( !$pRequeue ) {
+				$query = "SELECT `email`, `user_id` FROM `".BIT_DB_PREFIX."mail_queue` WHERE `content_id`=?";
+				if( $dupes = $this->mDb->getAssoc( $query, array( $this->mContentId ) ) ) {
+					$ret = array_diff_keys( $ret, $dupes );
+				}
 			}
 		}
 		return $ret;

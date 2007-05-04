@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.15 2007/04/25 20:59:12 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.16 2007/05/04 16:40:20 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -29,18 +29,18 @@ if( @BitBase::verifyId( $_REQUEST["edition_id"] ) ) {
 $gBitSmarty->assign('preview', 'n');
 $gBitSmarty->assign('presend', 'n');
 $gBitSmarty->assign('emited', 'n');
-$validated = (isset($_REQUEST["validated"]) && !empty($_REQUEST["validated"])) ? TRUE : FALSE;
+$validated = !empty( $_REQUEST["validated"] ) ? TRUE : FALSE;
 
 if( $gContent->isValid() && isset( $_REQUEST['preview'] ) && isset( $_REQUEST['send_group'] ) ) {
-	$recipients = $gContent->getRecipients( $_REQUEST['send_group'], $validated );
+	$recipients = $gContent->getRecipients( $_REQUEST['send_group'], $validated, !empty( $_REQUEST['test_mode'] ) );
 	$gBitSmarty->assign_by_ref( 'recipientList', $recipients );
 	$gBitSmarty->assign( 'validated', $validated );
 	$gBitSmarty->assign( 'sending', TRUE );
 } elseif( $gContent->isValid() && isset( $_REQUEST["send"] ) ) {
-	if( $emails = $gContent->getRecipients( $_REQUEST['send_group'], $validated ) ) {
+	if( $emails = $gContent->getRecipients( $_REQUEST['send_group'], $validated, !empty( $_REQUEST['test_mode'] ) ) ) {
 		global $gBitMailer;
 		$gBitMailer = new BitMailer();
-		$gBitMailer->queueRecipients( $gContent->mContentId, $gContent->mNewsletter->mContentId, $emails );
+		$gBitMailer->queueRecipients( $gContent->mContentId, $gContent->mNewsletter->mContentId, $emails, !empty( $_REQUEST['test_mode'] ) );
 		$feedback['success'] = count( $emails ).' '.tra( 'emails were queued to be sent:' ).' '.$gContent->getTitle();
 		$gContent->mEditionId = NULL;
 	} else {

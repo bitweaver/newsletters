@@ -20,7 +20,8 @@
 				{if $smarty.request.emited eq 'y'}
 					{tr}The newsletter was sent to {$sent} email addresses{/tr}
 				{elseif $smarty.request.preview}
-					<input type="hidden" name="validated" value="{$validated}" />
+					<input type="hidden" name="validated" value="{$smarty.request.validated}" />
+					<input type="hidden" name="test_mode" value="{$smarty.request.test_mode}" />
 					{jstabs}
 						{jstab title="Preview Newsletter"}
 							{legend legend="Preview Newsletter"}
@@ -65,12 +66,20 @@
 						</div>
 
 						<div class="row">
-							{formlabel label="Only send to validated emails"}
+							{formlabel label="Send Test"}
 							{forminput}
-								<input type="checkbox" name="validated" "checked" />
+								<input type="checkbox" name="test_mode" />
+								{formhelp note="This will enable you to send the newsletter to the same recipients again."}
 							{/forminput}
 						</div>
-
+{*
+						<div class="row">
+							{formlabel label="Only send to validated emails"}
+							{forminput}
+								<input type="checkbox" name="validated" checked="checked" />
+							{/forminput}
+						</div>
+*}
 						<div class="row submit">
 							<input type="submit" name="preview" value="{tr}Preview{/tr}" />
 						</div>
