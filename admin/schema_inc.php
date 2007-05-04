@@ -71,7 +71,7 @@ $tables = array(
   `reads` I2 NOTNULL DEFAULT '0'
   CONSTRAINT ', CONSTRAINT `mailq_content_ref` FOREIGN KEY (`nl_content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )
 			  , CONSTRAINT `mailq_user_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
-"
+",
 
 'mail_clickthrough' => "
 	user_id I4 NOTNULL,
