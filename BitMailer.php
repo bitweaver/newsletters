@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.30 2007/05/04 06:14:26 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.31 2007/05/04 06:59:48 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.30 2007/05/04 06:14:26 spiderr Exp $
+ * $Id: BitMailer.php,v 1.31 2007/05/04 06:59:48 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.30 $ $Date: 2007/05/04 06:14:26 $ $Author: spiderr $
+ * @version $Revision: 1.31 $ $Date: 2007/05/04 06:59:48 $ $Author: spiderr $
  */
 
 /**
@@ -190,8 +190,8 @@ class BitMailer extends phpmailer {
 
 	function trackMail( $pUrlCode ) {
 		global $gBitDb;
-		$query = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `reads`=`reads`+1, `last_read_date`=? WHERE `url_code`=? ";
-		$gBitDb->query( $query, array( time(), $pUrlCode ) );
+		$query = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `reads`=`reads`+1, `last_read_date`=?, `last_read_ip`=? WHERE `url_code`=? ";
+		$gBitDb->query( $query, array( time(), $_SERVER['REMOTE_ADDR'], $pUrlCode ) );
 	}
 
 	function logError( $pInfo ) {
@@ -292,10 +292,10 @@ class BitMailer extends phpmailer {
 
 		$uri = substr( preg_replace( '/[&\?]?ct=[a-z0-9]{32}/', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ), 0, 250 );
 		$query = "SELECT mc.`clicks`, mq.`content_id`, mq.`user_id`, mc.`clicked_url` FROM `".BIT_DB_PREFIX."mail_queue` mq
-					LEFT JOIN `".BIT_DB_PREFIX."mail_clickthrough` mc ON (mc.user_id=mc.user_id AND mq.`content_id`=mc.`content_id` AND mc.`clicked_url`=?)
+					LEFT JOIN `".BIT_DB_PREFIX."mail_clickthrough` mc ON (mq.`user_id`=mc.`user_id` AND mq.`content_id`=mc.`content_id` AND mc.`clicked_url`=?)
 				  WHERE `url_code`=?";
 		if( $row = $gBitDb->getRow( $query, array( $uri, $pUrlCode ) ) ) {
-			if( $row['clicks'] ) {
+			if( $row['clicked_url'] ) {
 				$gBitDb->query( "UPDATE `".BIT_DB_PREFIX."mail_clickthrough` SET `clicks`=`clicks`+1 WHERE  `user_id`=? AND `content_id`=? AND `clicked_url`=? ", array( $row['user_id'], $row['content_id'], $row['clicked_url'] ) );
 			} else {
 				$row['clicks'] = 1;

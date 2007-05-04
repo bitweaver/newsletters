@@ -15,7 +15,6 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 		'menu_template' => 'bitpackage:newsletters/menu_newsletters.tpl',
 	);
 	$gBitSystem->registerAppMenu( $menuHash );
-
 	if( isset( $_GET['ct'] ) && strlen( $_GET['ct'] ) == 32 ) {
 		require_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
 		BitMailer::storeClickthrough( $_GET['ct'] );
