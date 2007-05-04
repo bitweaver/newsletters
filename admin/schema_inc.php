@@ -72,6 +72,15 @@ $tables = array(
 			  , CONSTRAINT `mailq_user_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users`( `user_id` )'
 "
 
+'mail_clickthrough' => "
+	user_id I4 NOTNULL,
+	content_id I4 NOTNULL,
+	clicked_url C(250) NOTNULL,
+	clicks I4
+	CONSTRAINT ', CONSTRAINT `mail_clickthrough_user_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users` (`user_id`),
+				  CONSTRAINT `mail_clickthrough_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content` (`content_id`)'
+"
+
 );
 
 global $gBitInstaller;
