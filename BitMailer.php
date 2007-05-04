@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.31 2007/05/04 06:59:48 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.32 2007/05/04 14:54:37 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.31 2007/05/04 06:59:48 spiderr Exp $
+ * $Id: BitMailer.php,v 1.32 2007/05/04 14:54:37 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.31 $ $Date: 2007/05/04 06:59:48 $ $Author: spiderr $
+ * @version $Revision: 1.32 $ $Date: 2007/05/04 14:54:37 $ $Author: spiderr $
  */
 
 /**
@@ -126,6 +126,7 @@ class BitMailer extends phpmailer {
 
 		if( !empty( $pick ) ) {	
 			$body = array();
+			$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `begin_date`=? WHERE `mail_queue_id` = ? ", array( time(), $pick['mail_queue_id'] ) );
 			if( !empty( $pick['user_id'] ) ) {
 				$userHash = $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."users_users` WHERE `user_id`=?", array( $pick['user_id'] ) );
 				$pick['full_name'] = BitUser::getDisplayName( FALSE, $userHash );
