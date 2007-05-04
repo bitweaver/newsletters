@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.16 2007/05/04 16:40:20 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.17 2007/05/04 17:51:39 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -40,8 +40,8 @@ if( $gContent->isValid() && isset( $_REQUEST['preview'] ) && isset( $_REQUEST['s
 	if( $emails = $gContent->getRecipients( $_REQUEST['send_group'], $validated, !empty( $_REQUEST['test_mode'] ) ) ) {
 		global $gBitMailer;
 		$gBitMailer = new BitMailer();
-		$gBitMailer->queueRecipients( $gContent->mContentId, $gContent->mNewsletter->mContentId, $emails, !empty( $_REQUEST['test_mode'] ) );
-		$feedback['success'] = count( $emails ).' '.tra( 'emails were queued to be sent:' ).' '.$gContent->getTitle();
+		$queueCount = $gBitMailer->queueRecipients( $gContent->mContentId, $gContent->mNewsletter->mContentId, $emails, !empty( $_REQUEST['test_mode'] ) );
+		$feedback['success'] = $queueCount.' '.tra( 'emails were queued to be sent:' ).' '.$gContent->getTitle();
 		$gContent->mEditionId = NULL;
 	} else {
 		$feedback['error'] = tra( 'No emails were queued.' );

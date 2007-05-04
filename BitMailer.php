@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.34 2007/05/04 17:24:15 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.35 2007/05/04 17:51:39 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.34 2007/05/04 17:24:15 spiderr Exp $
+ * $Id: BitMailer.php,v 1.35 2007/05/04 17:51:39 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.34 $ $Date: 2007/05/04 17:24:15 $ $Author: spiderr $
+ * @version $Revision: 1.35 $ $Date: 2007/05/04 17:51:39 $ $Author: spiderr $
  */
 
 /**
@@ -71,8 +71,9 @@ class BitMailer extends phpmailer {
 		if( !empty( $pRecipients ) && BitBase::verifyId( $pContentId ) ) {
 			$queueTime = time();
 			foreach( array_keys( $pRecipients ) AS $email ) {
+				$unsub = $this->getUnsubscription( $email, $pContentId );
 				$lookup = !empty( $pRecipients[$email]['user_id'] ) ? $pRecipients[$email]['user_id'] : $email;
-				if( !$this->isRecipientQueued( $lookup, $pContentId ) ) {
+				if( empty( $unsub ) && !$this->isRecipientQueued( $lookup, $pContentId ) ) {
 					$insertHash['mail_queue_id'] = $this->mDb->GenID( 'mail_queue_id' );
 					$insertHash['email'] = $email;
 					if( !empty( $pRecipients[$email]['user_id'] ) ) {
@@ -83,7 +84,7 @@ class BitMailer extends phpmailer {
 					$insertHash['queue_date'] = $queueTime;
 					$this->mDb->associateInsert( BIT_DB_PREFIX.'mail_queue', $insertHash );
 					$ret++;
-				} elseif( $pRequeue ) {
+				} elseif( empty( $unsub ) && $pRequeue ) {
 					$bindVars = array( $queueTime, $pContentId );
 					if( !empty( $pRecipients[$email]['user_id'] ) ) {
 						$lookupCol = 'user_id';
@@ -148,7 +149,7 @@ class BitMailer extends phpmailer {
 			}
 
 			print "TO: $pick[email]\t";
-			$unsub = $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` ms LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id`=ms.`user_id`) WHERE (ms.`content_id`=? OR `unsubscribe_all`='y') AND (ms.`email`=? OR uu.`email`=?)", array( $pick['content_id'], $pick['email'], $pick['email'] ) );
+			$unsub = $this->getUnsubcription( $pick['email'], $pick['content_id'] );
 			if( !empty( $unsub ) ) {
 				print " SKIPPED (unsubscribed) <br/>\n";
 				$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", array( $pick['mail_queue_id'] ) );
@@ -246,6 +247,11 @@ class BitMailer extends phpmailer {
 			$ret = $gBitDb->getAssoc( $query, $bindVars );
 		}
 		return( $ret );
+	}
+
+	function getUnsubscription( $pEmail, $pContentId ) {
+		global $gBitDb;
+		return $gBitDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` ms LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id`=ms.`user_id`) WHERE (ms.`content_id`=? OR `unsubscribe_all`='y') AND (ms.`email`=? OR uu.`email`=?)", array( $pContentId, $pEmail, $pEmail ) );
 	}
 
 	function storeSubscriptions( $pSubHash ) {
