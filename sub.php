@@ -1,6 +1,6 @@
 <?php
 /**
- * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.3 2007/03/20 17:35:38 spiderr Exp $
+ * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.4 2007/05/04 06:14:26 spiderr Exp $
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
@@ -19,7 +19,7 @@ include_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
 
-if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'p_newsletters_subscribe' ) && empty( $_REQUEST["sub"] ) ) {
+if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'p_newsletters_subscribe' ) && empty( $_REQUEST['c'] ) ) {
 	$gBitSystem->fatalError( tra("You must be logged in to subscribe to newsletters"));
 }
 
@@ -47,8 +47,8 @@ $gBitSmarty->assign_by_ref('newsletters', $newsletters );
 $foo = parse_url($_SERVER["REQUEST_URI"]);
 $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
 
-if (isset($_REQUEST["sub"])) {
-	$gContent->confirmSubscription($_REQUEST["sub"], TRUE );
+/*if( isset( $_POST['c'] ) ) {
+	$gContent->confirmSubscription($_POST['c'], TRUE );
 	$gBitSmarty->assign('confirm', 'y');
 } elseif( isset( $_REQUEST["unsub"] ) ) {
 	if (!empty( $_REQUEST["email"] )) {
@@ -58,10 +58,17 @@ if (isset($_REQUEST["sub"])) {
 	}
 	$feedback['success'] = tra( "Your email address was removed from the list of subscriptors." );
 }
+*/
 
-if( isset( $_REQUEST["sub"] ) ) {
-	if( isset( $_REQUEST["sub"] ) && strlen( $_REQUEST["sub"] ) == 32 && ($subInfo = BitMailer::lookupSubscription( array( 'url_code' => $_REQUEST["sub"] ) )) ) {
-		$lookup['email'] = $subInfo['email'];
+if( isset( $_REQUEST['c'] ) ) {
+//$gBitDb->debug();
+	$unsubs = array();
+	if( isset( $_REQUEST['c'] ) && strlen( $_REQUEST['c'] ) == 32 && ($subInfo = BitMailer::lookupSubscription( array( 'url_code' => $_REQUEST['c'] ) )) ) {
+		if( !empty( $subInfo['user_id'] ) && BitBase::verifyId( $subInfo['user_id'] ) ) {
+			$lookup['user_id'] = $subInfo['user_id'];
+		} else {
+			$lookup['email'] = $subInfo['email'];
+		}
 		$unsubs = BitMailer::getUnsubscriptions( $lookup );
 	} else {
 		if( !$subInfo = BitMailer::lookupSubscription( array( 'user_id' => $gBitUser->mUserId ) ) ) {
@@ -70,6 +77,7 @@ if( isset( $_REQUEST["sub"] ) ) {
 		$lookup['user_id'] = $gBitUser->mUserId;
 		$unsubs = BitMailer::getUnsubscriptions( $lookup );
 	}
+
 	if( isset( $_REQUEST["update"] ) ) {
 		$subHash['response_content_id'] = $_REQUEST['response_content_id'];
 		$subHash['sub_lookup'] = !empty( $subInfo['user_id'] ) ? array( 'user_id' => $subInfo['user_id'] ) : array( 'email' => $subInfo['email'] );
@@ -79,11 +87,11 @@ if( isset( $_REQUEST["sub"] ) ) {
 			$subHash['unsub_content'] = array_keys( $newsletters );
 		} else {
 			$subHash['unsubscribe_all'] = NULL;
-		}
 
-		foreach( array_keys( $newsletters ) as $nlContentId ) {
-			if( empty( $_REQUEST['nl_content_id'] ) || !in_array( $nlContentId, $_REQUEST['nl_content_id'] ) ) {
-				$subHash['unsub_content'][] = $nlContentId;
+			foreach( array_keys( $newsletters ) as $nlContentId ) {
+				if( empty( $_REQUEST['nl_content_id'] ) || !in_array( $nlContentId, $_REQUEST['nl_content_id'] ) ) {
+					$subHash['unsub_content'][] = $nlContentId;
+				}
 			}
 		}
 
@@ -93,13 +101,14 @@ if( isset( $_REQUEST["sub"] ) ) {
 			$feedback['error'] = tra( "Subscriptions were not updated." );
 		}
 		$unsubs = BitMailer::getUnsubscriptions( $lookup );
-		foreach( $unsubs as $sub ) {
-			if( !empty( $sub['unsubscribe_all'] ) ) {
-				$subInfo['unsubscribe_all'] = TRUE;
-				break;
-			}
+	}
+	foreach( $unsubs as $sub ) {
+		if( !empty( $sub['unsubscribe_all'] ) ) {
+			$subInfo['unsubscribe_all'] = TRUE;
+			break;
 		}
 	}
+
 	$gBitSmarty->assign( 'subInfo', $subInfo );
 	$gBitSmarty->assign( 'unsubs', $unsubs );
 	$mid = 'bitpackage:newsletters/user_subscriptions.tpl';

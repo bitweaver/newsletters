@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.26 2007/04/25 21:45:25 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.27 2007/05/04 06:14:26 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.26 2007/04/25 21:45:25 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.27 2007/05/04 06:14:26 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.26 $ $Date: 2007/04/25 21:45:25 $ $Author: spiderr $
+ * @version $Revision: 1.27 $ $Date: 2007/05/04 06:14:26 $ $Author: spiderr $
  */
 
 /**
@@ -204,30 +204,6 @@ vd( 'not done yet' );
 		return $ret;
 	}
 
-	function confirmSubscription($pUrlCode, $notify = FALSE ) {
-		global $gBitSystem;
-		global $gBitSmarty;
-		global $gBitUser;
-		$query = "select * from `".BIT_DB_PREFIX."mail_queue` where `url_code`=?";
-		$result = $this->mDb->query($query,array($pUrlCode));
-
-		if (!$result->numRows()) return false;
-
-		$res = $result->fetchRow();
-		$this->mContentId = $res['content_id'];
-		$this->load();
-		$query = "update `".BIT_DB_PREFIX."mail_subscriptions` set `is_valid`=?,`unsubscribe_date`=? where `sub_code`=?";
-		$result = $this->mDb->query($query,array('y',NULL,$pUrlCode));
-
-		if ($notify) {
-			// Now send a welcome email
-			$gBitSmarty->assign( 'sub_code', $res["url_code"] );
-			$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_welcome.tpl');
-			@mail($res["email"], tra('Welcome to') . ' ' . $gBitSystem->getConfig( "bitmailer_from" ), $mail_data,
-				"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
-		}
-	}
-
 	function unsubscribe( $pMixed, $notify = TRUE ) {
 		global $gBitSystem;
 		global $gBitSmarty;
@@ -237,7 +213,7 @@ vd( 'not done yet' );
 		$now = date("U");
 
 		if( is_numeric( $pMixed ) ) {
-			$query = "SELECT `content_id` FROM `".BIT_DB_PREFIX."newsleteres` WHERE `nl_id`=?";
+			$query = "SELECT `content_id` FROM `".BIT_DB_PREFIX."newsletters` WHERE `nl_id`=?";
 			if( $subRow['content_id'] = $this->mDb->getOne( $query, array( $pMixed ) ) ) {
 				$subRow['col_name'] = 'user_id';
 				$subRow['col_val'] = $gBitUser->mUserId;

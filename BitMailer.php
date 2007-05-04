@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.29 2007/05/03 21:37:44 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.30 2007/05/04 06:14:26 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.29 2007/05/03 21:37:44 spiderr Exp $
+ * $Id: BitMailer.php,v 1.30 2007/05/04 06:14:26 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.29 $ $Date: 2007/05/03 21:37:44 $ $Author: spiderr $
+ * @version $Revision: 1.30 $ $Date: 2007/05/04 06:14:26 $ $Author: spiderr $
  */
 
 /**
@@ -100,6 +100,7 @@ class BitMailer extends phpmailer {
 		return $ret;
 	}
 
+
 	function tendQueue() {
 		$this->mDb->StartTrans();
 		$query = "SELECT *
@@ -155,6 +156,7 @@ class BitMailer extends phpmailer {
 				$gBitSmarty->assign( 'trackCode', $pick['url_code'] );
 				$gBitSmarty->assign( 'mid', 'bitpackage:newsletters/view_edition.tpl' );
 				$htmlBody = $gBitSmarty->fetch( 'bitpackage:newsletters/mail_edition.tpl' );
+				$htmlBody = bit_add_clickthrough( $htmlBody, $pick['url_code'] );
 				$this->ClearReplyTos();
 				$this->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
 				print "TO: $pick[email]\t";
@@ -284,5 +286,50 @@ class BitMailer extends phpmailer {
 			$this->mDb->query( "DELETE FROM ".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", array( $pQueueId ) );
 		}
 	}
+
+	function storeClickthrough( $pUrlCode ) {
+		global $gBitDb;
+
+		$uri = substr( preg_replace( '/[&\?]?ct=[a-z0-9]{32}/', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ), 0, 250 );
+		$query = "SELECT mc.`clicks`, mq.`content_id`, mq.`user_id`, mc.`clicked_url` FROM `".BIT_DB_PREFIX."mail_queue` mq
+					LEFT JOIN `".BIT_DB_PREFIX."mail_clickthrough` mc ON (mc.user_id=mc.user_id AND mq.`content_id`=mc.`content_id` AND mc.`clicked_url`=?)
+				  WHERE `url_code`=?";
+		if( $row = $gBitDb->getRow( $query, array( $uri, $pUrlCode ) ) ) {
+			if( $row['clicks'] ) {
+				$gBitDb->query( "UPDATE `".BIT_DB_PREFIX."mail_clickthrough` SET `clicks`=`clicks`+1 WHERE  `user_id`=? AND `content_id`=? AND `clicked_url`=? ", array( $row['user_id'], $row['content_id'], $row['clicked_url'] ) );
+			} else {
+				$row['clicks'] = 1;
+				$row['clicked_url'] = $uri;
+				$gBitDb->associateInsert( BIT_DB_PREFIX.'mail_clickthrough', $row );
+			}
+		}
+	}
 }
+
+// This will insert a ticket on all template URL's that have GET parameters.
+function bit_add_clickthrough( $pSource, $pUrlCode ) {
+	global $gBitUser, $gUrlCode;
+
+	$gUrlCode = $pUrlCode;
+
+	$pcre = '%href[\s]*=[\s]*["\']*((http|https)://[^\s"\']+?)(.*)%sU';
+
+	$ret = preg_replace_callback( $pcre, 'process_clickthrough_match', $pSource	);
+
+	return $ret;
+
+}
+
+
+function process_clickthrough_match( $matches ) {
+	global $gUrlCode;
+	$ret = $matches[0];
+	if( strpos( $matches[0], '?' ) ) {
+		$ret .= '&amp;ct='.$gUrlCode;
+	} else {
+		$ret .= '?ct='.$gUrlCode;
+	}
+	return $ret; 
+}
+
 ?>

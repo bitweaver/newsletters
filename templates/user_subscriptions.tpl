@@ -9,8 +9,8 @@
 	{formfeedback hash=$feedback}
 	{form enctype="multipart/form-data" id="editpageform"}
 		<input type="hidden" name="response_content_id" value="{$subInfo.content_id}" />
-{if $smarty.request.sub}
-		<input type="hidden" name="sub" value="{$smarty.request.sub}" />
+{if $smarty.request.c}
+		<input type="hidden" name="c" value="{$smarty.request.c}" />
 		<div class="row">
 <em>
 			{formlabel label="In Response To"}
