@@ -69,7 +69,7 @@
 *}
 
 			{foreach from=$newsletters item=nl key=nlId}
-				{if $newsletters.individual ne 'y' or $newsletters.individual_bit_p_subscribe_newsletters eq 'y'}
+				{if $newsletters.individual ne 'y' or $newsletters.individual_p_subscribe_newsletters eq 'y'}
 					<li class="item {cycle values='odd,even'}">
 						<div class="floaticon">
 						{if $subs.$nlId.unsubscribe_all || $subs.$nlId.unsubscribe_date}
