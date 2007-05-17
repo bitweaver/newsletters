@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.37 2007/05/04 21:38:31 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.38 2007/05/17 05:26:58 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.37 2007/05/04 21:38:31 spiderr Exp $
+ * $Id: BitMailer.php,v 1.38 2007/05/17 05:26:58 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.37 $ $Date: 2007/05/04 21:38:31 $ $Author: spiderr $
+ * @version $Revision: 1.38 $ $Date: 2007/05/17 05:26:58 $ $Author: spiderr $
  */
 
 /**
@@ -120,6 +120,7 @@ class BitMailer {
 		}
 
 		if( !empty( $pick ) ) {	
+			$startTime = microtime( TRUE );
 			$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `begin_date`=? WHERE `mail_queue_id` = ? ", array( time(), $pick['mail_queue_id'] ) );
 			if( !empty( $pick['user_id'] ) ) {
 				$userHash = $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."users_users` WHERE `user_id`=?", array( $pick['user_id'] ) );
@@ -136,11 +137,13 @@ class BitMailer {
 					$body[$pick['content_id']]['subject'] = $content->getTitle();
 					$body[$pick['content_id']]['reply_to'] = $content->getField( 'reply_to', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
 					$body[$pick['content_id']]['object'] = $content;
+				} else {
+					bit_log_error( $this->mErrors );
 				}
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
 			}
 
-			print "[ $pick[mail_queue_id] ] TO: $pick[email]\t";
+			print "[ $pick[mail_queue_id] ] $pick[content_id] TO: $pick[email]\t";
 			$unsub = $this->getUnsubscription( $pick['email'], $pick['content_id'] );
 			if( !empty( $unsub ) ) {
 				print " SKIPPED (unsubscribed) <br/>\n";
@@ -176,7 +179,7 @@ class BitMailer {
 				$mailer->AltBody = '';
 				$mailer->AddAddress( $pick['email'], $pick["full_name"] );
 				if( $mailer->Send() ) {
-					print "SENT <br/>\n"; flush();
+					print " SENT ".round( microtime( TRUE ) - $startTime, 2)." secs<br/>\n"; flush();
 					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
 					$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
 				} else {
