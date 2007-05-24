@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.27 2007/05/04 06:14:26 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.28 2007/05/24 14:39:09 walterwoj Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.27 2007/05/04 06:14:26 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.28 2007/05/24 14:39:09 walterwoj Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.27 $ $Date: 2007/05/04 06:14:26 $ $Author: spiderr $
+ * @version $Revision: 1.28 $ $Date: 2007/05/24 14:39:09 $ $Author: walterwoj $
  */
 
 /**
@@ -128,7 +128,7 @@ vd( 'not done yet' );
 				$bindVars[] = $pLookup['user_id'];
 			}
 			$whereSql = preg_replace( '/^[\s]AND/', '', $whereSql );
-			$query = "SELECT `content_id` AS `hash_key`, * from `".BIT_DB_PREFIX."mail_subscriptions` WHERE $whereSql ";
+			$query = "SELECT `content_id` AS `hash_key`, ms.* from `".BIT_DB_PREFIX."mail_subscriptions` ms WHERE $whereSql ";
 			if( $res = $this->mDb->query( $query, $bindVars ) ) {
 				$ret = $res->GetAssoc();
 			}
@@ -402,7 +402,7 @@ vd( 'not done yet' );
 	
 	function getUserSubscriptions( $pUserId, $pEmail ) {
 		global $gBitDb;
-		$query = "SELECT `content_id` AS hash_key, * FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `user_id`=? OR `email`=?";
+		$query = "SELECT `content_id` AS hash_key, ms.* FROM `".BIT_DB_PREFIX."mail_subscriptions` ms WHERE `user_id`=? OR `email`=?";
 		$ret = $gBitDb->getAssoc( $query, array( $pUserId, $pEmail ) );
 		return $ret;
 	}
