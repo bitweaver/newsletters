@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.26 2007/05/10 15:21:39 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.27 2007/06/04 03:51:22 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.26 2007/05/10 15:21:39 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.27 2007/06/04 03:51:22 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.26 $ $Date: 2007/05/10 15:21:39 $ $Author: spiderr $
+ * @version $Revision: 1.27 $ $Date: 2007/06/04 03:51:22 $ $Author: spiderr $
  */
 
 /**
@@ -120,7 +120,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 	 */
 	function getDisplayUrl( $pEditionId=NULL ) {
 		$ret = NULL;
-		if( !empty( $this ) && !$this->verifyId( $pEditionId ) ) {
+		if( !BitBase::verifyId( $pEditionId ) ) {
 			$pEditionId = $this->mEditionId;
 		}
 		global $gBitSystem;

@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.28 2007/05/24 14:39:09 walterwoj Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.29 2007/06/04 03:51:22 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.28 2007/05/24 14:39:09 walterwoj Exp $
+ * $Id: BitNewsletter.php,v 1.29 2007/06/04 03:51:22 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.28 $ $Date: 2007/05/24 14:39:09 $ $Author: walterwoj $
+ * @version $Revision: 1.29 $ $Date: 2007/06/04 03:51:22 $ $Author: spiderr $
  */
 
 /**
@@ -269,14 +269,15 @@ vd( 'not done yet' );
 */
 
 	function getList( &$pListHash ) {
+		global $gBitDb;
 		if ( empty( $pParamHash["sort_mode"] ) ) {
 			$pListHash['sort_mode'] = 'created_desc';
 		}
-		$this->prepGetList( $pListHash );
+		BitBase::prepGetList( $pListHash );
 		$bindVars = array();
 		$mid = '';
 
-		if( @$this->verifyId( $pListHash['nl_id'] ) ) {
+		if( @BitBase::verifyId( $pListHash['nl_id'] ) ) {
 			$mid .= ' AND n.nl_id=? ';
 			$bindVars[] = $pListHash['nl_id'];
 		}
@@ -291,16 +292,16 @@ vd( 'not done yet' );
 		$query = "SELECT *
 				  FROM `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( n.`content_id`=lc.`content_id`)
 				  WHERE n.`content_id`=lc.`content_id` $mid
-				  ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] );
-		$result = $this->mDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
+				  ORDER BY ".$gBitDb->convertSortmode( $pListHash['sort_mode'] );
+		$result = $gBitDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
 		$query_cant = "select count(*) from `".BIT_DB_PREFIX."newsletters` $mid";
 
 		$ret = array();
 		while( $res = $result->fetchRow() ) {
-			$res['display_url'] = $this->getDisplayUrl( $res['nl_id'] );
-			$res["confirmed"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `unsubscribe_date` IS NULL and `content_id`=?",array( (int)$res['content_id'] ) );
-			$res["unsub_count"] = $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `content_id`=?",array( (int)$res['content_id'] ) );
+			$res['display_url'] = BitNewsletter::getDisplayUrl( $res['nl_id'] );
+			$res["confirmed"] = $gBitDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `unsubscribe_date` IS NULL and `content_id`=?",array( (int)$res['content_id'] ) );
+			$res["unsub_count"] = $gBitDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `content_id`=?",array( (int)$res['content_id'] ) );
 			$ret[$res['content_id']] = $res;
 		}
 
@@ -368,12 +369,12 @@ vd( 'not done yet' );
 	 * @return	object	Url String
 	 */
 	function getDisplayUrl( $pNewsletterId=NULL ) {
+		global $gBitSystem;
 		$ret = NULL;
-		if( !$this->verifyId( $pNewsletterId ) ) {
+		if( !BitBase::verifyId( $pNewsletterId ) ) {
 			$pNewsletterId = $this->mNewsletterId;
 		}
-		global $gBitSystem;
-		if( $this->verifyId( $pNewsletterId ) ) {
+		if( BitBase::verifyId( $pNewsletterId ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
 				$ret = NEWSLETTERS_PKG_URL.$pNewsletterId;
 			} else {
