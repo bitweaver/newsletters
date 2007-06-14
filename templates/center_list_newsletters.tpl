@@ -1,9 +1,7 @@
 {strip}
 <div class="display newsletters">
 	<div class="header">
-		{if count($newsletters) > 1}
-			<h1>{tr}Newsletters{/tr}</h1>
-		{/if}
+		<h1>{tr}Newsletters{/tr}</h1>
 	</div>
 
 	<div class="body">
