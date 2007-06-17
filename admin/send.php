@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.17 2007/05/04 17:51:39 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.18 2007/06/17 13:53:04 squareing Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -51,8 +51,8 @@ if( $gContent->isValid() && isset( $_REQUEST['preview'] ) && isset( $_REQUEST['s
 if( $gContent->isValid() ) {
 	$groupListHash = array();
 	$groups = $gBitUser->getAllGroups( $groupListHash );
-	$groups['data']['send_subs']['group_name'] = 'Send to subscribers';
-	$gBitSmarty->assign_by_ref( 'groupList', $groups['data'] );
+	$groups['send_subs']['group_name'] = 'Send to subscribers';
+	$gBitSmarty->assign_by_ref( 'groupList', $groups );
 } else {
 	$listHash = array();
 	$editions = $gContent->getList( $listHash );
