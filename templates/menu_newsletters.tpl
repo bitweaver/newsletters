@@ -1,15 +1,15 @@
 {strip}
 <ul>
-	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php">{biticon ipackage="icons" iname="format-justify-fill" iexplain="List Newsletters" iforce="icon"} {tr}List Newsletters{/tr}</a></li>
+	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php">{biticon iname="format-justify-fill" iexplain="List Newsletters" ilocation=menu}</a></li>
 	{if $gBitUser->hasPermission( 'p_newsletters_create' )}
-		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?new=1">{biticon ipackage="icons" iname="mail-message-new" iexplain="Create Newsletter" iforce="icon"} {tr}Create Newsletter{/tr}</a></li>
+		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?new=1">{biticon iname="mail-message-new" iexplain="Create Newsletter" ilocation=menu}</a></li>
 	{/if}
-	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php">{biticon ipackage="icons" iname="document-open" iexplain="List Editions" iforce="icon"} {tr}List Editions{/tr}</a></li>
+	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php">{biticon iname="document-open" iexplain="List Editions" ilocation=menu}</a></li>
 	{if $gBitUser->hasPermission( 'p_newsletters_create_editions' )}
-		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php">{biticon ipackage="icons" iname="folder-new" iexplain="Create Edition" iforce="icon"}{tr}Create Edition{/tr}</a></li>
+		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php">{biticon iname="folder-new" iexplain="Create Edition" ilocation=menu}</a></li>
 	{/if}
 	{if $gBitUser->hasPermission( 'p_newsletters_admin' )}
-		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php">{biticon ipackage="icons" iname="mail-forward" iexplain="Send Newsletters" iforce="icon"} {tr}Send Newsletters{/tr}</a></li>
+		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php">{biticon iname="mail-forward" iexplain="Send Newsletters" ilocation=menu}</a></li>
 	{/if}
 </ul>
 {/strip}
