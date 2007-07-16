@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.27 2007/06/04 03:51:22 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.28 2007/07/16 15:27:20 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.27 2007/06/04 03:51:22 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.28 2007/07/16 15:27:20 squareing Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.27 $ $Date: 2007/06/04 03:51:22 $ $Author: spiderr $
+ * @version $Revision: 1.28 $ $Date: 2007/07/16 15:27:20 $ $Author: squareing $
  */
 
 /**
@@ -44,6 +44,11 @@ class BitNewsletterEdition extends LibertyAttachable {
 		$this->mContentId = $pContentId;
 		$this->mContentTypeGuid = BITNEWSLETTEREDITION_CONTENT_TYPE_GUID;
 		$this->mNewsletter = new BitNewsletter( $pNlId );
+
+		// Permission setup
+		//$this->mViewContentPerm  = '';
+		$this->mEditContentPerm  = 'p_newsletters_create_editions';
+		$this->mAdminContentPerm = 'p_newsletters_admin';
 	}
 
 	function verify( &$pParamHash ) {
