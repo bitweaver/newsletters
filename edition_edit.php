@@ -93,10 +93,6 @@ if( empty( $formInfo ) ) {
 $gBitSmarty->assign_by_ref( 'pageInfo', $formInfo );
 $gBitSmarty->assign( 'errors', $gContent->mErrors );
 
-// load the ajax library for this page
-$gBitThemes->loadAjax( 'prototype' );
 // Display the template
 $gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) );
-
-
 ?>
