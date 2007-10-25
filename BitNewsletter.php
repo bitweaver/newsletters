@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.30 2007/07/16 15:27:20 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.31 2007/10/25 17:14:15 nickpalmer Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.30 2007/07/16 15:27:20 squareing Exp $
+ * $Id: BitNewsletter.php,v 1.31 2007/10/25 17:14:15 nickpalmer Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.30 $ $Date: 2007/07/16 15:27:20 $ $Author: squareing $
+ * @version $Revision: 1.31 $ $Date: 2007/10/25 17:14:15 $ $Author: nickpalmer $
  */
 
 /**
@@ -64,7 +64,7 @@ class BitNewsletter extends LibertyContent {
 			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
 			if( $pUserId ) {
-vd( 'not done yet' );
+				error_log( 'BitNewsleters: user id loading not implemented yet' );
 				$whereSql = "";
 				$joinSql = "";
 			}
