@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters_inc.php,v 1.5 2006/06/19 02:35:19 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters_inc.php,v 1.6 2008/01/02 15:55:20 spiderr Exp $
 
 $formNewsletterFeatures = array(
 	"bitmailer_sender_email" => array(
@@ -30,9 +30,7 @@ $formNewsletterFeatures = array(
 );
 $gBitSmarty->assign( 'formNewsletterFeatures',$formNewsletterFeatures );
 
-$processForm = set_tab();
-
-if( $processForm ) {
+if( !empty( $_POST ) ) {
 
 	foreach( array_keys( $formNewsletterFeatures ) as $key ) {
 		if( empty( $_REQUEST[$key] ) || $_REQUEST[$key] != $formNewsletterFeatures[$key]['default'] ) {
