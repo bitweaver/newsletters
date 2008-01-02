@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.39 2008/01/02 16:43:35 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.40 2008/01/02 18:26:31 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.39 2008/01/02 16:43:35 spiderr Exp $
+ * $Id: BitMailer.php,v 1.40 2008/01/02 18:26:31 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.39 $ $Date: 2008/01/02 16:43:35 $ $Author: spiderr $
+ * @version $Revision: 1.40 $ $Date: 2008/01/02 18:26:31 $ $Author: spiderr $
  */
 
 /**
@@ -167,6 +167,13 @@ class BitMailer {
 				$mailer->FromName = $gBitSystem->getConfig( 'bitmailer_from', $gBitSystem->getConfig( 'site_title' ) );
 				$mailer->Host     = $gBitSystem->getConfig( 'bitmailer_servers', $gBitSystem->getConfig( 'kernel_server_name', '127.0.0.1' ) );
 				$mailer->Mailer   = $gBitSystem->getConfig( 'bitmailer_protocol', 'smtp' ); // Alternative to IsSMTP()
+				if( $gBitSystem->getConfig( 'bitmailer_smtp_username' ) ) {
+					$mailer->SMTPAuth = TRUE;
+					$mailer->Username = $gBitSystem->getConfig( 'bitmailer_smtp_username' );
+				}
+				if( $gBitSystem->getConfig( 'bitmailer_smtp_password' ) ) {
+					$mailer->Password = $gBitSystem->getConfig( 'bitmailer_smtp_password' );
+				}
 				$mailer->WordWrap = $gBitSystem->getConfig( 'bitmailer_word_wrap', 75 );
 				if( !$mailer->SetLanguage( $gBitLanguage->getLanguage(), UTIL_PKG_PATH.'phpmailer/language/' ) ) {
 					$mailer->SetLanguage( 'en' );

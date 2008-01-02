@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters_inc.php,v 1.6 2008/01/02 15:55:20 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters_inc.php,v 1.7 2008/01/02 18:26:31 spiderr Exp $
 
 $formNewsletterFeatures = array(
 	"bitmailer_sender_email" => array(
@@ -16,6 +16,16 @@ $formNewsletterFeatures = array(
 		'label' => 'Mail Servers',
 		'note' => '',
 		'default' => $gBitSystem->getConfig( 'kernel_server_name', '127.0.0.1' ),
+	),
+	"bitmailer_smtp_username" => array(
+		'label' => 'SMTP Username',
+		'note' => 'Only required for authenticated outbound mail servers.',
+		'default' => $gBitSystem->getConfig( 'bitmailer_smtp_username' ),
+	),
+	"bitmailer_smtp_password" => array(
+		'label' => 'SMTP Password',
+		'note' => 'Password for the above SMTP Username',
+		'default' => $gBitSystem->getConfig( 'bitmailer_smtp_password' ),
 	),
 	"bitmailer_protocol" => array(
 		'label' => 'Protocol',
