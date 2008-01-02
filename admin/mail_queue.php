@@ -1,6 +1,6 @@
 <?php
 
-if( $_REQUEST['batch_command'] == 'send' && !empty( $_REQUEST['queue_id'] ) ) {
+if( !empty( $_REQUEST['batch_command'] ) && $_REQUEST['batch_command'] == 'send' && !empty( $_REQUEST['queue_id'] ) ) {
 	$_REQUEST['uri_mode'] = TRUE;
 }
 
@@ -25,10 +25,11 @@ if( !empty( $_REQUEST['batch_command'] ) && !empty( $_REQUEST['queue_id'] ) ) {
 	}
 }
 
-$listHash = array();
-$queue = $gBitMailer->getQueue( $listHash );
-$gBitSmarty->assign_by_ref( 'queue', $queue );
+if( empty( $_REQUEST['batch_command'] ) || $_REQUEST['batch_command'] != 'send' ) {
+	$listHash = array();
+	$queue = $gBitMailer->getQueue( $listHash );
+	$gBitSmarty->assign_by_ref( 'queue', $queue );
 
-$gBitSystem->display( 'bitpackage:newsletters/mail_queue.tpl' );
-
+	$gBitSystem->display( 'bitpackage:newsletters/mail_queue.tpl' );
+}
 ?>

@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.38 2007/05/17 05:26:58 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.39 2008/01/02 16:43:35 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.38 2007/05/17 05:26:58 spiderr Exp $
+ * $Id: BitMailer.php,v 1.39 2008/01/02 16:43:35 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.38 $ $Date: 2007/05/17 05:26:58 $ $Author: spiderr $
+ * @version $Revision: 1.39 $ $Date: 2008/01/02 16:43:35 $ $Author: spiderr $
  */
 
 /**
@@ -185,6 +185,7 @@ class BitMailer {
 				} else {
 					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `mail_error`=?,`sent_date`=?  WHERE `content_id`=? AND `email`=?";
 					$this->mDb->query( $updateQuery, array( $mailer->ErrorInfo, time(), $pick['content_id'], $pick['email'] ) );
+					$pick['error'] = $mailer->ErrorInfo;
 					$this->logError( $pick );
 				}
 			}
@@ -203,11 +204,11 @@ class BitMailer {
 			$store['user_id'] = !empty( $pInfo['user_id'] ) ? $pInfo['user_id'] : NULL;
 			$store['content_id'] = !empty( $pInfo['content_id'] ) ? $pInfo['content_id'] : NULL;
 			$store['email'] = !empty( $pInfo['email'] ) ? $pInfo['email'] : NULL;
-			$store['error_message'] = $this->ErrorInfo;
+			$store['error_message'] = $pInfo['error'];
 			$store['error_date'] = time();
 			$this->mDb->associateInsert( BIT_DB_PREFIX."mail_errors", $store );
 		}
-		print "ERROR: ".$this->ErrorInfo."\n";
+		print "ERROR: ".$pInfo['error']."\n";
 	}
 
 	// Looks up the code from the url to determine if the unsubscribe URL is valid.
