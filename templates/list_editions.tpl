@@ -9,7 +9,7 @@
 
 		{include file='bitpackage:newsletters/list_editions_inc.tpl'}
 
-		{libertypagination page=$curPage numPages=$numPages find=$find}
+		{pagination page=$curPage numPages=$numPages find=$find}
 	</div>	<!-- end .body -->
 </div>	<!-- end .newsletters -->
 {/strip}
