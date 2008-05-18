@@ -1,6 +1,6 @@
 <?php
 
-include_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
+require_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
 global $gBitSystem, $gBitUser;
 
 $gBitSystem->verifyPackage( 'newsletters' );
