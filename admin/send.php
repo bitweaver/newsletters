@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.18 2007/06/17 13:53:04 squareing Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/send.php,v 1.19 2008/06/18 16:47:20 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -8,7 +8,7 @@
 
 // Initialization
 require_once( '../../bit_setup_inc.php' );
-include_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
+include_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
 include_once( NEWSLETTERS_PKG_PATH.'BitNewsletterEdition.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
@@ -38,9 +38,9 @@ if( $gContent->isValid() && isset( $_REQUEST['preview'] ) && isset( $_REQUEST['s
 	$gBitSmarty->assign( 'sending', TRUE );
 } elseif( $gContent->isValid() && isset( $_REQUEST["send"] ) ) {
 	if( $emails = $gContent->getRecipients( $_REQUEST['send_group'], $validated, !empty( $_REQUEST['test_mode'] ) ) ) {
-		global $gBitMailer;
-		$gBitMailer = new BitMailer();
-		$queueCount = $gBitMailer->queueRecipients( $gContent->mContentId, $gContent->mNewsletter->mContentId, $emails, !empty( $_REQUEST['test_mode'] ) );
+		global $gBitNewsletterMailer;
+		$gBitNewsletterMailer = new BitNewsletterMailer();
+		$queueCount = $gBitNewsletterMailer->queueRecipients( $gContent->mContentId, $gContent->mNewsletter->mContentId, $emails, !empty( $_REQUEST['test_mode'] ) );
 		$feedback['success'] = $queueCount.' '.tra( 'emails were queued to be sent:' ).' '.$gContent->getTitle();
 		$gContent->mEditionId = NULL;
 	} else {

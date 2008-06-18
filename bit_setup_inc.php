@@ -16,8 +16,8 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 	);
 	$gBitSystem->registerAppMenu( $menuHash );
 	if( isset( $_GET['ct'] ) && strlen( $_GET['ct'] ) == 32 ) {
-		require_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
-		BitMailer::storeClickthrough( $_GET['ct'] );
+		require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
+		BitNewsletterMailer::storeClickthrough( $_GET['ct'] );
 	}
 }
 ?>

@@ -15,10 +15,10 @@
 	require_once( '../../bit_setup_inc.php' );
 
 	if( $gBitSystem->isPackageActive( 'newsletters' ) ) {
-		require_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
-		global $gBitMailer;
-		$gBitMailer = new BitMailer();
-		$gBitMailer->tendQueue();
+		require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
+		global $gBitNewsletterMailer;
+		$gBitNewsletterMailer = new BitNewsletterMailer();
+		$gBitNewsletterMailer->tendQueue();
 	}
 
 ?>

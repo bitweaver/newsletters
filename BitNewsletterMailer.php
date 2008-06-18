@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/Attic/BitMailer.php,v 1.40 2008/01/02 18:26:31 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.1 2008/06/18 16:47:20 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitMailer.php,v 1.40 2008/01/02 18:26:31 spiderr Exp $
+ * $Id: BitNewsletterMailer.php,v 1.1 2008/06/18 16:47:20 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.40 $ $Date: 2008/01/02 18:26:31 $ $Author: spiderr $
+ * @version $Revision: 1.1 $ $Date: 2008/06/18 16:47:20 $ $Author: spiderr $
  */
 
 /**
@@ -27,14 +27,14 @@ require_once( UTIL_PKG_PATH.'phpmailer/class.phpmailer.php' );
 /**
  * @package newsletters
  */
-class BitMailer {
+class BitNewsletterMailer {
     // Set default variables for all new objects
     var $From;
     var $FromName;
     var $Host;
     var $Mailer;                         // Alternative to IsSMTP()
     var $WordWrap;
-	function BitMailer () {
+	function BitNewsletterMailer () {
 		global $gBitDb, $gBitSystem, $gBitLanguage;
 		$this->mDb = $gBitDb;
 	}

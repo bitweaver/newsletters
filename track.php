@@ -14,11 +14,11 @@
  * Initialization
  */
 require_once( '../bit_setup_inc.php' );
-include_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
+include_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
 
 if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
-	if( isset( $_REQUEST["sub"] ) && strlen( $_REQUEST["sub"] ) == 32 && ($subInfo = BitMailer::lookupSubscription( array( 'url_code' => $_REQUEST["sub"] ) )) ) {
-		BitMailer::trackMail( $subInfo['url_code'] );
+	if( isset( $_REQUEST["sub"] ) && strlen( $_REQUEST["sub"] ) == 32 && ($subInfo = BitNewsletterMailer::lookupSubscription( array( 'url_code' => $_REQUEST["sub"] ) )) ) {
+		BitNewsletterMailer::trackMail( $subInfo['url_code'] );
 	}
 }
 

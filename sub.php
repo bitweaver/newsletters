@@ -1,6 +1,6 @@
 <?php
 /**
- * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.4 2007/05/04 06:14:26 spiderr Exp $
+ * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.5 2008/06/18 16:47:20 spiderr Exp $
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
@@ -15,7 +15,7 @@
  * Initialization
  */
 require_once( '../bit_setup_inc.php' );
-include_once( NEWSLETTERS_PKG_PATH.'BitMailer.php' );
+include_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
 
@@ -63,19 +63,19 @@ $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
 if( isset( $_REQUEST['c'] ) ) {
 //$gBitDb->debug();
 	$unsubs = array();
-	if( isset( $_REQUEST['c'] ) && strlen( $_REQUEST['c'] ) == 32 && ($subInfo = BitMailer::lookupSubscription( array( 'url_code' => $_REQUEST['c'] ) )) ) {
+	if( isset( $_REQUEST['c'] ) && strlen( $_REQUEST['c'] ) == 32 && ($subInfo = BitNewsletterMailer::lookupSubscription( array( 'url_code' => $_REQUEST['c'] ) )) ) {
 		if( !empty( $subInfo['user_id'] ) && BitBase::verifyId( $subInfo['user_id'] ) ) {
 			$lookup['user_id'] = $subInfo['user_id'];
 		} else {
 			$lookup['email'] = $subInfo['email'];
 		}
-		$unsubs = BitMailer::getUnsubscriptions( $lookup );
+		$unsubs = BitNewsletterMailer::getUnsubscriptions( $lookup );
 	} else {
-		if( !$subInfo = BitMailer::lookupSubscription( array( 'user_id' => $gBitUser->mUserId ) ) ) {
+		if( !$subInfo = BitNewsletterMailer::lookupSubscription( array( 'user_id' => $gBitUser->mUserId ) ) ) {
 			$subInfo = $gBitUser->mInfo;
 		}
 		$lookup['user_id'] = $gBitUser->mUserId;
-		$unsubs = BitMailer::getUnsubscriptions( $lookup );
+		$unsubs = BitNewsletterMailer::getUnsubscriptions( $lookup );
 	}
 
 	if( isset( $_REQUEST["update"] ) ) {
@@ -95,12 +95,12 @@ if( isset( $_REQUEST['c'] ) ) {
 			}
 		}
 
-		if( BitMailer::storeSubscriptions( $subHash ) ) {
+		if( BitNewsletterMailer::storeSubscriptions( $subHash ) ) {
 			$feedback['success'] = tra( "Your subscriptions were updated." );
 		} else {
 			$feedback['error'] = tra( "Subscriptions were not updated." );
 		}
-		$unsubs = BitMailer::getUnsubscriptions( $lookup );
+		$unsubs = BitNewsletterMailer::getUnsubscriptions( $lookup );
 	}
 	foreach( $unsubs as $sub ) {
 		if( !empty( $sub['unsubscribe_all'] ) ) {
