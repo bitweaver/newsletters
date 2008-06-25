@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.9 2007/04/20 13:52:35 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.10 2008/06/25 22:21:14 spiderr Exp $
  * 
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -68,6 +68,6 @@ include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
 */
 
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/list_newsletters.tpl');
+$gBitSystem->display( 'bitpackage:newsletters/list_newsletters.tpl', NULL, array( 'display_mode' => 'display' ));
 
 ?>

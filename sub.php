@@ -1,6 +1,6 @@
 <?php
 /**
- * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.5 2008/06/18 16:47:20 spiderr Exp $
+ * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.6 2008/06/25 22:21:14 spiderr Exp $
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
@@ -150,6 +150,6 @@ $subscribe = false;
 $gBitSmarty->assign( 'feedback', $feedback );
 
 // Display the template
-$gBitSystem->display( $mid, $title );
+$gBitSystem->display( $mid, $title , array( 'display_mode' => 'display' ));
 
 ?>

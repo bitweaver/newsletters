@@ -94,5 +94,5 @@ $gBitSmarty->assign_by_ref( 'pageInfo', $formInfo );
 $gBitSmarty->assign( 'errors', $gContent->mErrors );
 
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) );
+$gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) , array( 'display_mode' => 'edit' ));
 ?>

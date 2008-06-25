@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.7 2007/03/20 17:35:39 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.8 2008/06/25 22:21:14 spiderr Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -93,6 +93,6 @@ include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
 */
 
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/admin_newsletter_subscriptions.tpl' );
+$gBitSystem->display( 'bitpackage:newsletters/admin_newsletter_subscriptions.tpl' , NULL, array( 'display_mode' => 'admin' ));
 
 ?>

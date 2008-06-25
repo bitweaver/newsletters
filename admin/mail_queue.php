@@ -30,6 +30,6 @@ if( empty( $_REQUEST['batch_command'] ) || $_REQUEST['batch_command'] != 'send' 
 	$queue = $gBitNewsletterMailer->getQueue( $listHash );
 	$gBitSmarty->assign_by_ref( 'queue', $queue );
 
-	$gBitSystem->display( 'bitpackage:newsletters/mail_queue.tpl' );
+	$gBitSystem->display( 'bitpackage:newsletters/mail_queue.tpl' , NULL, array( 'display_mode' => 'admin' ));
 }
 ?>

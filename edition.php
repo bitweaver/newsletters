@@ -51,6 +51,6 @@ if( $gContent->isValid() ) {
 }
 
 // Display the template
-$gBitSystem->display( $mid, $title );
+$gBitSystem->display( $mid, $title , array( 'display_mode' => 'edit' ));
 
 ?>
