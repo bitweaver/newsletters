@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.28 2007/07/16 15:27:20 squareing Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.29 2008/06/27 10:56:58 squareing Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.28 2007/07/16 15:27:20 squareing Exp $
+ * $Id: BitNewsletterEdition.php,v 1.29 2008/06/27 10:56:58 squareing Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,21 +15,21 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.28 $ $Date: 2007/07/16 15:27:20 $ $Author: squareing $
+ * @version $Revision: 1.29 $ $Date: 2008/06/27 10:56:58 $ $Author: squareing $
  */
 
 /**
  * required setup
  */
 require_once( NEWSLETTERS_PKG_PATH.'BitNewsletter.php' );
-require_once( LIBERTY_PKG_PATH.'LibertyAttachable.php' );
+require_once( LIBERTY_PKG_PATH.'LibertyMime.php' );
 
 define( 'BITNEWSLETTEREDITION_CONTENT_TYPE_GUID', 'bitnewsletteredn' );
 
 /**
  * @package newsletters
  */
-class BitNewsletterEdition extends LibertyAttachable {
+class BitNewsletterEdition extends LibertyMime {
 	function BitNewsletterEdition( $pEditionId=NULL, $pContentId=NULL, $pNlId=NULL ) {
 		parent::LibertyContent();
 		$this->registerContentType( BITNEWSLETTEREDITION_CONTENT_TYPE_GUID, array(
@@ -103,7 +103,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 				$this->mInfo = $result->fetchRow();
 				$this->mEditionId = $this->mInfo['edition_id'];
 				$this->mContentId = $this->mInfo['content_id'];
-				LibertyAttachable::load();
+				LibertyMime::load();
 				$this->mNewsletter = new BitNewsletter( NULL, $this->mInfo['nl_content_id'] );
 				$this->mNewsletter->load();
 			} else {
@@ -189,7 +189,7 @@ class BitNewsletterEdition extends LibertyAttachable {
 			$this->mDb->StartTrans();
 			$query = "delete from `".BIT_DB_PREFIX."newsletters_editions` where `edition_id`=?";
 			$result = $this->mDb->query( $query, array( $this->mContentId ) );
-			if( LibertyAttachable::expunge() ) {
+			if( LibertyMime::expunge() ) {
 				$ret = TRUE;
 				$this->mDb->CompleteTrans();
 			} else {
