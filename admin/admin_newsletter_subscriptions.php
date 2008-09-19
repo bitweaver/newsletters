@@ -1,6 +1,6 @@
 <?php
 
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.8 2008/06/25 22:21:14 spiderr Exp $
+// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletter_subscriptions.php,v 1.9 2008/09/19 01:34:37 laetzer Exp $
 
 // Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -35,7 +35,12 @@ if( $gContent->isValid() ) {
 			foreach( $_REQUEST["checked"] as $del ) {
 				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
 			}
-			$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete '.count($_REQUEST["checked"]).' subscriptions?', 'error' => 'This cannot be undone!' ) );
+			$gBitSystem->confirmDialog( $formHash, 
+				array( 
+					'warning' => tra('Are you sure you want to delete these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
+					'error' => tra('This cannot be undone!'),
+				)
+			);
 		} else {
 			foreach ($_REQUEST["checked"] as $delete) {
 				$gContent->removeSubscription($delete, FALSE, TRUE );
@@ -51,7 +56,12 @@ if( $gContent->isValid() ) {
 			foreach( $_REQUEST["checked"] as $del ) {
 				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
 			}
-			$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to unsubscribe '.count($_REQUEST["checked"]).' subscriptions?', 'error' => 'This cannot be undone!' ) );
+			$gBitSystem->confirmDialog( $formHash, 
+				array( 
+					'warning' => tra('Are you sure you want to unsubcsribe these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
+					'error' => tra('This cannot be undone!'),
+				)
+			);
 		} else {
 			foreach ($_REQUEST["checked"] as $delete) {
 				$gContent->removeSubscription($delete, FALSE, FALSE );
@@ -67,7 +77,12 @@ if( $gContent->isValid() ) {
 			foreach( $_REQUEST["checked"] as $del ) {
 				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
 			}
-			$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to resubscribe '.count($_REQUEST["checked"]).' subscriptions?', 'error' => 'This cannot be undone!' ) );
+			$gBitSystem->confirmDialog( $formHash, 
+				array( 
+					'warning' => tra('Are you sure you want to resubscribe these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',				
+					'error' => tra('This cannot be undone!'),
+				)
+			);
 		} else {
 			foreach ($_REQUEST["checked"] as $delete) {
 				$gContent->subscribe($delete, FALSE, FALSE );

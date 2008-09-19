@@ -29,7 +29,11 @@ if (isset($_REQUEST["remove"] ) && $gContent->isValid() ) {
 	} elseif( empty( $_REQUEST['confirm'] ) ) {
 		$formHash['remove'] = TRUE;
 		$formHash['edition_id'] = $gContent->mEditionId;
-		$gBitSystem->confirmDialog( $formHash, array( 'warning' => 'Are you sure you want to delete the newsletter edition '.$gContent->getTitle().'?' ) );
+		$gBitSystem->confirmDialog( $formHash, 
+			array( 
+				'warning' => tra('Are you sure you want to delete this newsletter edition?'). ' ' . $gContent->getTitle()
+			)
+		);
 	} else {
 		if( $gContent->expunge() ) {
 			header( "Location: ".NEWSLETTERS_PKG_URL.'edition.php' );
