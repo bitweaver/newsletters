@@ -28,7 +28,7 @@
 	</table>
 {/if}
 
-<div class="row floatright">
+<div class="row alignright">
 	With checked: 
 	<select name="batch_command">
 		<option></option>
@@ -37,7 +37,7 @@
 	</select>
 </div>
 
-<div class="row input">
+<div class="row input alignright">
 	<input type="submit" name="Submit" value="Submit"/>
 </div>
 
