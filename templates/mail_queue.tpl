@@ -1,4 +1,8 @@
-<h1>Queued Mails</h1>
+{strip}
+
+<div class="header">
+	<h1>Queued Mails</h1>
+</div>
 
 {form}
 {if $queue}
@@ -24,8 +28,7 @@
 	</table>
 {/if}
 
-<div style="float:right">
-<div class="row">
+<div class="row floatright">
 	With checked: 
 	<select name="batch_command">
 		<option></option>
@@ -37,7 +40,7 @@
 <div class="row input">
 	<input type="submit" name="Submit" value="Submit"/>
 </div>
-</div>
-
 
 {/form}
+
+{/strip}
