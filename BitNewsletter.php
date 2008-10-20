@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.31 2007/10/25 17:14:15 nickpalmer Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.32 2008/10/20 21:40:10 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.31 2007/10/25 17:14:15 nickpalmer Exp $
+ * $Id: BitNewsletter.php,v 1.32 2008/10/20 21:40:10 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.31 $ $Date: 2007/10/25 17:14:15 $ $Author: nickpalmer $
+ * @version $Revision: 1.32 $ $Date: 2008/10/20 21:40:10 $ $Author: spiderr $
  */
 
 /**
@@ -47,7 +47,7 @@ class BitNewsletter extends LibertyContent {
 
 		// Permission setup
 		//$this->mViewContentPerm  = '';
-		$this->mEditContentPerm  = 'p_newsletters_create';
+		$this->mUpdateContentPerm  = 'p_newsletters_create';
 		$this->mAdminContentPerm = 'p_newsletters_admin';
 	}
 
