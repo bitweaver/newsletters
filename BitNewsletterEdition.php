@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.30 2008/07/02 01:55:42 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterEdition.php,v 1.31 2008/10/20 19:45:48 laetzer Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterEdition.php,v 1.30 2008/07/02 01:55:42 spiderr Exp $
+ * $Id: BitNewsletterEdition.php,v 1.31 2008/10/20 19:45:48 laetzer Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.30 $ $Date: 2008/07/02 01:55:42 $ $Author: spiderr $
+ * @version $Revision: 1.31 $ $Date: 2008/10/20 19:45:48 $ $Author: laetzer $
  */
 
 /**
@@ -219,7 +219,7 @@ class BitNewsletterEdition extends LibertyMime {
 					$bindvars[] = 'y';
 				}
 				$query = "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions`
-					  WHERE `nl_content_id`=? AND `unsubscribe_date` IS NULL AND `unsubscribe_all` IS NULL".$valid;
+					  WHERE `content_id`=? AND `unsubscribe_date` IS NULL AND `unsubscribe_all` IS NULL".$valid;
 				$subs = $this->mDb->getArray( $query, $bindvars );
 				foreach( $subs as $sub) {
 					if (!isset($ret[$sub['email']]))
