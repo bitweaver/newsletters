@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.1 2008/06/18 16:47:20 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.2 2008/11/11 06:11:15 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterMailer.php,v 1.1 2008/06/18 16:47:20 spiderr Exp $
+ * $Id: BitNewsletterMailer.php,v 1.2 2008/11/11 06:11:15 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.1 $ $Date: 2008/06/18 16:47:20 $ $Author: spiderr $
+ * @version $Revision: 1.2 $ $Date: 2008/11/11 06:11:15 $ $Author: spiderr $
  */
 
 /**
@@ -180,6 +180,9 @@ class BitNewsletterMailer {
 				}
 				$mailer->ClearReplyTos();
 				$mailer->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
+				if( $gBitSystem->getConfig( 'bitmailer_errors_to' ) ) {
+					$mailer->addCustomHeader( "Errors-to: ".$gBitSystem->getConfig( 'bitmailer_errors_to' ) );
+				}
 				$mailer->Body    = $htmlBody;
 				$mailer->Subject = $body[$pick['content_id']]['subject'];
 				$mailer->IsHTML( TRUE );
