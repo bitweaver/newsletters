@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.2 2008/11/11 06:11:15 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.3 2008/11/11 07:38:52 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterMailer.php,v 1.2 2008/11/11 06:11:15 spiderr Exp $
+ * $Id: BitNewsletterMailer.php,v 1.3 2008/11/11 07:38:52 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.2 $ $Date: 2008/11/11 06:11:15 $ $Author: spiderr $
+ * @version $Revision: 1.3 $ $Date: 2008/11/11 07:38:52 $ $Author: spiderr $
  */
 
 /**
@@ -163,6 +163,10 @@ class BitNewsletterMailer {
 				$htmlBody = bit_add_clickthrough( $htmlBody, $pick['url_code'] );
 
 				$mailer = new PHPMailer();
+				if( $gBitSystem->getConfig( 'bitmailer_errors_to' ) ) {
+					$mailer->Sender = $gBitSystem->getConfig( 'bitmailer_errors_to' );
+					$mailer->addCustomHeader( "Errors-To: ".$gBitSystem->getConfig( 'bitmailer_errors_to' ) );
+				}
 				$mailer->From     = $gBitSystem->getConfig( 'bitmailer_sender_email', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
 				$mailer->FromName = $gBitSystem->getConfig( 'bitmailer_from', $gBitSystem->getConfig( 'site_title' ) );
 				$mailer->Host     = $gBitSystem->getConfig( 'bitmailer_servers', $gBitSystem->getConfig( 'kernel_server_name', '127.0.0.1' ) );
@@ -180,9 +184,6 @@ class BitNewsletterMailer {
 				}
 				$mailer->ClearReplyTos();
 				$mailer->AddReplyTo( $body[$pick['content_id']]['reply_to'], $gBitSystem->getConfig( 'bitmailer_from' ) );
-				if( $gBitSystem->getConfig( 'bitmailer_errors_to' ) ) {
-					$mailer->addCustomHeader( "Errors-to: ".$gBitSystem->getConfig( 'bitmailer_errors_to' ) );
-				}
 				$mailer->Body    = $htmlBody;
 				$mailer->Subject = $body[$pick['content_id']]['subject'];
 				$mailer->IsHTML( TRUE );
