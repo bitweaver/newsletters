@@ -1,6 +1,6 @@
 <?php
 /**
- * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.7 2008/11/11 17:55:30 spiderr Exp $
+ * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.8 2009/03/10 14:02:13 lsces Exp $
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
@@ -143,7 +143,7 @@ $subscribe = false;
 	/* List newsletters */
 	$listHash = array();
 	$newsletters = $gContent->getList( $listHash );
-	$mid = 'bitpackage:newsletters/newsletters.tpl';
+	$mid = 'bitpackage:newsletters/list_newsletters.tpl';
 	$title = "List Newsletters";
 }
 }
