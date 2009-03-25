@@ -67,7 +67,7 @@ $tables = array(
   begin_date I8,
   sent_date I8,
   last_read_date I8,
-  last_read_ip C(16),
+  last_read_ip C(39),
   `reads` I2 NOTNULL DEFAULT '0',
   mail_error X
   CONSTRAINT ', CONSTRAINT `mailq_content_ref` FOREIGN KEY (`nl_content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content`( `content_id` )
@@ -95,8 +95,6 @@ $gBitInstaller->registerPackageInfo( NEWSLETTERS_PKG_NAME, array(
 	'description' => "Newsletters is for emailing users updates about your site.",
 	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
 ) );
-
-$gBitInstaller->registerPackageVersion( NEWSLETTERS_PKG_NAME, '1.0.0' );
 
 // ### Indexes
 $indices = array (
