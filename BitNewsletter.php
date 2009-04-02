@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.32 2008/10/20 21:40:10 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.33 2009/04/02 14:08:08 bitweaver Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletter.php,v 1.32 2008/10/20 21:40:10 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.33 2009/04/02 14:08:08 bitweaver Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.32 $ $Date: 2008/10/20 21:40:10 $ $Author: spiderr $
+ * @version $Revision: 1.33 $ $Date: 2009/04/02 14:08:08 $ $Author: bitweaver $
  */
 
 /**
@@ -58,8 +58,7 @@ class BitNewsletter extends LibertyContent {
 			$bindVars = array(); $selectSql = ''; $joinSql = ''; $whereSql = '';
 
 			$lookupColumn = $this->verifyId( $this->mNewsletterId ) ? 'nl_id' : 'content_id';
-			$lookupId = $this->verifyId( $this->mNewsletterId )? $this->mNewsletterId : $this->mContentId;
-			array_push( $bindVars, $lookupId );
+			$bindVars[] = $this->verifyId( $this->mNewsletterId )? $this->mNewsletterId : $this->mContentId;
 
 			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
@@ -69,9 +68,10 @@ class BitNewsletter extends LibertyContent {
 				$joinSql = "";
 			}
 
-			$query = "SELECT *
+			$query = "SELECT * $selectSql
 					  FROM `".BIT_DB_PREFIX."newsletters` n
-						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( n.`content_id`=lc.`content_id` )
+					  	INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( n.`content_id`=lc.`content_id` )
+					  	$joinSql
 					  WHERE n.`$lookupColumn`=? $whereSql";
 			$result = $this->mDb->query($query,$bindVars);
 			if ($result->numRows()) {
