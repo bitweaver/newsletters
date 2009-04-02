@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.3 2008/11/11 07:38:52 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.4 2009/04/02 22:36:43 habile Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterMailer.php,v 1.3 2008/11/11 07:38:52 spiderr Exp $
+ * $Id: BitNewsletterMailer.php,v 1.4 2009/04/02 22:36:43 habile Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.3 $ $Date: 2008/11/11 07:38:52 $ $Author: spiderr $
+ * @version $Revision: 1.4 $ $Date: 2009/04/02 22:36:43 $ $Author: habile $
  */
 
 /**
@@ -303,7 +303,7 @@ class BitNewsletterMailer {
 
 	function expungeQueueRow( $pQueueId ) {
 		if( BitBase::verifyId( $pQueueId ) ) {
-			$this->mDb->query( "DELETE FROM ".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", array( $pQueueId ) );
+			$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", array( $pQueueId ) );
 		}
 	}
 
