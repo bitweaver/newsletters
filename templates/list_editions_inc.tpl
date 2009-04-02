@@ -7,7 +7,7 @@
 			   {/if}
 			</div>
 
-			<h2><a href="{$ed.display_url}">{$ed.title|escape}</a></h2>
+			<h2><a href="{$ed.display_url}">{$ed.title|default:"Untitled Edition"|escape}</a></h2>
 		</li>
 	{foreachelse}
 		<li class="item norecords">
