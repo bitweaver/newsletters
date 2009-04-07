@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.4 2009/04/02 22:36:43 habile Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.5 2009/04/07 16:27:37 habile Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterMailer.php,v 1.4 2009/04/02 22:36:43 habile Exp $
+ * $Id: BitNewsletterMailer.php,v 1.5 2009/04/07 16:27:37 habile Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.4 $ $Date: 2009/04/02 22:36:43 $ $Author: habile $
+ * @version $Revision: 1.5 $ $Date: 2009/04/07 16:27:37 $ $Author: habile $
  */
 
 /**
@@ -63,7 +63,7 @@ class BitNewsletterMailer {
 		if( !empty( $pRecipients ) && BitBase::verifyId( $pContentId ) ) {
 			$queueTime = time();
 			foreach( array_keys( $pRecipients ) AS $email ) {
-				$unsub = $this->getUnsubscription( $email, $pContentId );
+				$unsub = $this->getUnsubscription( $email, $pNewsletterContentId );
 				$lookup = !empty( $pRecipients[$email]['user_id'] ) ? $pRecipients[$email]['user_id'] : $email;
 				if( empty( $unsub ) && !$this->isRecipientQueued( $lookup, $pContentId ) ) {
 					$insertHash['mail_queue_id'] = $this->mDb->GenID( 'mail_queue_id' );
@@ -144,7 +144,7 @@ class BitNewsletterMailer {
 			}
 
 			print "[ $pick[mail_queue_id] ] $pick[content_id] TO: $pick[email]\t";
-			$unsub = $this->getUnsubscription( $pick['email'], $pick['content_id'] );
+			$unsub = $this->getUnsubscription( $pick['email'], $pick['nl_content_id'] );
 			if( !empty( $unsub ) ) {
 				print " SKIPPED (unsubscribed) <br/>\n";
 				$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", array( $pick['mail_queue_id'] ) );
@@ -256,9 +256,9 @@ class BitNewsletterMailer {
 		return( $ret );
 	}
 
-	function getUnsubscription( $pEmail, $pContentId ) {
+	function getUnsubscription( $pEmail, $pNewsletterContentId ) {
 		global $gBitDb;
-		return $gBitDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` ms LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id`=ms.`user_id`) WHERE (ms.`content_id`=? OR `unsubscribe_all`='y') AND (ms.`email`=? OR uu.`email`=?)", array( $pContentId, $pEmail, $pEmail ) );
+		return $gBitDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` ms LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id`=ms.`user_id`) WHERE (ms.`content_id`=? OR `unsubscribe_all`='y') AND (ms.`email`=? OR uu.`email`=?)", array( $pNewsletterContentId, $pEmail, $pEmail ) );
 	}
 
 	function storeSubscriptions( $pSubHash ) {
