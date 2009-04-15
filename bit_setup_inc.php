@@ -22,7 +22,7 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 		BitNewsletterMailer::storeClickthrough( $_GET['ct'] );
 	}
 
-	$gLibertySystem->registerService( LIBERTY_SERVICE_NEWSLETTERS, TAGS_PKG_NAME, array(
+	$gLibertySystem->registerService( LIBERTY_SERVICE_NEWSLETTERS, NEWSLETTERS_PKG_NAME, array(
 			'users_expunge_function'	=> 'newsletters_user_expunge',
 	) );
 
