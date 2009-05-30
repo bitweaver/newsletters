@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.5 2009/04/07 16:27:37 habile Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.6 2009/05/30 18:32:52 wjames5 Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
  *
- * $Id: BitNewsletterMailer.php,v 1.5 2009/04/07 16:27:37 habile Exp $
+ * $Id: BitNewsletterMailer.php,v 1.6 2009/05/30 18:32:52 wjames5 Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.5 $ $Date: 2009/04/07 16:27:37 $ $Author: habile $
+ * @version $Revision: 1.6 $ $Date: 2009/05/30 18:32:52 $ $Author: wjames5 $
  */
 
 /**
@@ -171,6 +171,7 @@ class BitNewsletterMailer {
 				$mailer->FromName = $gBitSystem->getConfig( 'bitmailer_from', $gBitSystem->getConfig( 'site_title' ) );
 				$mailer->Host     = $gBitSystem->getConfig( 'bitmailer_servers', $gBitSystem->getConfig( 'kernel_server_name', '127.0.0.1' ) );
 				$mailer->Mailer   = $gBitSystem->getConfig( 'bitmailer_protocol', 'smtp' ); // Alternative to IsSMTP()
+				$mailer->CharSet  = 'UTF-8';
 				if( $gBitSystem->getConfig( 'bitmailer_smtp_username' ) ) {
 					$mailer->SMTPAuth = TRUE;
 					$mailer->Username = $gBitSystem->getConfig( 'bitmailer_smtp_username' );
