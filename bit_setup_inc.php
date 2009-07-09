@@ -31,6 +31,7 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 		if( is_a( $pObject, 'BitUser' ) && !empty( $pObject->mUserId ) ) {
 			$pObject->mDb->StartTrans();
 			$pObject->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE user_id=?", array( $pObject->mUserId ) );
+			$pObject->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE user_id=?", array( $pObject->mUserId ) );
 			$pObject->mDb->CompleteTrans();
 		}
 	}
