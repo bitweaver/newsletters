@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.33 2009/04/02 14:08:08 bitweaver Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.34 2009/10/01 13:45:44 wjames5 Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: BitNewsletter.php,v 1.33 2009/04/02 14:08:08 bitweaver Exp $
+ * $Id: BitNewsletter.php,v 1.34 2009/10/01 13:45:44 wjames5 Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.33 $ $Date: 2009/04/02 14:08:08 $ $Author: bitweaver $
+ * @version $Revision: 1.34 $ $Date: 2009/10/01 13:45:44 $ $Author: wjames5 $
  */
 
 /**

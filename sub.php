@@ -1,9 +1,9 @@
 <?php
 /**
- * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.9 2009/04/01 15:57:52 bitweaver Exp $
+ * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.10 2009/10/01 13:45:45 wjames5 Exp $
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
  * created 2005/12/10
  *
