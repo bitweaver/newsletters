@@ -38,13 +38,19 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 	}
 	
 	function newsletters_user_register( &$pObject ) {
-		if( !empty($_REQUEST['unsubscribe']) ){
 			require_once NEWSLETTERS_PKG_PATH.'BitNewsletter.php';
 			$newsletter = new BitNewsletter();
-			foreach ( $_REQUEST['unsubscribe'] as $nl_id ){
-				$newsletter->unsubscribe($nl_id,false);
+			$pParamHash = array();
+			$newsletters = $newsletter->getList($pParamHash);
+			foreach ($newsletters as $nl){
+				if(!empty($_REQUEST['subscribe'])){//we want to stay in at least one, which requires more complicated checking
+					if( !in_array($nl['nl_id'], $_REQUEST['subscribe'])){ //not checked, implies unsubscribe
+						$newsletter->unsubscribe($nl['nl_id'],false);
+					}
+				}else{ //we wish to unsubscribe from all newsletters
+					$newsletter->unsubscribe($nl['nl_id'],false);
+				}
 			}
-		}
 	}
 }
 ?>
