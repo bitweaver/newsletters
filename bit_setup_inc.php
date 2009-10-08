@@ -24,6 +24,7 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 
 	$gLibertySystem->registerService( LIBERTY_SERVICE_NEWSLETTERS, NEWSLETTERS_PKG_NAME, array(
 			'users_expunge_function'	=> 'newsletters_user_expunge',
+			'users_register_function'   => 'newsletters_user_register',
 	) );
 
 	// make sure all mail_queue messages from a deleted user are nuked
@@ -33,6 +34,16 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 			$pObject->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE user_id=?", array( $pObject->mUserId ) );
 			$pObject->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE user_id=?", array( $pObject->mUserId ) );
 			$pObject->mDb->CompleteTrans();
+		}
+	}
+	
+	function newsletters_user_register( &$pObject ) {
+		if( !empty($_REQUEST['unsubscribe']) ){
+			require_once NEWSLETTERS_PKG_PATH.'BitNewsletter.php';
+			$newsletter = new BitNewsletter();
+			foreach ( $_REQUEST['unsubscribe'] as $nl_id ){
+				$newsletter->unsubscribe($nl_id,false);
+			}
 		}
 	}
 }
