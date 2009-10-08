@@ -19,7 +19,8 @@ for (var i = 0; i < checkboxes.length; i++){
 	{foreach from=$newsletters item='newsletter'}
 		<input type="checkbox" checked="true" name="subscribe[]" value="{$newsletter.nl_id}"/><strong>{$newsletter.title}</strong><br/>
 	{/foreach}
-		<input type="checkbox" onclick="unsubscribe_all();"/><strong>Unsubscribe All</strong><br/>
 	{formhelp note="Uncheck the boxes to opt-out of the specified newsletter."}
+		<input type="checkbox" onclick="unsubscribe_all();"/><strong>Unsubscribe All</strong><br/>
+	{formhelp note="Check this box to unsubscribe from all of the above newsletters."}
 	{/forminput}
 </div>
