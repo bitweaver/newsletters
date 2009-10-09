@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.35 2009/10/01 14:17:02 wjames5 Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.36 2009/10/09 15:59:20 tylerbello Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: BitNewsletter.php,v 1.35 2009/10/01 14:17:02 wjames5 Exp $
+ * $Id: BitNewsletter.php,v 1.36 2009/10/09 15:59:20 tylerbello Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.35 $ $Date: 2009/10/01 14:17:02 $ $Author: wjames5 $
+ * @version $Revision: 1.36 $ $Date: 2009/10/09 15:59:20 $ $Author: tylerbello $
  */
 
 /**
@@ -232,7 +232,7 @@ class BitNewsletter extends LibertyContent {
 		}
 
 		if( !empty( $subRow ) ) {
-			$this->mContentId = $res['content_id'];
+			$this->mContentId = $subRow['content_id'];
 			$this->load();
 			if( $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `$subRow[col_name]`=?", array( $subRow['col_val'] ) ) ) {
 				$query = "UPDATE `".BIT_DB_PREFIX."mail_subscriptions` SET `unsubscribe_date`=?, `content_id`=? WHERE `$subRow[col_name]`=? AND `unsubscribe_date` IS NULL";
