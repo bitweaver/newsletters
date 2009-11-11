@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.8 2009/10/01 14:17:02 wjames5 Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.9 2009/11/11 22:47:03 lsces Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: BitNewsletterMailer.php,v 1.8 2009/10/01 14:17:02 wjames5 Exp $
+ * $Id: BitNewsletterMailer.php,v 1.9 2009/11/11 22:47:03 lsces Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.8 $ $Date: 2009/10/01 14:17:02 $ $Author: wjames5 $
+ * @version $Revision: 1.9 $ $Date: 2009/11/11 22:47:03 $ $Author: lsces $
  */
 
 /**
@@ -85,7 +85,7 @@ class BitNewsletterMailer {
 						$lookupCol = 'email';
 						$bindVars[]  = $email;
 					}
-					$rs = $this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `queue_date`=?, `begin_date`=NULL, `sent_date`=NULL, `last_read_date`=NULL, `mail_error`=NULL, `reads`=0 WHERE `content_id`=? AND `$lookupCol`=?", array( $bindVars ) );
+					$rs = $this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `queue_date`=?, `begin_date`=NULL, `sent_date`=NULL, `last_read_date`=NULL, `mail_error`=NULL, `hits`=0 WHERE `content_id`=? AND `$lookupCol`=?", array( $bindVars ) );
 					$ret++;
 				}
 			}
@@ -206,7 +206,7 @@ class BitNewsletterMailer {
 
 	function trackMail( $pUrlCode ) {
 		global $gBitDb;
-		$query = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `reads`=`reads`+1, `last_read_date`=?, `last_read_ip`=? WHERE `url_code`=? ";
+		$query = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `hits`=`hits`+1, `last_read_date`=?, `last_read_ip`=? WHERE `url_code`=? ";
 		$gBitDb->query( $query, array( time(), $_SERVER['REMOTE_ADDR'], $pUrlCode ) );
 	}
 
