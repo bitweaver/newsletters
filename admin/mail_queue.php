@@ -4,7 +4,7 @@ if( !empty( $_REQUEST['batch_command'] ) && $_REQUEST['batch_command'] == 'send'
 	$_REQUEST['uri_mode'] = TRUE;
 }
 
-require_once( '../../bit_setup_inc.php' );
+require_once( '../../kernel/setup_inc.php' );
 
 $gBitSystem->verifyPermission( 'p_mail_admin' );
 $gBitSystem->verifyPermission( 'newsletters' );

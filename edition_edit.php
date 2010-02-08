@@ -14,7 +14,7 @@
 /** 
  * Initialization
  */
-require_once( '../bit_setup_inc.php' );
+require_once( '../kernel/setup_inc.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
 $gBitSystem->verifyPermission( 'p_newsletters_create_editions' );
 

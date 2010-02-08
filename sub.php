@@ -1,6 +1,6 @@
 <?php
 /**
- * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.11 2009/10/01 14:17:02 wjames5 Exp $
+ * @version		$Header: /cvsroot/bitweaver/_bit_newsletters/sub.php,v 1.12 2010/02/08 21:27:24 wjames5 Exp $
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
@@ -14,7 +14,7 @@
 /** 
  * Initialization
  */
-require_once( '../bit_setup_inc.php' );
+require_once( '../kernel/setup_inc.php' );
 include_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
