@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.14 2010/02/08 21:27:24 wjames5 Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.15 2010/02/14 21:47:54 spiderr Exp $
  * 
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
@@ -40,6 +40,7 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 	}
 } elseif (isset($_REQUEST["save"])) {
 	$sid = $gContent->store( $_REQUEST );
+	$gContent->storePreference( 'registration_optin', !empty( $_REQUEST['registration_optin'] ) ? $_REQUEST['registration_optin'] : NULL );
 	header( "Location: ".$_SERVER['PHP_SELF'] );
 	die;
 } elseif( !empty( $_REQUEST['cancel'] ) ) {

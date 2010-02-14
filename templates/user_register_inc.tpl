@@ -1,3 +1,4 @@
+{if $newsletters}
 <script type = "text/javascript">
 {literal}
 function unsubscribe_all(){
@@ -24,3 +25,4 @@ for (var i = 0; i < checkboxes.length; i++){
 	{formhelp note="Check this box to unsubscribe from all of the above newsletters."}
 	{/forminput}
 </div>
+{/if}

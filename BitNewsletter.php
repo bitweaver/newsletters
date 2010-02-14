@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.36 2009/10/09 15:59:20 tylerbello Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.37 2010/02/14 21:47:54 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: BitNewsletter.php,v 1.36 2009/10/09 15:59:20 tylerbello Exp $
+ * $Id: BitNewsletter.php,v 1.37 2010/02/14 21:47:54 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.36 $ $Date: 2009/10/09 15:59:20 $ $Author: tylerbello $
+ * @version $Revision: 1.37 $ $Date: 2010/02/14 21:47:54 $ $Author: spiderr $
  */
 
 /**
@@ -280,6 +280,7 @@ class BitNewsletter extends LibertyContent {
 		}
 		BitBase::prepGetList( $pListHash );
 		$bindVars = array();
+		$joinSql = '';
 		$mid = '';
 
 		if( @BitBase::verifyId( $pListHash['nl_id'] ) ) {
@@ -294,8 +295,13 @@ class BitNewsletter extends LibertyContent {
 			$bindVars[] = $findesc;
 		}
 
+		if( !empty( $pListHash['registration_optin'] ) ) {
+			$joinSql = " INNER JOIN `".BIT_DB_PREFIX."liberty_content_prefs` lcp ON (lcp.`content_id`=n.`content_id` AND lcp.`pref_name`='registration_optin' AND lcp.`pref_value`='y') ";
+		}
+
 		$query = "SELECT *
 				  FROM `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( n.`content_id`=lc.`content_id`)
+					$joinSql
 				  WHERE n.`content_id`=lc.`content_id` $mid
 				  ORDER BY ".$gBitDb->convertSortmode( $pListHash['sort_mode'] );
 		$result = $gBitDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );

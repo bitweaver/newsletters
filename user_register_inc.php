@@ -2,7 +2,7 @@
 
 require_once NEWSLETTERS_PKG_PATH.'BitNewsletter.php';
 
-$listHash = array();
+$listHash = array( 'registration_optin' => TRUE );
 
 $newsletters = BitNewsletter::getList( $listHash );
 
