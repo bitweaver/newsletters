@@ -1,4 +1,5 @@
 {if $newsletters}
+<input type="hidden" name="newsletter_optin" value="y"/>
 <script type = "text/javascript">
 {literal}
 function unsubscribe_all(){
