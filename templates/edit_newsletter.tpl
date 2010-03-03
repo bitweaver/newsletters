@@ -66,7 +66,7 @@
 					{formlabel label="Registration Opt-In" for="registration_optin"}
 					{forminput}
 						<input type="checkbox" name="registration_optin" id="registration_optin" {if $gContent->getPreference('registration_optin') eq 'y'}checked="checked"{/if} value="y"/>
-						{formhelp note="List this newsletter on the registration page and allow user to joing newsletter."}
+						{formhelp note="List this newsletter on the registration page and allow user to join newsletter."}
 					{/forminput}
 				</div>
 
