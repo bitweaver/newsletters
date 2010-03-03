@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.9 2009/11/11 22:47:03 lsces Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.10 2010/03/03 21:26:18 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: BitNewsletterMailer.php,v 1.9 2009/11/11 22:47:03 lsces Exp $
+ * $Id: BitNewsletterMailer.php,v 1.10 2010/03/03 21:26:18 spiderr Exp $
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.9 $ $Date: 2009/11/11 22:47:03 $ $Author: lsces $
+ * @version $Revision: 1.10 $ $Date: 2010/03/03 21:26:18 $ $Author: spiderr $
  */
 
 /**
@@ -280,6 +280,16 @@ class BitNewsletterMailer {
 				}
 				$gBitDb->associateInsert( BIT_DB_PREFIX."mail_subscriptions", $storeHash );
 			}
+		} elseif( !empty( $pSubHash['unsubscribe_all'] ) ) {
+			// unsub all with no reference content_id
+			$storeHash = array();
+			$storeHash['unsubscribe_all'] = !empty( $pSubHash['unsubscribe_all'] ) ? 'y' : NULL;
+			$storeHash['unsubscribe_date'] = time();
+			$storeHash[key( $pSubHash['sub_lookup'] )] = current( $pSubHash['sub_lookup'] );
+			if( !empty( $pSubHash['response_content_id'] ) ) {
+				$storeHash['response_content_id'] = $pSubHash['response_content_id'];
+			}
+			$gBitDb->associateInsert( BIT_DB_PREFIX."mail_subscriptions", $storeHash );
 		}
 		return $ret;
 	}
