@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.37 2010/02/14 21:47:54 spiderr Exp $
+ * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletter.php,v 1.38 2010/03/03 21:23:32 spiderr Exp $
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: BitNewsletter.php,v 1.37 2010/02/14 21:47:54 spiderr Exp $
+ * $Id: BitNewsletter.php,v 1.38 2010/03/03 21:23:32 spiderr Exp $
  *
  * Virtual base class (as much as one can have such things in PHP) for all
  * derived tikiwiki classes that require database access.
@@ -16,7 +16,7 @@
  *
  * @author drewslater <andrew@andrewslater.com>, spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.37 $ $Date: 2010/02/14 21:47:54 $ $Author: spiderr $
+ * @version $Revision: 1.38 $ $Date: 2010/03/03 21:23:32 $ $Author: spiderr $
  */
 
 /**
@@ -223,9 +223,9 @@ class BitNewsletter extends LibertyContent {
 				$subRow['col_name'] = 'user_id';
 				$subRow['col_val'] = $gBitUser->mUserId;
 			}
-		} elseif( $pUrlCode ) {
+		} elseif( is_string( $pMixed ) ) {
 			$query = "SELECT * FROM `".BIT_DB_PREFIX."mail_queue` WHERE `url_code`=?";
-			if( $subRow = $this->mDb->getRow( $query, array( $pUrlCode ) ) ) {
+			if( $subRow = $this->mDb->getRow( $query, array( $pMixed ) ) ) {
 				$subRow['col_name'] = !empty( $subRow['user_id'] ) ? 'user_id' : 'email';
 				$subRow['col_val'] = !empty( $subRow['user_id'] ) ? $subRow['user_id'] : $subRow['email'];
 			}
