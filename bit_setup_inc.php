@@ -41,19 +41,25 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 		if( !empty( $_REQUEST['newsletter_optin'] ) ) {
 			// hidden flag to indicate at least one newsletter was displayed
 			require_once NEWSLETTERS_PKG_PATH.'BitNewsletter.php';
-			$newsletter = new BitNewsletter();
-			$pParamHash = array();
-			$newsletters = $newsletter->getList($pParamHash);
-			foreach ($newsletters as $nl){
-				if( !empty( $_REQUEST['subscribe'] ) ){
-					// we want to stay in at least one, which requires more complicated checking
-					if( !in_array($nl['nl_id'], $_REQUEST['subscribe'])){ //not checked, implies unsubscribe
-						$newsletter->unsubscribe($nl['nl_id'],false);
+			require_once NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php';
+
+			if( !empty( $_REQUEST['unsub_all'] ) ) {
+				$subHash['unsubscribe_all'] = 'y';
+			} else {
+				$newsletter = new BitNewsletter();
+				$pParamHash = array();
+				$newsletters = $newsletter->getList($pParamHash);
+				foreach( array_keys( $newsletters ) as $nlContentId ) {
+					if( empty( $_REQUEST['nl_content_id'] ) || !in_array( $nlContentId, $_REQUEST['nl_content_id'] ) ) {
+						$subHash['unsub_content'][] = $nlContentId;
+						$subHash['unsubscribe_all'] = NULL;
 					}
-				} else { 
-					//we wish to unsubscribe from all newsletters
-					$newsletter->unsubscribe($nl['nl_id'],false);
 				}
+			}
+
+			if( !empty( $subHash ) ) {
+				$subHash['sub_lookup'] = array( 'user_id' => $pObject->mUserId );
+				BitNewsletterMailer::storeSubscriptions( $subHash );
 			}
 		}
 	}
