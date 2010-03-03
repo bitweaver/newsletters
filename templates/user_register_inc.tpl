@@ -21,9 +21,11 @@ for (var i = 0; i < checkboxes.length; i++){
 	{foreach from=$newsletters item='newsletter'}
 		<input type="checkbox" checked="true" name="subscribe[]" onclick="document.getElementById('unsubscribeall').checked=false;" value="{$newsletter.nl_id}"/><strong>{$newsletter.title}</strong><br/>
 	{/foreach}
-	{formhelp note="Uncheck the boxes to opt-out of the specified newsletter."}
-		<input type="checkbox" name="unsub_all" value="y" id="unsubscribeall" onclick="unsubscribe_all();"/><strong>Unsubscribe All</strong><br/>
-	{formhelp note="Check this box to unsubscribe from all of the above newsletters."}
+	{formhelp note="Uncheck the box to opt-out of the specified newsletter."}
+	{if count($newsletters) > 1}
+			<input type="checkbox" name="unsub_all" value="y" id="unsubscribeall" onclick="unsubscribe_all();"/><strong>Unsubscribe All</strong><br/>
+		{formhelp note="Check this box to unsubscribe from all of the above newsletters."}
+	{/if}
 	{/forminput}
 </div>
 {/if}
