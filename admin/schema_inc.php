@@ -120,4 +120,7 @@ $gBitInstaller->registerUserPermissions( NEWSLETTERS_PKG_NAME, array(
 	array('p_newsletters_subscribe_email', 'Can subscribe any email to newsletters', 'editors', 'newsletters'),
 ) );
 
-?>
+// Requirements
+$gBitInstaller->registerRequirements( NEWSLETTERS_PKG_NAME, array(
+    'liberty' => array( 'min' => '2.1.4' ),
+));

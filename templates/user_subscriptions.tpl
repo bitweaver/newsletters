@@ -15,7 +15,7 @@
 <em>
 			{formlabel label="In Response To"}
 			{forminput}
-				{tr}{$subInfo.content_description}{/tr}: {$subInfo.title|escape}
+				{tr}{$subInfo.content_name}{/tr}: {$subInfo.title|escape}
 			{/forminput}
 </em>
 		</div>
