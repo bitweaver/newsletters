@@ -1,12 +1,12 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/BitNewsletterMailer.php,v 1.10 2010/03/03 21:26:18 spiderr Exp $
+ * $Header$
  *
  * Copyright (c) 2004 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
- * $Id: BitNewsletterMailer.php,v 1.10 2010/03/03 21:26:18 spiderr Exp $
+ * $Id$
  *
  * Class that handles editions of newsletters
  * @package newsletters
@@ -15,7 +15,7 @@
  *
  * @author spiderr <spider@steelsun.com>
  *
- * @version $Revision: 1.10 $ $Date: 2010/03/03 21:26:18 $ $Author: spiderr $
+ * @version $Revision$
  */
 
 /**

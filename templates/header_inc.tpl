@@ -1,4 +1,4 @@
-{* $Header: /cvsroot/bitweaver/_bit_newsletters/templates/header_inc.tpl,v 1.2 2007/01/06 06:22:12 spiderr Exp $ *}
+{* $Header$ *}
 {strip}
 {* this can totally screw up commerce. need to activate this only when rendering a newsletter to be mailed
 {if $gBitSystem->isPackageActive( 'newsletters' )}

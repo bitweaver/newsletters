@@ -1,5 +1,5 @@
 <?php
-// $Header: /cvsroot/bitweaver/_bit_newsletters/admin/admin_newsletters_inc.php,v 1.7 2008/01/02 18:26:31 spiderr Exp $
+// $Header$
 
 $formNewsletterFeatures = array(
 	"bitmailer_sender_email" => array(

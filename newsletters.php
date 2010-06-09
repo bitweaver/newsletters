@@ -1,6 +1,6 @@
 <?php
 /**
- * $Header: /cvsroot/bitweaver/_bit_newsletters/newsletters.php,v 1.15 2010/02/14 21:47:54 spiderr Exp $
+ * $Header$
  * 
  * Copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
