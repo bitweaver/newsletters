@@ -123,17 +123,14 @@ class BitNewsletterEdition extends LibertyMime {
 	 * @param	object	PostId of the item to use
 	 * @return	object	Url String
 	 */
-	function getDisplayUrl( $pEditionId=NULL ) {
+	function getDisplayUrlFromHash( $pHash ) {
 		$ret = NULL;
-		if( !BitBase::verifyId( $pEditionId ) ) {
-			$pEditionId = $this->mEditionId;
-		}
 		global $gBitSystem;
-		if( BitBase::verifyId( $pEditionId ) ) {
+		if( BitBase::verifyId( $pHash['edition_id'] ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = NEWSLETTERS_PKG_URL.'edition/'.$pEditionId;
+				$ret = NEWSLETTERS_PKG_URL.'edition/'.$pHash['edition_id'];
 			} else {
-				$ret = NEWSLETTERS_PKG_URL.'edition.php?edition_id='.$pEditionId;
+				$ret = NEWSLETTERS_PKG_URL.'edition.php?edition_id='.$pHash['edition_id'];
 			}
 		} else {
 			$ret = NEWSLETTERS_PKG_URL.'edition.php';
@@ -170,7 +167,7 @@ class BitNewsletterEdition extends LibertyMime {
 		$query_cant = "select count(*) from `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."newsletters_editions` ne ON(n.`content_id`=ne.`nl_content_id`) $mid";
 		$ret = $gBitDb->getAssoc( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 		foreach( array_keys( $ret ) as $k ) {
-			$ret[$k]['display_url'] = BitNewsletterEdition::getDisplayUrl( $k );
+			$ret[$k]['display_url'] = BitNewsletterEdition::getDisplayUrlFromHash( $ret[$k] );
 			// remove formating tags
 			$data = preg_replace( '/{[^{}]*}/', '', $ret[$k]['data'] );
 //			$ret[$k]['parsed'] = BitNewsletterEdition::parseData( $data, $ret[$k]['format_guid'] );

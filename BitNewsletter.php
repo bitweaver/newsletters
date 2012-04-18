@@ -310,7 +310,7 @@ class BitNewsletter extends LibertyContent {
 
 		$ret = array();
 		while( $res = $result->fetchRow() ) {
-			$res['display_url'] = BitNewsletter::getDisplayUrl( $res['nl_id'] );
+			$res['display_url'] = BitNewsletter::getDisplayUrlFromHash( $res );
 			$res["confirmed"] = $gBitDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `unsubscribe_date` IS NULL and `content_id`=?",array( (int)$res['content_id'] ) );
 			$res["unsub_count"] = $gBitDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `content_id`=?",array( (int)$res['content_id'] ) );
 			$ret[$res['content_id']] = $res;
@@ -379,17 +379,14 @@ class BitNewsletter extends LibertyContent {
 	 * @param	object	$pNewsletterId of the item to use
 	 * @return	object	Url String
 	 */
-	function getDisplayUrl( $pNewsletterId=NULL ) {
+	function getDisplayUrlFromHash( $pHash ) {
 		global $gBitSystem;
 		$ret = NULL;
-		if( !BitBase::verifyId( $pNewsletterId ) ) {
-			$pNewsletterId = $this->mNewsletterId;
-		}
-		if( BitBase::verifyId( $pNewsletterId ) ) {
+		if( BitBase::verifyId( $pHash['newsletter_id'] ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
 				$ret = NEWSLETTERS_PKG_URL.$pNewsletterId;
 			} else {
-				$ret = NEWSLETTERS_PKG_URL.'index.php?nl_id='.$pNewsletterId;
+				$ret = NEWSLETTERS_PKG_URL.'index.php?nl_id='.$pHash['newsletter_id'];
 			}
 		} else {
 			$ret = NEWSLETTERS_PKG_URL.'index.php';
