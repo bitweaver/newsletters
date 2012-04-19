@@ -379,7 +379,7 @@ class BitNewsletter extends LibertyContent {
 	 * @param	object	$pNewsletterId of the item to use
 	 * @return	object	Url String
 	 */
-	function getDisplayUrlFromHash( $pHash ) {
+	public static function getDisplayUrlFromHash( $pHash ) {
 		global $gBitSystem;
 		$ret = NULL;
 		if( BitBase::verifyId( $pHash['newsletter_id'] ) ) {

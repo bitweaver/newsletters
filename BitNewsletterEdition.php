@@ -123,7 +123,7 @@ class BitNewsletterEdition extends LibertyMime {
 	 * @param	object	PostId of the item to use
 	 * @return	object	Url String
 	 */
-	function getDisplayUrlFromHash( $pHash ) {
+	public static function getDisplayUrlFromHash( $pHash ) {
 		$ret = NULL;
 		global $gBitSystem;
 		if( BitBase::verifyId( $pHash['edition_id'] ) ) {
