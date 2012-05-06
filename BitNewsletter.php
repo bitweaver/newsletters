@@ -31,8 +31,8 @@ define( 'BITNEWSLETTER_CONTENT_TYPE_GUID', 'bitnewsletter' );
  * @package newsletters
  */
 class BitNewsletter extends LibertyContent {
-	function BitNewsletter( $pNlId=NULL, $pContentId=NULL ) {
-		parent::LibertyContent();
+	function __construct( $pNlId=NULL, $pContentId=NULL ) {
+		parent::__construct();
 		$this->registerContentType( BITNEWSLETTER_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => BITNEWSLETTER_CONTENT_TYPE_GUID,
 			'content_name' => 'Newsletter',

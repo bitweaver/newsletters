@@ -30,8 +30,8 @@ define( 'BITNEWSLETTEREDITION_CONTENT_TYPE_GUID', 'bitnewsletteredn' );
  * @package newsletters
  */
 class BitNewsletterEdition extends LibertyMime {
-	function BitNewsletterEdition( $pEditionId=NULL, $pContentId=NULL, $pNlId=NULL ) {
-		parent::LibertyContent();
+	function __construct( $pEditionId=NULL, $pContentId=NULL, $pNlId=NULL ) {
+		parent::__construct();
 		$this->registerContentType( BITNEWSLETTEREDITION_CONTENT_TYPE_GUID, array(
 			'content_type_guid' => BITNEWSLETTEREDITION_CONTENT_TYPE_GUID,
 			'content_name' => 'Edition',
