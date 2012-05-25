@@ -138,7 +138,7 @@ class BitNewsletterMailer {
 					$body[$pick['content_id']]['reply_to'] = $content->getField( 'reply_to', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
 					$body[$pick['content_id']]['object'] = $content;
 				} else {
-					bit_log_error( $this->mErrors );
+					bit_error_log( $this->mErrors );
 				}
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
 			}
