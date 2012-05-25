@@ -32,7 +32,7 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 	}
 } elseif (isset($_REQUEST["save"])) {
 	$sid = $gContent->store( $_REQUEST );
-	header( "Location: ".$_SERVER['PHP_SELF'] );
+	header( "Location: ".$_SERVER['SCRIPT_NAME'] );
 	die;
 }
 

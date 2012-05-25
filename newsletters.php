@@ -41,7 +41,7 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 } elseif (isset($_REQUEST["save"])) {
 	$sid = $gContent->store( $_REQUEST );
 	$gContent->storePreference( 'registration_optin', !empty( $_REQUEST['registration_optin'] ) ? $_REQUEST['registration_optin'] : NULL );
-	header( "Location: ".$_SERVER['PHP_SELF'] );
+	header( "Location: ".$_SERVER['SCRIPT_NAME'] );
 	die;
 } elseif( !empty( $_REQUEST['cancel'] ) ) {
 	bit_redirect( NEWSLETTERS_PKG_URL );
