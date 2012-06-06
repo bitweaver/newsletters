@@ -379,14 +379,14 @@ class BitNewsletter extends LibertyContent {
 	 * @param	object	$pNewsletterId of the item to use
 	 * @return	object	Url String
 	 */
-	public static function getDisplayUrlFromHash( $pHash ) {
+	public static function getDisplayUrlFromHash( $pParamHash ) {
 		global $gBitSystem;
 		$ret = NULL;
-		if( BitBase::verifyId( $pHash['newsletter_id'] ) ) {
+		if( BitBase::verifyId( $pParamHash['nl_id'] ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = NEWSLETTERS_PKG_URL.$pNewsletterId;
+				$ret = NEWSLETTERS_PKG_URL.$pParamHash['nl_id'];
 			} else {
-				$ret = NEWSLETTERS_PKG_URL.'index.php?nl_id='.$pHash['newsletter_id'];
+				$ret = NEWSLETTERS_PKG_URL.'index.php?nl_id='.$pParamHash['nl_id'];
 			}
 		} else {
 			$ret = NEWSLETTERS_PKG_URL.'index.php';
@@ -419,4 +419,3 @@ class BitNewsletter extends LibertyContent {
 
 }
 
-?>
