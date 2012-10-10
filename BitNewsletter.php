@@ -51,7 +51,7 @@ class BitNewsletter extends LibertyContent {
 		$this->mAdminContentPerm = 'p_newsletters_admin';
 	}
 
-	function load( $pUserId = NULL ) {
+	function load( $pContentId = NULL, $pPluginParams = NULL ) {
 		if( $this->verifyId( $this->mNewsletterId ) || $this->verifyId( $this->mContentId ) ) {
 			global $gBitSystem;
 
@@ -62,12 +62,12 @@ class BitNewsletter extends LibertyContent {
 
 			$this->getServicesSql( 'content_load_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
-			if( $pUserId ) {
+/*			if( $pUserId ) {
 				error_log( 'BitNewsleters: user id loading not implemented yet' );
 				$whereSql = "";
 				$joinSql = "";
 			}
-
+*/
 			$query = "SELECT * $selectSql
 					  FROM `".BIT_DB_PREFIX."newsletters` n
 					  	INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( n.`content_id`=lc.`content_id` )
@@ -273,7 +273,7 @@ class BitNewsletter extends LibertyContent {
 	}
 */
 
-	function getList( &$pListHash ) {
+	public static function getList( &$pListHash ) {
 		global $gBitDb;
 		if ( empty( $pParamHash["sort_mode"] ) ) {
 			$pListHash['sort_mode'] = 'created_desc';
@@ -379,7 +379,7 @@ class BitNewsletter extends LibertyContent {
 	 * @param	object	$pNewsletterId of the item to use
 	 * @return	object	Url String
 	 */
-	public static function getDisplayUrlFromHash( $pParamHash ) {
+	public static function getDisplayUrlFromHash( &$pParamHash ) {
 		global $gBitSystem;
 		$ret = NULL;
 		if( BitBase::verifyId( $pParamHash['nl_id'] ) ) {

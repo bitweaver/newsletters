@@ -64,7 +64,7 @@ class BitNewsletterEdition extends LibertyMime {
 		return( count( $this->mErrors ) == 0 );
 	}
 
-	function store( $pParamHash ) {
+	function store( &$pParamHash ) {
 		if( $this->verify( $pParamHash ) ) {
 			$this->mDb->StartTrans();
 			if( parent::store( $pParamHash ) ) {
@@ -83,7 +83,7 @@ class BitNewsletterEdition extends LibertyMime {
 		return( count( $this->mErrors ) == 0 );
 	}
 
-	function load() {
+	function load( $pContentId = NULL, $pPluginParams = NULL ) {
 		if( $this->verifyId( $this->mEditionId ) || $this->verifyId( $this->mContentId ) ) {
 			global $gBitSystem;
 
@@ -123,14 +123,14 @@ class BitNewsletterEdition extends LibertyMime {
 	 * @param	object	PostId of the item to use
 	 * @return	object	Url String
 	 */
-	public static function getDisplayUrlFromHash( $pHash ) {
+	public static function getDisplayUrlFromHash( &$pParamHash ) {
 		$ret = NULL;
 		global $gBitSystem;
-		if( BitBase::verifyId( $pHash['edition_id'] ) ) {
+		if( BitBase::verifyId( $pParamHash['edition_id'] ) ) {
 			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = NEWSLETTERS_PKG_URL.'edition/'.$pHash['edition_id'];
+				$ret = NEWSLETTERS_PKG_URL.'edition/'.$pParamHash['edition_id'];
 			} else {
-				$ret = NEWSLETTERS_PKG_URL.'edition.php?edition_id='.$pHash['edition_id'];
+				$ret = NEWSLETTERS_PKG_URL.'edition.php?edition_id='.$pParamHash['edition_id'];
 			}
 		} else {
 			$ret = NEWSLETTERS_PKG_URL.'edition.php';
