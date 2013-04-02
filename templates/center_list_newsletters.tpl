@@ -74,7 +74,7 @@
 							<strong>{biticon ipackage="icons" iname="dialog-cancel" iexplain="Success" iforce="icon"}{tr}Unsubscribed{/tr}: {$subs.$nlId.unsubscribe_date|bit_short_date}</strong><br/>
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}sub.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
 						{elseif $subs.$nlId}
-							<strong>{biticon ipackage="icons" iname="dialog-ok" iexplain="Success" iforce="icon"}{tr}Subscribed{/tr}: {$subs.$nlId.subscribed_date|bit_short_date}</strong><br/>
+							<strong>{booticon iname="icon-ok"  ipackage="icons"  iexplain="Success" iforce="icon"}{tr}Subscribed{/tr}: {$subs.$nlId.subscribed_date|bit_short_date}</strong><br/>
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}sub.php?nl_id={$nl.nl_id}&amp;unsub=1">{tr}Unsubscribe{/tr}</a>
 						{else}
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}sub.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>

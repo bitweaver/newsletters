@@ -8,9 +8,9 @@
 		{/if}
 
 		{if $gBitUser->hasPermission( 'p_liberty_print' )}
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}print_blog_post.php?post_id={$post_id}">{biticon ipackage="icons" iname="document-print" iexplain="print"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}print_blog_post.php?post_id={$post_id}">{booticon iname="icon-print"  ipackage="icons"  iexplain="print"}</a>
 		{/if}
-		<a href="{$smarty.const.NEWSLETTERS_PKG_URL}send_newsletter.php?post_id={$post_id}">{biticon ipackage="icons" iname="mail-forward" iexplain="email this post"}</a>
+		<a href="{$smarty.const.NEWSLETTERS_PKG_URL}send_newsletter.php?post_id={$post_id}">{booticon iname="icon-envelope"  ipackage="icons"  iexplain="email this post"}</a>
 	</div>
 
 	<div class="header">
