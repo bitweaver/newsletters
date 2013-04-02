@@ -14,7 +14,7 @@
 				{/if}
 				<input type="hidden" name="nl_id" value="{$gContent->mNewsletterId}" />
 
-				<div class="row">
+				<div class="control-group">
 					{formlabel label="Title" for="title"}
 					{forminput}
 						<input type="text" name="title" id="title" value="{$gContent->mInfo.title|escape}" />
@@ -22,7 +22,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row">
+				<div class="control-group">
 					{formlabel label="Description" for="description"}
 					{forminput}
 						<textarea name="edit" rows="4" cols="40" id="description">{$gContent->mInfo.data|escape}</textarea>
@@ -30,7 +30,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row">
+				<div class="control-group">
 					{formlabel label="Users can Subscribe" for="allow_user_sub"}
 					{forminput}
 						<input type="checkbox" name="allow_user_sub" id="allow_user_sub" {if !$gContent->isValid() || $gContent->mInfo.allow_user_sub eq 'y'}checked="checked"{/if} />
@@ -38,7 +38,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row">
+				<div class="control-group">
 					{formlabel label="Any e-mail Address" for="allow_any_sub"}
 					{forminput}
 						<input type="checkbox" name="allow_any_sub" id="allow_any_sub" {if !$gContent->isValid() || $gContent->mInfo.allow_any_sub eq 'y'}checked="checked"{/if} />
@@ -46,7 +46,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row">
+				<div class="control-group">
 					{formlabel label="Append Un/Subscribe Instructions" for="unsub_msg"}
 					{forminput}
 						<input type="checkbox" name="unsub_msg" id="unsub_msg" {if !$gContent->isValid() || $gContent->mInfo.unsub_msg eq 'y'}checked="checked"{/if} />
@@ -54,7 +54,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row">
+				<div class="control-group">
 					{formlabel label="Validate e-mail Addresses" for="validate_addr"}
 					{forminput}
 						<input type="checkbox" name="validate_addr" id="validate_addr" {if $gContent->mInfo.validate_addr eq 'y'}checked="checked"{/if} />
@@ -62,7 +62,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row">
+				<div class="control-group">
 					{formlabel label="Registration Opt-In" for="registration_optin"}
 					{forminput}
 						<input type="checkbox" name="registration_optin" id="registration_optin" {if $gContent->getPreference('registration_optin') eq 'y'}checked="checked"{/if} value="y"/>
@@ -70,7 +70,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row submit">
+				<div class="control-group submit">
 					<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
 					<input type="submit" name="save" value="{tr}Save{/tr}" />
 				</div>

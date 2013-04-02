@@ -15,7 +15,7 @@ for (var i = 0; i < checkboxes.length; i++){
 {/literal}
 </script>
 
-<div class="row">
+<div class="control-group">
 	{formlabel label="Subscriptions"}
 	{forminput}
 	{foreach from=$newsletters item='newsletter'}

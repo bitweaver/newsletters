@@ -8,7 +8,7 @@
 
 	<div class="body">
 		{if $feedback}
-			<div class="row">
+			<div class="control-group">
 				{formfeedback hash=$feedback}
 			</div>
 		{/if}
@@ -31,7 +31,7 @@
 
 						{jstab title="Preview Recipient List"}
 							{legend legend="Preview Recipient List"}
-								<div class="row">
+								<div class="control-group">
 									{foreach from=$smarty.request.send_group item=groupId key=i}
 										<input type="hidden" name="send_group[]" value="{$groupId}" />
 									{/foreach}
@@ -49,13 +49,13 @@
 						{/jstab}
 					{/jstabs}
 
-					<div class="row submit">
+					<div class="control-group submit">
 						<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
 						<input type="submit" name="send" value="{tr}Send{/tr}" />
 					</div>
 				{else}
 					{legend legend="Recipient Groups"}
-						<div class="row">
+						<div class="control-group">
 							{formlabel label="Groups"}
 							{forminput}
 								{foreach from=$groupList item=group key=groupId }
@@ -65,7 +65,7 @@
 							{/forminput}
 						</div>
 
-						<div class="row">
+						<div class="control-group">
 							{formlabel label="Send Test"}
 							{forminput}
 								<input type="checkbox" name="test_mode" />
@@ -73,14 +73,14 @@
 							{/forminput}
 						</div>
 {*
-						<div class="row">
+						<div class="control-group">
 							{formlabel label="Only send to validated emails"}
 							{forminput}
 								<input type="checkbox" name="validated" checked="checked" />
 							{/forminput}
 						</div>
 *}
-						<div class="row submit">
+						<div class="control-group submit">
 							<input type="submit" name="preview" value="{tr}Preview{/tr}" />
 						</div>
 					{/legend}

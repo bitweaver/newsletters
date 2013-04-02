@@ -9,7 +9,7 @@
 		{form}
 			<input type="hidden" name="nl_id" value="{$nl_id|escape}" />
 
-			<div class="row">
+			<div class="control-group">
 				{if $gContent->getField('validate_addr') eq 'y'}
 					{formfeedback warning="Validate Email is enabled, a confirmation email will be sent to every subsciber inviting them to the newsletter. <strong>Any duplicate or previously unsubscribed emails will *NOT* be re-subscribed using this method.</strong>"}
 				{else}
@@ -17,7 +17,7 @@
 				{/if}
 			</div>
 
-			<div class="row">
+			<div class="control-group">
 				{formlabel label="New Subscribers" for=""}
 				{forminput}
 					<textarea cols="50" rows="5" name="new_subscribers" id="new_subscribers"></textarea>
@@ -25,7 +25,7 @@
 				{/forminput}
 			</div>
 
-			<div class="row submit">
+			<div class="control-group submit">
 				{forminput}
 					<input type="submit" name="save" value="{tr}Subscribe{/tr}" />
 				{/forminput}

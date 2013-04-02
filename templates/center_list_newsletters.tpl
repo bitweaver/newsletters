@@ -11,14 +11,14 @@
 		{formfeedback hash=$feedback}
 		{if $subscribe eq 'y'}
 			<h2>{tr}Subscribe to Newsletter{/tr}</h2>
-			<div class="row">
+			<div class="control-group">
 				{formlabel label="Name" for=""}
 				{forminput}
 					{$gContent->getTitle()}
 				{/forminput}
 			</div>
 
-			<div class="row">
+			<div class="control-group">
 				{formlabel label="Description" for=""}
 				{forminput}
 					{$gContent->parseData()}
@@ -27,7 +27,7 @@
 			{if ($gContent->getField('allow_user_sub') eq 'y') or $gBitUser->hasPermission( 'p_newsletters_subscribe' )}
 				{form}
 					<input type="hidden" name="nl_id" value="{$gContent->mNewsletterId}" />
-					<div class="row">
+					<div class="control-group">
 						{formlabel label="Email" for=""}
 						{forminput}
 						{if $gBitUser->hasPermission( 'p_newsletters_subscribe_email' )}
@@ -37,7 +37,7 @@
 						{/if}
 						{/forminput}
 					</div>
-					<div class="row submit">
+					<div class="control-group submit">
 						{forminput}
 							<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
 							{if $gContent->getField( 'subscribed_date' )}

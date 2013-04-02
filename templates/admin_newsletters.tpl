@@ -3,7 +3,7 @@
 	{legend legend="Newsletter Mail Server Settings"}
 		<input type="hidden" name="page" value="{$page}" />
 		{foreach from=$formNewsletterFeatures key=item item=output}
-			<div class="row">
+			<div class="control-group">
 				{formlabel label=`$output.label` for=$item}
 				{forminput}
 					<input type="text" name="{$item|escape}" value="{$gBitSystem->getConfig($item,$output.default)|escape}"/>
@@ -12,7 +12,7 @@
 			</div>
 		{/foreach}
 
-		<div class="row submit">
+		<div class="control-group submit">
 			<input type="submit" name="apply" value="{tr}Change preferences{/tr}" />
 		</div>
 	{/legend}
