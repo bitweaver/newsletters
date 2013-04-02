@@ -80,10 +80,10 @@
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}sub.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
 						{/if}
 						{if $gBitUser->hasPermission('p_newsletters_create')}
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="document-new" iexplain="New Edition"}</a>
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?&amp;nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="accessories-text-editor" iexplain=Edit}</a>
-							{if $channels[user].individual eq 'y'}({/if}<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$nl.title|escape}&amp;object_type={$smarty.const.BITNEWSLETTER_CONTENT_TYPE_GUID}&amp;permType=newsletters&amp;object_id={$nlId}">{biticon ipackage="icons" iname="emblem-shared" iexplain=Permissions}</a>{if $nl.individual eq 'y'}){/if}
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?remove=1&amp;nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="edit-delete" iexplain=Remove}</a>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?nl_id={$nl.nl_id}">{booticon iname="icon-file" ipackage="icons" iexplain="New Edition"}</a>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?&amp;nl_id={$nl.nl_id}">{booticon iname="icon-edit" ipackage="icons" iexplain=Edit}</a>
+							{if $channels[user].individual eq 'y'}({/if}<a href="{$smarty.const.KERNEL_PKG_URL}object_permissions.php?objectName=newsletter%20{$nl.title|escape}&amp;object_type={$smarty.const.BITNEWSLETTER_CONTENT_TYPE_GUID}&amp;permType=newsletters&amp;object_id={$nlId}">{booticon iname="icon-key" ipackage="icons" iexplain=Permissions}</a>{if $nl.individual eq 'y'}){/if}
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?remove=1&amp;nl_id={$nl.nl_id}">{booticon iname="icon-trash" ipackage="icons" iexplain=Remove}</a>
 						{/if}
 						</div>
 						<h1>{$nl.title|escape}</h1>

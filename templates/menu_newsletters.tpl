@@ -1,6 +1,6 @@
 {strip}
 <ul>
-	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php">{biticon iname="format-justify-fill" iexplain="List Newsletters" ilocation=menu}</a></li>
+	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php">{booticon iname="icon-list" iexplain="List Newsletters" ilocation=menu}</a></li>
 	{if $gBitUser->hasPermission( 'p_newsletters_create' )}
 		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?new=1">{biticon iname="mail-message-new" iexplain="Create Newsletter" ilocation=menu}</a></li>
 	{/if}
