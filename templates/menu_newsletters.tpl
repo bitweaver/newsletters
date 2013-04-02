@@ -6,7 +6,7 @@
 	{/if}
 	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php">{booticon iname="icon-folder-open"   iexplain="List Editions" ilocation=menu}</a></li>
 	{if $gBitUser->hasPermission( 'p_newsletters_create_editions' )}
-		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php">{booticon iname="icon-edit" iexplain="Create Edition" ilocation=menu}</a></li>
+		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php">{booticon iname="icon-folder-close" iexplain="Create Edition" ilocation=menu}</a></li>
 	{/if}
 	{if $gBitUser->hasPermission( 'p_newsletters_admin' )}
 		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php">{booticon iname="icon-envelope"   iexplain="Send Newsletters" ilocation=menu}</a></li>
