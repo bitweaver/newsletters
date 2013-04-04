@@ -39,11 +39,11 @@
 					</div>
 					<div class="control-group submit">
 						{forminput}
-							<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
+							<input type="submit" class="btn" name="cancel" value="{tr}Cancel{/tr}" />
 							{if $gContent->getField( 'subscribed_date' )}
-								<input type="submit" name="unsubscribe" value="{tr}Unsubscribe{/tr}" />
+								<input type="submit" class="btn" name="unsubscribe" value="{tr}Unsubscribe{/tr}" />
 							{else}
-								<input type="submit" name="subscribe" value="{tr}Subscribe{/tr}" />
+								<input type="submit" class="btn" name="subscribe" value="{tr}Subscribe{/tr}" />
 							{/if}
 						{/forminput}
 					</div>
