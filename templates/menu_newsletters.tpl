@@ -1,5 +1,6 @@
 {strip}
-<ul>
+<a class="dropdown-toggle" data-toggle="dropdown" href="#"> {tr}{$packageMenuTitle}{/tr} <b class="caret"></b></a>
+<ul class="{$packageMenuClass}">
 	<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}index.php">{booticon iname="icon-list" iexplain="List Newsletters" ilocation=menu}</a></li>
 	{if $gBitUser->hasPermission( 'p_newsletters_create' )}
 		<li><a class="item" href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?new=1">{booticon iname="icon-file-alt" iexplain="Create Newsletter" ilocation=menu}</a></li>
