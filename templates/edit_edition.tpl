@@ -74,7 +74,7 @@
 								{formhelp note="This is the email address to which any replies will be sent."}
 							{/forminput}
 						</div>
-					{textarea}{$pageInfo.data}{/textarea}
+					{textarea edit=$pageInfo.data}
 					{/legend}
 				{/jstab}
 
