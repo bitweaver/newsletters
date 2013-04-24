@@ -66,11 +66,10 @@
 						</div>
 
 						<div class="control-group">
-							{formlabel label="Send Test"}
-							{forminput}
-								<input type="checkbox" name="test_mode" />
+							<label class="checkbox">
+								<input type="checkbox" name="test_mode" />Send Test
 								{formhelp note="This will enable you to send the newsletter to the same recipients again."}
-							{/forminput}
+							</label>
 						</div>
 {*
 						<div class="control-group">

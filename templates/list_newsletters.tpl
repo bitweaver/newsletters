@@ -13,7 +13,7 @@
 
 			{minifind}
 
-			<table class="data">
+			<table class="table data">
 				<caption>{tr}Newsletters{/tr}</caption>
 				<tr>
 					<th>{smartlink ititle="Name" isort=name offset=$offset}</th>

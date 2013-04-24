@@ -37,7 +37,7 @@
 		{form id="list"}
 			<input type="hidden" name="nl_id" value="{$nl_id|escape}" />
 
-			<table class="data">
+			<table class="table data">
 				<caption>{tr}Subscriptions{/tr}</caption>
 				<tr>
 					<th>{smartlink ititle="Email" isort=email offset=$offset idefault=1}</th>

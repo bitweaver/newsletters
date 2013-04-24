@@ -8,7 +8,7 @@
 	
 	{form}
 		{if $queue}
-			<table class="data">
+			<table class="table data">
 			<tr>
 				<th class="item">{smartlink ititle="Email" isort="email" offset=$offset}</th>
 				<th class="item">{smartlink ititle="Content Title" isort="title" offset=$offset}</th>

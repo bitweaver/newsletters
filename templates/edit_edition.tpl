@@ -52,11 +52,10 @@
 						{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
 
 						<div class="control-group">
-							{formlabel label="Draft" for="draft"}
-							{forminput}
-								<input type="checkbox" name="is_draft" id="draft" value="y" {if $pageInfo.is_draft eq 'y'}checked="checked"{/if} />
+							<label class="checkbox">
+								<input type="checkbox" name="is_draft" id="draft" value="y" {if $pageInfo.is_draft eq 'y'}checked="checked"{/if} />Draft
 								{formhelp note=""}
-							{/forminput}
+							</label>
 						</div>
 
 						<div class="control-group">
