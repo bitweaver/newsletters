@@ -143,7 +143,7 @@ class BitNewsletterEdition extends LibertyMime {
 		global $gBitDb;
 
 		$bindVars = array();
-		BitBase::prepGetList( $pListHash );
+		parent::prepGetList( $pListHash );
 		$mid = '';
 
 		if( @BitBase::verifyId( $pListHash['nl_id'] ) ) {
