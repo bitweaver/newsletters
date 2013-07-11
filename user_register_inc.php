@@ -5,9 +5,9 @@
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
  * created 2005/12/10
+ * @author spider <spider@steelsun.com>
  *
  * @package newsletters
- * @author spider <spider@steelsun.com>
  */
 
 /** 
