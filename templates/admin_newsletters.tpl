@@ -13,7 +13,7 @@
 		{/foreach}
 
 		<div class="control-group submit">
-			<input type="submit" class="btn" name="apply" value="{tr}Change preferences{/tr}" />
+			<input type="submit" class="btn btn-default" name="apply" value="{tr}Change preferences{/tr}" />
 		</div>
 	{/legend}
 {/form}

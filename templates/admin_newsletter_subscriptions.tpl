@@ -27,7 +27,7 @@
 
 			<div class="control-group submit">
 				{forminput}
-					<input type="submit" class="btn" name="save" value="{tr}Subscribe{/tr}" />
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Subscribe{/tr}" />
 				{/forminput}
 			</div>
 		{/form}
@@ -81,7 +81,7 @@
 				//]]></script>
 
 				<noscript>
-					<div><input type="submit" class="btn" value="{tr}Submit{/tr}" /></div>
+					<div><input type="submit" class="btn btn-default" value="{tr}Submit{/tr}" /></div>
 				</noscript>
 			</div>
 		{/form}

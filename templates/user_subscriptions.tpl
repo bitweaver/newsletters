@@ -44,7 +44,7 @@
 			{/forminput}
 		</div>
 		<div class="control-group submit">
-			<input type="submit" class="btn" name="update" value="{tr}Update Subscriptions{/tr}" />
+			<input type="submit" class="btn btn-default" name="update" value="{tr}Update Subscriptions{/tr}" />
 		</div>
 	{/form}
 	</div>	<!-- end .body -->

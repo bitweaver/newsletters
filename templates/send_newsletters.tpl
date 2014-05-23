@@ -50,8 +50,8 @@
 					{/jstabs}
 
 					<div class="control-group submit">
-						<input type="submit" class="btn" name="cancel" value="{tr}Cancel{/tr}" />
-						<input type="submit" class="btn" name="send" value="{tr}Send{/tr}" />
+						<input type="submit" class="btn btn-default" name="cancel" value="{tr}Cancel{/tr}" />
+						<input type="submit" class="btn btn-default" name="send" value="{tr}Send{/tr}" />
 					</div>
 				{else}
 					{legend legend="Recipient Groups"}
@@ -80,7 +80,7 @@
 						</div>
 *}
 						<div class="control-group submit">
-							<input type="submit" class="btn" name="preview" value="{tr}Preview{/tr}" />
+							<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}" />
 						</div>
 					{/legend}
 				{/if}

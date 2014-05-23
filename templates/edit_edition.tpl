@@ -90,9 +90,9 @@
 			{/jstabs}
 
 			<div class="control-group submit">
-				<input type="submit" class="btn" name="cancel" value="{tr}Cancel{/tr}" />
-				<input type="submit" class="btn" name="preview" value="{tr}Preview{/tr}" />
-				<input type="submit" class="btn" name="save" value="{tr}Save Edition{/tr}" />
+				<input type="submit" class="btn btn-default" name="cancel" value="{tr}Cancel{/tr}" />
+				<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}" />
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save Edition{/tr}" />
 			</div>
 		{/form}
 	</div><!-- end .body -->
