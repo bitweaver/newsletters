@@ -8,7 +8,7 @@
 
 	<div class="body">
 		{if $feedback}
-			<div class="control-group">
+			<div class="form-group">
 				{formfeedback hash=$feedback}
 			</div>
 		{/if}
@@ -31,7 +31,7 @@
 
 						{jstab title="Preview Recipient List"}
 							{legend legend="Preview Recipient List"}
-								<div class="control-group">
+								<div class="form-group">
 									{foreach from=$smarty.request.send_group item=groupId key=i}
 										<input type="hidden" name="send_group[]" value="{$groupId}" />
 									{/foreach}
@@ -49,13 +49,13 @@
 						{/jstab}
 					{/jstabs}
 
-					<div class="control-group submit">
+					<div class="form-group submit">
 						<input type="submit" class="btn btn-default" name="cancel" value="{tr}Cancel{/tr}" />
 						<input type="submit" class="btn btn-default" name="send" value="{tr}Send{/tr}" />
 					</div>
 				{else}
 					{legend legend="Recipient Groups"}
-						<div class="control-group">
+						<div class="form-group">
 							{formlabel label="Groups"}
 							{forminput}
 								{foreach from=$groupList item=group key=groupId }
@@ -65,21 +65,21 @@
 							{/forminput}
 						</div>
 
-						<div class="control-group">
+						<div class="form-group">
 							<label class="checkbox">
 								<input type="checkbox" name="test_mode" />Send Test
 								{formhelp note="This will enable you to send the newsletter to the same recipients again."}
 							</label>
 						</div>
 {*
-						<div class="control-group">
+						<div class="form-group">
 							{formlabel label="Only send to validated emails"}
 							{forminput}
 								<input type="checkbox" name="validated" checked="checked" />
 							{/forminput}
 						</div>
 *}
-						<div class="control-group submit">
+						<div class="form-group submit">
 							<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}" />
 						</div>
 					{/legend}

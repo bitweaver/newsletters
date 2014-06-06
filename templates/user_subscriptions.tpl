@@ -11,7 +11,7 @@
 		<input type="hidden" name="response_content_id" value="{$subInfo.content_id}" />
 {if $smarty.request.c}
 		<input type="hidden" name="c" value="{$smarty.request.c}" />
-		<div class="control-group">
+		<div class="form-group">
 <em>
 			{formlabel label="In Response To"}
 			{forminput}
@@ -20,14 +20,14 @@
 </em>
 		</div>
 {/if}
-		<div class="control-group">
+		<div class="form-group">
 			{formlabel label="User Information"}
 			{forminput}
 				{displayname hash=$subInfo}<br/>
 				{$subInfo.email}
 			{/forminput}
 		</div>
-		<div class="control-group">
+		<div class="form-group">
 			{formlabel label="Subscriptions"}
 			{forminput}
 				{foreach from=$newsletters key=nlId item=nl}
@@ -37,13 +37,13 @@
 				{/foreach}
 			{/forminput}
 		</div>
-		<div class="control-group">
+		<div class="form-group">
 			{formlabel label="Permanent Unsubscribe"}
 			{forminput}
 				<input type="checkbox" name="unsubscribe_all" value="y" {if $subInfo.unsubscribe_all}checked="checked"{/if} /> {tr}Remove myself from all lists, and receive no further mailings from{/tr} {$gBitSystem->getConfig('siteTitle','this site')}.</br>
 			{/forminput}
 		</div>
-		<div class="control-group submit">
+		<div class="form-group submit">
 			<input type="submit" class="btn btn-default" name="update" value="{tr}Update Subscriptions{/tr}" />
 		</div>
 	{/form}

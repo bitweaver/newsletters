@@ -22,7 +22,7 @@
 			{jstabs}
 				{jstab title="Edition Body"}
 					{legend legend="Edition Body"}
-						<div class="control-group">
+						<div class="form-group">
 							{formlabel label="Newsletter" for="nl_content_id"}
 							{forminput}
 								<select name="nl_content_id" id="nl_content_id">
@@ -35,7 +35,7 @@
 						</div>
 
 						{if $gBitUser->hasPermission('p_use_content_templates') && $templates}
-							<div class="control-group">
+							<div class="form-group">
 								{formlabel label="Template" for=""}
 								{forminput}
 									<select name="template_id" onchange="javascript:document.getElementById('editpageform').submit();">
@@ -51,14 +51,14 @@
 
 						{include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"}
 
-						<div class="control-group">
+						<div class="form-group">
 							<label class="checkbox">
 								<input type="checkbox" name="is_draft" id="draft" value="y" {if $pageInfo.is_draft eq 'y'}checked="checked"{/if} />Draft
 								{formhelp note=""}
 							</label>
 						</div>
 
-						<div class="control-group">
+						<div class="form-group">
 							{formlabel label="Subject" for="subject"}
 							{forminput}
 								<input type="text" maxlength="250" size="40" name="title" id="subject" value="{$pageInfo.title|escape:html}" />
@@ -66,7 +66,7 @@
 							{/forminput}
 						</div>
 
-						<div class="control-group">
+						<div class="form-group">
 							{formlabel label="Reply-To" for="replyto"}
 							{forminput}
 								<input type="text" maxlength="250" size="40" name="reply_to" id="replyto" value="{$pageInfo.reply_to|default:$gBitSystem->getConfig('site_sender_email',$smarty.server.SERVER_ADMIN)|escape:html}" />
@@ -89,7 +89,7 @@
 
 			{/jstabs}
 
-			<div class="control-group submit">
+			<div class="form-group submit">
 				<input type="submit" class="btn btn-default" name="cancel" value="{tr}Cancel{/tr}" />
 				<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}" />
 				<input type="submit" class="btn btn-default" name="save" value="{tr}Save Edition{/tr}" />
