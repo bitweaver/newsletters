@@ -2,14 +2,14 @@
 /**
  * $Header$
  * 
- * Copyright (c) 2005 bitweaver.org
+ * @copyright (c) 2005 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  * Copyright (c) 2002-2003, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
  * created 2005/12/10
  *
- * @package newsletters
  * @author spider <spider@steelsun.com>
+ * @package newsletters
  */
 
 /** 

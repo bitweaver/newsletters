@@ -2,7 +2,7 @@
 /**
  * $Header$
  *
- * Copyright (c) 2004 bitweaver.org
+ * @copyright (c) 2004-15 bitweaver.org
  * All Rights Reserved. See below for details and a complete list of authors.
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details
  *
@@ -11,7 +11,7 @@
  * Class that handles editions of newsletters
  * @package newsletters
  *
- * created 2005/12/08
+ * @date created 2005/12/08
  *
  * @author spiderr <spider@steelsun.com>
  *
@@ -237,7 +237,7 @@ class BitNewsletterEdition extends LibertyMime {
 		global $gBitSmarty;
 		$ret = NULL;
 		if( $this->isValid() ) {
-			$gBitSmarty->assign_by_ref( 'gContent', $this );
+			$gBitSmarty->assignByRef( 'gContent', $this );
 			$ret = $gBitSmarty->fetch( 'bitpackage:newsletters/view_edition.tpl' );
 		}
 		return $ret;
