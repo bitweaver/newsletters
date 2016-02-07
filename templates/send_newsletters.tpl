@@ -66,10 +66,10 @@
 						</div>
 
 						<div class="form-group">
-							<label class="checkbox">
+							{forminput label="checkbox"}
 								<input type="checkbox" name="test_mode" />Send Test
 								{formhelp note="This will enable you to send the newsletter to the same recipients again."}
-							</label>
+							{/forminput}
 						</div>
 {*
 						<div class="form-group">
