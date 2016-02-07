@@ -41,7 +41,7 @@
 		</div>
 		
 		<div class="row input alignright">
-			<input type="submit" class="btn" name="Submit" value="Submit" />
+			<input type="submit" class="btn btn-default" name="Submit" value="Submit" />
 		</div>
 	
 	{/form}
