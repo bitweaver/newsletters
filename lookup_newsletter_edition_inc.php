@@ -21,7 +21,7 @@ if( empty( $gContent ) || !is_object( $gContent ) || !$gContent->isValid() ) {
 	$nlId = !empty( $_REQUEST['nl_id'] ) ? $_REQUEST['nl_id'] : NULL;
 	$gContent = new BitNewsletterEdition( $editionId, $conId, $nlId );
 	$gContent->load();
-	$gBitSmarty->assign_by_ref( 'gContent', $gContent );
+	$gBitSmarty->assignByRef( 'gContent', $gContent );
 }
 
 

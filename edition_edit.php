@@ -62,7 +62,7 @@ if (isset($_REQUEST["preview"])) {
 
 	$parsed = $gContent->parseData( $formInfo['data'],( !empty( $_REQUEST['format_guid'] ) ? $_REQUEST['format_guid'] :
 		( isset( $gContent->mInfo['format_guid'] ) ? $gContent->mInfo['format_guid'] : 'tikiwiki' ) ) );
-	$gBitSmarty->assign_by_ref( 'parsed', $parsed );
+	$gBitSmarty->assignByRef( 'parsed', $parsed );
 
 	$gContent->invokeServices( 'content_preview_function' );
 } elseif (isset($_REQUEST["save"])) {
@@ -90,7 +90,7 @@ if( empty( $formInfo ) ) {
 	$formInfo = &$gContent->mInfo;
 }
 
-$gBitSmarty->assign_by_ref( 'pageInfo', $formInfo );
+$gBitSmarty->assignByRef( 'pageInfo', $formInfo );
 $gBitSmarty->assign( 'errors', $gContent->mErrors );
 
 // Display the template

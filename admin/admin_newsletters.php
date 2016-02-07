@@ -39,8 +39,8 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 $gContent->invokeServices( 'content_edit_function' );
 
 $newsletters = $gContent->getList( $listHash );
-$gBitSmarty->assign_by_ref( 'newsletters', $newsletters );
-$gBitSmarty->assign_by_ref( 'listInfo', $listHash );
+$gBitSmarty->assignByRef( 'newsletters', $newsletters );
+$gBitSmarty->assignByRef( 'listInfo', $listHash );
 
 // Fill array with possible number of questions per page
 /*

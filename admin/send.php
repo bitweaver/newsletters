@@ -33,7 +33,7 @@ $validated = !empty( $_REQUEST["validated"] ) ? TRUE : FALSE;
 
 if( $gContent->isValid() && isset( $_REQUEST['preview'] ) && isset( $_REQUEST['send_group'] ) ) {
 	$recipients = $gContent->getRecipients( $_REQUEST['send_group'], $validated, !empty( $_REQUEST['test_mode'] ) );
-	$gBitSmarty->assign_by_ref( 'recipientList', $recipients );
+	$gBitSmarty->assignByRef( 'recipientList', $recipients );
 	$gBitSmarty->assign( 'validated', $validated );
 	$gBitSmarty->assign( 'sending', TRUE );
 } elseif( $gContent->isValid() && isset( $_REQUEST["send"] ) ) {
@@ -52,19 +52,19 @@ if( $gContent->isValid() ) {
 	$groupListHash = array();
 	$groups = $gBitUser->getAllGroups( $groupListHash );
 	$groups['send_subs']['group_name'] = 'Send to subscribers';
-	$gBitSmarty->assign_by_ref( 'groupList', $groups );
+	$gBitSmarty->assignByRef( 'groupList', $groups );
 } else {
 	$listHash = array();
 	$editions = $gContent->getList( $listHash );
-	$gBitSmarty->assign_by_ref( 'editionList', $editions );
+	$gBitSmarty->assignByRef( 'editionList', $editions );
 
 /*	if( $gBitSystem->isFeatureActive( 'bit_p_use_content_templates' ) ) {
 		$templates = $bitlib->list_templates('newsletters', 0, -1, 'name_asc', '');
-		$gBitSmarty->assign_by_ref('templates', $templates["data"]);
+		$gBitSmarty->assignByRef('templates', $templates["data"]);
 	}*/
 }
 
-$gBitSmarty->assign_by_ref( 'feedback', $feedback );
+$gBitSmarty->assignByRef( 'feedback', $feedback );
 // Display the template
 $gBitSystem->display( 'bitpackage:newsletters/send_newsletters.tpl' , tra( "Send Newsletter" ).': '.$gContent->getTitle() , array( 'display_mode' => 'admin' ));
 

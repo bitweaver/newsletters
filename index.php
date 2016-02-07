@@ -10,7 +10,7 @@ require_once( '../kernel/setup_inc.php' );
 $feedback = array();
 
 $gDefaultCenter = 'bitpackage:newsletters/center_list_newsletters.tpl';
-$gBitSmarty->assign_by_ref( 'gDefaultCenter', $gDefaultCenter );
+$gBitSmarty->assignByRef( 'gDefaultCenter', $gDefaultCenter );
 
 $gBitSmarty->assign( 'feedback', $feedback );
 

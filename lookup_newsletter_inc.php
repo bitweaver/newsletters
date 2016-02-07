@@ -20,7 +20,7 @@ if( empty( $gContent ) || !is_object( $gContent ) || !$gContent->isValid() ) {
 	$conId = !empty( $_REQUEST['content_id'] ) ? $_REQUEST['content_id'] : !empty( $_REQUEST['nl_content_id'] ) && is_numeric( $_REQUEST['nl_content_id'] ) ? $_REQUEST['nl_content_id'] : NULL;
 	$gContent = new BitNewsletter( $nlId, $conId );
 	$gContent->load();
-	$gBitSmarty->assign_by_ref( 'gContent', $gContent );
+	$gBitSmarty->assignByRef( 'gContent', $gContent );
 }
 
 ?>

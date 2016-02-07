@@ -48,7 +48,7 @@ if( $gContent->isValid() ) {
 } else {
 	$listHash = array();
 	$editions = $gContent->getList( $listHash );
-	$gBitSmarty->assign_by_ref( 'editionList', $editions );
+	$gBitSmarty->assignByRef( 'editionList', $editions );
 	$gBitSmarty->assign( 'listInfo', $listHash );
 	$title = tra("List Editions");
 	$mid = 'bitpackage:newsletters/list_editions.tpl';

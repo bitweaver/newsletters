@@ -28,7 +28,7 @@ if( !empty( $_REQUEST['batch_command'] ) && !empty( $_REQUEST['queue_id'] ) ) {
 if( empty( $_REQUEST['batch_command'] ) || $_REQUEST['batch_command'] != 'send' ) {
 	$listHash = array();
 	$queue = $gBitNewsletterMailer->getQueue( $listHash );
-	$gBitSmarty->assign_by_ref( 'queue', $queue );
+	$gBitSmarty->assignByRef( 'queue', $queue );
 
 	$gBitSystem->display( 'bitpackage:newsletters/mail_queue.tpl' , NULL, array( 'display_mode' => 'admin' ));
 }
