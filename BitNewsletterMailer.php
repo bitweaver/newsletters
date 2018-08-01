@@ -22,7 +22,7 @@
  * required setup
  */
 require_once( NEWSLETTERS_PKG_PATH.'BitNewsletter.php' );
-require_once( UTIL_PKG_PATH.'phpmailer/class.phpmailer.php' );
+require_once( UTIL_PKG_INC.'phpmailer/class.phpmailer.php' );
 
 /**
  * @package newsletters
@@ -180,7 +180,7 @@ class BitNewsletterMailer {
 					$mailer->Password = $gBitSystem->getConfig( 'bitmailer_smtp_password' );
 				}
 				$mailer->WordWrap = $gBitSystem->getConfig( 'bitmailer_word_wrap', 75 );
-				if( !$mailer->SetLanguage( $gBitLanguage->getLanguage(), UTIL_PKG_PATH.'phpmailer/language/' ) ) {
+				if( !$mailer->SetLanguage( $gBitLanguage->getLanguage(), UTIL_PKG_INC.'phpmailer/language/' ) ) {
 					$mailer->SetLanguage( 'en' );
 				}
 				$mailer->ClearReplyTos();
