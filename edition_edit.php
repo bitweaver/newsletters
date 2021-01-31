@@ -42,6 +42,7 @@ if( !empty( $gContent->mInfo ) ) {
 
 if( isset( $_REQUEST["edit"] ) ) {
 	$formInfo['data'] = $_REQUEST["edit"];
+	$formInfo['format_guid'] = ( !empty( $_REQUEST['format_guid'] ) ? $_REQUEST['format_guid'] : ( isset( $gContent->mInfo['format_guid'] ) ? $gContent->mInfo['format_guid'] : 'tikiwiki' ) );
 }
 if( isset( $_REQUEST['title'] ) ) {
 	$formInfo['title'] = $_REQUEST['title'];
@@ -60,8 +61,7 @@ if (isset($_REQUEST["preview"])) {
 
 	$gBitSmarty->assign( 'title',!empty( $_REQUEST["title"] ) ? $_REQUEST["title"] : $gContent->getTitle() );
 
-	$parsed = $gContent->parseData( $formInfo['data'],( !empty( $_REQUEST['format_guid'] ) ? $_REQUEST['format_guid'] :
-		( isset( $gContent->mInfo['format_guid'] ) ? $gContent->mInfo['format_guid'] : 'tikiwiki' ) ) );
+	$parsed = LibertyContent::parseDataHash( $formInfo['data'] );
 	$gBitSmarty->assignByRef( 'parsed', $parsed );
 
 	$gContent->invokeServices( 'content_preview_function' );

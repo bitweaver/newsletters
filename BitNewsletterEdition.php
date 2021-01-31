@@ -170,7 +170,6 @@ class BitNewsletterEdition extends LibertyMime {
 			$ret[$k]['display_url'] = BitNewsletterEdition::getDisplayUrlFromHash( $ret[$k] );
 			// remove formating tags
 			$data = preg_replace( '/{[^{}]*}/', '', $ret[$k]['data'] );
-//			$ret[$k]['parsed'] = BitNewsletterEdition::parseData( $data, $ret[$k]['format_guid'] );
 		}
         $pListHash['total_records'] = $gBitDb->getOne( $query_cant, $bindVars );
 		$pListHash['block_pages'] = 5;

@@ -26,7 +26,7 @@
 
 	<div class="body">
 		<div class="content">
-			{$gContent->parseData()}
+			{$gContent->getParsedData()}
 		</div> <!-- end .content -->
 	</div> <!-- end .body -->
 

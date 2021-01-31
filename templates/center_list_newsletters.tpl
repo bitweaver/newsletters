@@ -21,7 +21,7 @@
 			<div class="form-group">
 				{formlabel label="Description" for=""}
 				{forminput}
-					{$gContent->parseData()}
+					{$gContent->getParsedData()}
 				{/forminput}
 			</div>
 			{if ($gContent->getField('allow_user_sub') eq 'y') or $gBitUser->hasPermission( 'p_newsletters_subscribe' )}
