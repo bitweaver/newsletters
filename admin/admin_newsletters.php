@@ -11,7 +11,7 @@ require_once( '../../kernel/setup_inc.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
 $gBitSystem->verifyPermission( 'p_newsletters_create' );
 
-require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
+require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_inc.php' );
 
 if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 	if( !empty( $_REQUEST['cancel'] ) ) {
@@ -58,7 +58,7 @@ $gBitSmarty->assign('freqs', $freqs);
 /*
 $cat_type='newsletter';
 $cat_objid = $_REQUEST["nl_id"];
-include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
+include_once( CATEGORIES_PKG_INCLUDE_PATH.'categorize_list_inc.php' );
 */
 
 // Display the template

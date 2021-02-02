@@ -23,7 +23,7 @@ if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'p_newsletters_subs
 	$gBitSystem->fatalError( tra("You must be logged in to subscribe to newsletters"));
 }
 
-require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
+require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_inc.php' );
 
 $feedback = array();
 

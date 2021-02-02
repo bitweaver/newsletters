@@ -14,7 +14,7 @@ include_once( NEWSLETTERS_PKG_PATH.'BitNewsletterEdition.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
 $gBitSystem->verifyPermission( 'p_send_newsletters' );
 
-require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_edition_inc.php' );
+require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_edition_inc.php' );
 
 $feedback = array();
 

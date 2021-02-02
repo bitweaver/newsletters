@@ -17,7 +17,7 @@ require_once( '../kernel/setup_inc.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
 
-require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_edition_inc.php' );
+require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_edition_inc.php' );
 
 $listHash = array();
 $newsletters = $gContent->mNewsletter->getList( $listHash );

@@ -21,8 +21,8 @@
 /**
  * required setup
  */
-require_once( NEWSLETTERS_PKG_PATH.'BitNewsletter.php' );
-require_once( LIBERTY_PKG_PATH.'LibertyMime.php' );
+require_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletter.php' );
+require_once( LIBERTY_PKG_CLASS_PATH.'LibertyMime.php' );
 
 define( 'BITNEWSLETTEREDITION_CONTENT_TYPE_GUID', 'bitnewsletteredn' );
 

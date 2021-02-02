@@ -22,8 +22,8 @@
 /**
  * required setup
  */
-require_once( LIBERTY_PKG_PATH.'LibertyContent.php' );
-require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterEdition.php' );
+require_once( LIBERTY_PKG_CLASS_PATH.'LibertyContent.php' );
+require_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterEdition.php' );
 
 define( 'BITNEWSLETTER_CONTENT_TYPE_GUID', 'bitnewsletter' );
 

@@ -11,7 +11,7 @@ require_once( '../../kernel/setup_inc.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
 $gBitSystem->verifyPermission( 'p_admin_newsletters' );
 
-require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
+require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_inc.php' );
 
 if( $gContent->isValid() ) {
 	$nl_id = $_REQUEST['nl_id'];
@@ -104,7 +104,7 @@ if( $gContent->isValid() ) {
 /*
 $cat_type='newsletter';
 $cat_objid = $_REQUEST["nl_id"];
-include_once( CATEGORIES_PKG_PATH.'categorize_list_inc.php' );
+include_once( CATEGORIES_PKG_INCLUDE_PATH.'categorize_list_inc.php' );
 */
 
 // Display the template

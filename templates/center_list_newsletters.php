@@ -7,7 +7,7 @@ $gBitSystem->verifyPackage( 'newsletters' );
 
 if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'p_newsletters_subscribe' ) && empty( $_REQUEST["sub"] ) ) {
 
-	require_once( NEWSLETTERS_PKG_PATH.'lookup_newsletter_inc.php' );
+	require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_inc.php' );
 
 	/* List newsletters */
 	$listHash = array();
