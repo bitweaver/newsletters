@@ -12,7 +12,7 @@
 		define( 'BIT_PHP_ERROR_REPORTING', E_ALL ^ E_NOTICE ^ E_WARNING );
 	}
 
-	require_once( '../../kernel/setup_inc.php' );
+	require_once( '../../kernel/includes/setup_inc.php' );
 
 	if( $gBitSystem->isPackageActive( 'newsletters' ) ) {
 		require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );

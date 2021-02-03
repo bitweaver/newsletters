@@ -13,7 +13,7 @@
 /** 
  * Initialization
  */
-require_once( '../kernel/setup_inc.php' );
+require_once( '../kernel/includes/setup_inc.php' );
 include_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
 
 if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
