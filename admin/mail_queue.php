@@ -9,7 +9,7 @@ require_once( '../../kernel/includes/setup_inc.php' );
 $gBitSystem->verifyPermission( 'p_mail_admin' );
 $gBitSystem->verifyPermission( 'newsletters' );
 
-require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
+require_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterMailer.php' );
 global $gBitNewsletterMailer;
 $gBitNewsletterMailer = new BitNewsletterMailer();
 

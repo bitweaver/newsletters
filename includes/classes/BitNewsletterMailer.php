@@ -21,7 +21,7 @@
 /**
  * required setup
  */
-require_once( NEWSLETTERS_PKG_PATH.'BitNewsletter.php' );
+require_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletter.php' );
 require_once( UTIL_PKG_INCLUDE_PATH.'phpmailer/class.phpmailer.php' );
 
 /**

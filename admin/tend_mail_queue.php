@@ -18,7 +18,7 @@
 	$gBitSystem->verifyPermission( 'p_users_admin' );
 
 	if( $gBitSystem->isPackageActive( 'newsletters' ) ) {
-		require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
+		require_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterMailer.php' );
 		global $gBitNewsletterMailer;
 		$gBitNewsletterMailer = new BitNewsletterMailer();
 		$gBitNewsletterMailer->tendQueue();

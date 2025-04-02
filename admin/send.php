@@ -8,8 +8,8 @@
 
 // Initialization
 require_once( '../../kernel/includes/setup_inc.php' );
-include_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
-include_once( NEWSLETTERS_PKG_PATH.'BitNewsletterEdition.php' );
+include_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterMailer.php' );
+include_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterEdition.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
 $gBitSystem->verifyPermission( 'p_send_newsletters' );

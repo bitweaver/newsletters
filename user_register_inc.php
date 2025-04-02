@@ -13,7 +13,7 @@
 /** 
  * Initialization
  */
-require_once NEWSLETTERS_PKG_PATH.'BitNewsletter.php';
+require_once NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletter.php';
 
 $listHash = array( 'registration_optin' => TRUE );
 

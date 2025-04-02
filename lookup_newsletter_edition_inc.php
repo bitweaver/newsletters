@@ -13,7 +13,7 @@
 /** 
  * Initialization
  */
- require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterEdition.php' );
+ require_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterEdition.php' );
 
 if( empty( $gContent ) || !is_object( $gContent ) || !$gContent->isValid() ) {
 	$editionId = !empty( $_REQUEST['edition_id'] ) ? $_REQUEST['edition_id'] : NULL;

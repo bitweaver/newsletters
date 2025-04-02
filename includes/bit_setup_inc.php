@@ -18,7 +18,7 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 	);
 	$gBitSystem->registerAppMenu( $menuHash );
 	if( isset( $_GET['ct'] ) && strlen( $_GET['ct'] ) == 32 ) {
-		require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
+		require_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterMailer.php' );
 		BitNewsletterMailer::storeClickthrough( $_GET['ct'] );
 	}
 
@@ -40,8 +40,8 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 	function newsletters_user_register( &$pObject ) {
 		if( !empty( $_REQUEST['newsletter_optin'] ) ) {
 			// hidden flag to indicate at least one newsletter was displayed
-			require_once NEWSLETTERS_PKG_PATH.'BitNewsletter.php';
-			require_once NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php';
+			require_once NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletter.php';
+			require_once NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterMailer.php';
 
 			if( !empty( $_REQUEST['unsub_all'] ) ) {
 				$subHash['unsubscribe_all'] = 'y';
