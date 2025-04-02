@@ -100,7 +100,7 @@ class BitNewsletterMailer {
 				  FROM `".BIT_DB_PREFIX."mail_queue` mq
 				  WHERE `sent_date` IS NULL AND `mail_error` IS NULL
 				  ORDER BY `queue_date`,`user_id`,`email` ".$this->mDb->SQLForUpdate();
-		if( $rs = $this->mDb->query( $query, NULL ) ) {
+		if( $rs = $this->mDb->query( $query ) ) {
 			while( $pick = $rs->fetchRow() ) {
 				$this->sendQueue( $pick );
 				$this->mDb->CompleteTrans();

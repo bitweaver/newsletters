@@ -14,6 +14,9 @@
 
 	require_once( '../../kernel/includes/setup_inc.php' );
 
+	global $gBitSystem;
+	$gBitSystem->verifyPermission( 'p_users_admin' );
+
 	if( $gBitSystem->isPackageActive( 'newsletters' ) ) {
 		require_once( NEWSLETTERS_PKG_PATH.'BitNewsletterMailer.php' );
 		global $gBitNewsletterMailer;
